@@ -4,70 +4,22 @@
 
 {% block content %}
 
-<div class="row">
+<div class="row g-4">
 
     <div class="col-md-3">
-
-        <div class="card shadow-sm">
-
-            <div class="card-body">
-
-                <h6>Today's Sales</h6>
-
-                <h3>₹0.00</h3>
-
-            </div>
-
-        </div>
-
+        {% include "components/card.html" with title="Today's Sales" value="₹0.00" %}
     </div>
 
     <div class="col-md-3">
-
-        <div class="card shadow-sm">
-
-            <div class="card-body">
-
-                <h6>Orders</h6>
-
-                <h3>0</h3>
-
-            </div>
-
-        </div>
-
+        {% include "components/card.html" with title="Orders" value="0" %}
     </div>
 
     <div class="col-md-3">
-
-        <div class="card shadow-sm">
-
-            <div class="card-body">
-
-                <h6>Tables</h6>
-
-                <h3>0</h3>
-
-            </div>
-
-        </div>
-
+        {% include "components/card.html" with title="Tables" value="0" %}
     </div>
 
     <div class="col-md-3">
-
-        <div class="card shadow-sm">
-
-            <div class="card-body">
-
-                <h6>Customers</h6>
-
-                <h3>0</h3>
-
-            </div>
-
-        </div>
-
+        {% include "components/card.html" with title="Customers" value="0" %}
     </div>
 
 </div>
