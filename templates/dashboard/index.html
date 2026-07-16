@@ -1,17 +1,75 @@
 {% extends "base.html" %}
 
-{% block title %}
-Dashboard
-{% endblock %}
+{% block title %}Dashboard{% endblock %}
 
 {% block content %}
 
-<h2 class="mt-4">
-    Dashboard
-</h2>
+<div class="row">
 
-<p>
-    Welcome to Restaurant RMS.
-</p>
+    <div class="col-md-3">
+
+        <div class="card shadow-sm">
+
+            <div class="card-body">
+
+                <h6>Today's Sales</h6>
+
+                <h3>₹0.00</h3>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-3">
+
+        <div class="card shadow-sm">
+
+            <div class="card-body">
+
+                <h6>Orders</h6>
+
+                <h3>0</h3>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-3">
+
+        <div class="card shadow-sm">
+
+            <div class="card-body">
+
+                <h6>Tables</h6>
+
+                <h3>0</h3>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-3">
+
+        <div class="card shadow-sm">
+
+            <div class="card-body">
+
+                <h6>Customers</h6>
+
+                <h3>0</h3>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
 
 {% endblock %}

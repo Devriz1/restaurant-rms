@@ -1,3 +1,27 @@
-<nav class="navbar navbar-dark bg-dark px-3">
-    <span class="navbar-brand mb-0 h1">Restaurant RMS</span>
+<nav class="navbar navbar-light bg-white border-bottom px-4">
+
+    <h4 class="mb-0">Dashboard</h4>
+
+    <div class="dropdown">
+
+        <a class="btn btn-light dropdown-toggle"
+           data-bs-toggle="dropdown">
+
+            {{ request.user.username }}
+
+        </a>
+
+        <ul class="dropdown-menu dropdown-menu-end">
+
+            <li>
+                <a class="dropdown-item"
+                   href="{% url 'logout' %}">
+                    Logout
+                </a>
+            </li>
+
+        </ul>
+
+    </div>
+
 </nav>

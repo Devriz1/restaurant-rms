@@ -1,7 +1,54 @@
-<div class="list-group mt-3">
-    <a href="#" class="list-group-item">Dashboard</a>
-    <a href="#" class="list-group-item">Restaurant</a>
-    <a href="#" class="list-group-item">Tables</a>
-    <a href="#" class="list-group-item">Menu</a>
-    <a href="#" class="list-group-item">Orders</a>
+<div class="sidebar bg-dark text-white">
+
+    <div class="logo p-3 border-bottom">
+        <h4 class="m-0">🍽 RMS</h4>
+    </div>
+
+    <ul class="nav flex-column mt-3">
+
+        <li class="nav-item">
+            <a href="{% url 'dashboard:home' %}" class="nav-link text-white">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="{% url 'restaurant:settings' %}" class="nav-link text-white">
+    <i class="bi bi-shop"></i>
+    Restaurant
+</a>
+        </li>
+
+        <li class="nav-item">
+            <a href="#" class="nav-link text-white">
+                <i class="bi bi-grid"></i> Tables
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="#" class="nav-link text-white">
+                <i class="bi bi-journal-text"></i> Menu
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="#" class="nav-link text-white">
+                <i class="bi bi-receipt"></i> Orders
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="#" class="nav-link text-white">
+                <i class="bi bi-cash-stack"></i> Billing
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="#" class="nav-link text-white">
+                <i class="bi bi-bar-chart"></i> Reports
+            </a>
+        </li>
+
+    </ul>
+
 </div>

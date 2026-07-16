@@ -1,8 +1,23 @@
-body {
-    font-family: 'Inter', sans-serif;
-    background: #f8f9fa;
+body{
+    margin:0;
+    background:#f5f7fb;
 }
 
-h1,h2,h3,h4,h5,h6 {
-    font-family: 'Poppins', sans-serif;
+.sidebar{
+    width:260px;
+    min-height:100vh;
+}
+
+.sidebar .nav-link{
+    padding:12px 20px;
+    color:#ddd;
+}
+
+.sidebar .nav-link:hover{
+    background:#0d6efd;
+    color:#fff;
+}
+
+main{
+    min-height:calc(100vh - 60px);
 }

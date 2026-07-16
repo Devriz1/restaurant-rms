@@ -16,29 +16,27 @@
 
 <body>
 
-{% include 'includes/navbar.html' %}
+<div class="d-flex">
 
-<div class="container-fluid">
+    {% include "includes/sidebar.html" %}
 
-    <div class="row">
+    <div class="flex-grow-1">
 
-        <div class="col-md-2">
-            {% include 'includes/sidebar.html' %}
-        </div>
+        {% include "includes/navbar.html" %}
 
-        <div class="col-md-10">
+        <main class="p-4">
 
             {% block content %}
-
             {% endblock %}
 
-        </div>
+        </main>
 
     </div>
 
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{% static 'js/app.js' %}"></script>
 
 </body>
 </html>
