@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'apps.inventory',
     'apps.printing',
     'apps.api',
+    "widget_tweaks",
 
 ]
 
@@ -139,3 +140,6 @@ STATICFILES_DIRS = [
 MEDIA_URL = "/media/"
 
 MEDIA_ROOT = BASE_DIR / "media"
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/accounts/login/"
+LOGIN_URL = "/accounts/login/"
