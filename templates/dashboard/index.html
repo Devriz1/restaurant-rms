@@ -4,22 +4,24 @@
 
 {% block content %}
 
+{% include "components/page_header.html" with title="Dashboard" subtitle="Welcome back!" %}
+
 <div class="row g-4">
 
-    <div class="col-md-3">
-        {% include "components/card.html" with title="Today's Sales" value="₹0.00" %}
+    <div class="col-lg-3 col-md-6">
+        {% include "components/card.html" with title="Today's Sales" value="₹0.00" icon="bi-cash-stack" %}
     </div>
 
-    <div class="col-md-3">
-        {% include "components/card.html" with title="Orders" value="0" %}
+    <div class="col-lg-3 col-md-6">
+        {% include "components/card.html" with title="Orders" value="0" icon="bi-receipt" %}
     </div>
 
-    <div class="col-md-3">
-        {% include "components/card.html" with title="Tables" value="0" %}
+    <div class="col-lg-3 col-md-6">
+        {% include "components/card.html" with title="Tables" value="0" icon="bi-grid" %}
     </div>
 
-    <div class="col-md-3">
-        {% include "components/card.html" with title="Customers" value="0" %}
+    <div class="col-lg-3 col-md-6">
+        {% include "components/card.html" with title="Customers" value="0" icon="bi-people" %}
     </div>
 
 </div>

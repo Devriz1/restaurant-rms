@@ -8,6 +8,7 @@ urlpatterns = [
     path("", include("apps.dashboard.urls")),
     path("accounts/", include("apps.accounts.urls")),
     path("restaurant/", include("apps.restaurant.urls")),
+    path("tables/", include("apps.tables.urls")),
 
 ]
 

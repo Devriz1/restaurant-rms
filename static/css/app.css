@@ -3,10 +3,6 @@ body{
     background:#f5f7fb;
 }
 
-.sidebar{
-    width:260px;
-    min-height:100vh;
-}
 
 .sidebar .nav-link{
     padding:12px 20px;
@@ -20,4 +16,29 @@ body{
 
 main{
     min-height:calc(100vh - 60px);
+}
+
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 260px;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+.flex-grow-1 {
+    margin-left: 260px;
+}
+
+.card {
+    border-radius: 12px;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.navbar {
+    height: 70px;
 }
