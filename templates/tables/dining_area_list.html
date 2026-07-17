@@ -57,12 +57,19 @@
                         {% endif %}
 
                     </td>
-                        <td>
+     <td>
 
     <a href="{% url 'tables:area-edit' area.pk %}"
        class="btn btn-sm btn-warning">
 
         <i class="bi bi-pencil"></i>
+
+    </a>
+
+    <a href="{% url 'tables:area-delete' area.pk %}"
+       class="btn btn-sm btn-danger">
+
+        <i class="bi bi-trash"></i>
 
     </a>
 
