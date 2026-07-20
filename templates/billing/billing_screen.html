@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Billing{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/rms-layout.css' %}">
+<link rel="stylesheet" href="{% static 'css/billing.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="main-content">
+
+    <div class="billing-grid page-grid">
+
+        <div class="rms-panel">
+            {% include "billing/partials/bill_items.html" %}
+        </div>
+
+        <div class="rms-panel">
+            {% include "billing/partials/bill_summary.html" %}
+        </div>
+
+        <div class="rms-panel">
+            {% include "billing/partials/payment_panel.html" %}
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}
+{% if object %}
+Edit Category
+{% else %}
+Add Category
+{% endif %}
+{% endblock %}
+
+{% block content %}
+
+<div class="card">
+
+    <div class="card-header">
+
+        <h4 class="mb-0">
+
+            {% if object %}
+                Edit Category
+            {% else %}
+                Add Category
+            {% endif %}
+
+        </h4>
+
+    </div>
+
+    <div class="card-body">
+
+        <form method="post">
+
+            {% csrf_token %}
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Category Name
+                </label>
+
+                {{ form.name }}
+
+            </div>
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Description
+                </label>
+
+                {{ form.description }}
+
+            </div>
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Display Order
+                </label>
+
+                {{ form.display_order }}
+
+            </div>
+
+            <div class="form-check mb-4">
+
+                {{ form.is_active }}
+
+                <label class="form-check-label">
+
+                    Active
+
+                </label>
+
+            </div>
+
+            <button class="btn btn-success">
+
+                <i class="bi bi-check-circle"></i>
+
+                Save
+
+            </button>
+
+            <a href="{% url 'menu:category-list' %}"
+               class="btn btn-secondary">
+
+                Cancel
+
+            </a>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

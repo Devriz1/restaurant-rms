@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}Billing{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Billing Dashboard</h2>
+</div>
+
+<div class="card shadow-sm">
+
+    <div class="card-body">
+
+        <table class="table table-hover align-middle">
+
+            <thead>
+
+            <tr>
+                <th>Order</th>
+                <th>Table</th>
+                <th>Guest</th>
+                <th>Items</th>
+                <th>Total</th>
+                <th></th>
+            </tr>
+
+            </thead>
+
+            <tbody>
+
+            {% for guest in guests %}
+
+            <tr>
+
+                <td>{{ guest.order_number }}</td>
+
+                <td>{{ guest.session.table }}</td>
+
+                <td>
+
+                    {% if guest.guest_name %}
+                        {{ guest.guest_name }}
+                    {% else %}
+                        Guest {{ guest.guest_number }}
+                    {% endif %}
+
+                </td>
+
+                <td>{{ guest.items.count }}</td>
+
+                <td>₹{{ guest.subtotal }}</td>
+
+                <td>
+
+                    <a href="{% url 'billing:billing-screen' guest.id %}"
+                       class="btn btn-primary btn-sm">
+
+                        View Bill
+
+                    </a>
+
+                </td>
+
+            </tr>
+
+            {% empty %}
+
+            <tr>
+
+                <td colspan="6" class="text-center">
+
+                    No bills pending.
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

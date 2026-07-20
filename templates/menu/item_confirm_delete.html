@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Delete Menu Item{% endblock %}
+
+{% block content %}
+
+<div class="card">
+
+    <div class="card-header bg-danger text-white">
+        Delete Menu Item
+    </div>
+
+    <div class="card-body">
+
+        <p>
+
+            Are you sure you want to delete
+
+            <strong>{{ object.name }}</strong>?
+
+        </p>
+
+        <form method="post">
+
+            {% csrf_token %}
+
+            <button class="btn btn-danger">
+                Delete
+            </button>
+
+            <a href="{% url 'menu:item-list' %}"
+               class="btn btn-secondary">
+                Cancel
+            </a>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

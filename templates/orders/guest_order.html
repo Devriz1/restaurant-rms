@@ -1,0 +1,249 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}
+Guest Order
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- Header -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2 class="mb-1">
+                🍽 Table {{ table.table_number }}
+            </h2>
+
+            <small class="text-muted">
+                Guest {{ guest.guest_number }}
+            </small>
+
+        </div>
+
+        <div style="width:300px;">
+
+            <input
+                type="text"
+                id="menu-search"
+                class="form-control"
+                placeholder="🔍 Search menu..."
+                autocomplete="off">
+
+        </div>
+
+    </div>
+
+    <div class="row">
+
+        <!-- Categories -->
+
+        <div class="col-lg-2">
+
+            <div class="card shadow-sm">
+
+                <div class="card-header">
+                    <strong>Categories</strong>
+                </div>
+
+                <div class="list-group list-group-flush">
+
+                    <a href="#"
+                       class="list-group-item list-group-item-action active">
+
+                        All
+
+                    </a>
+
+                    {% for category in categories %}
+
+                        <a href="#"
+                           class="list-group-item list-group-item-action">
+
+                            {{ category.name }}
+
+                        </a>
+
+                    {% empty %}
+
+                        <div class="list-group-item">
+
+                            No Categories
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Menu -->
+
+        <div class="col-lg-6">
+
+            <div class="card shadow-sm">
+
+                <div class="card-header">
+
+                    <strong>Menu Items</strong>
+
+                </div>
+
+                <div class="card-body">
+
+                    <div class="row">
+
+                        {% for item in menu_items %}
+
+                        <div class="col-md-6 mb-3 menu-card"
+                             data-name="{{ item.name|lower }}">
+
+                            <div class="card h-100 border-0 shadow-sm">
+
+                                <div class="card-body">
+
+                                    <h5 class="mb-1">
+
+                                        {{ item.name }}
+
+                                    </h5>
+
+                                    <small class="text-muted">
+
+                                        {{ item.category.name }}
+
+                                    </small>
+
+                                    <h4 class="mt-3 text-success">
+
+                                        ₹{{ item.price }}
+
+                                    </h4>
+
+                                </div>
+
+                                <div class="card-footer bg-white border-0">
+
+                                    <button
+                                        class="btn btn-success w-100 add-item"
+                                        data-item="{{ item.id }}"
+                                        data-guest="{{ guest.id }}">
+
+                                        <i class="bi bi-plus-circle"></i>
+
+                                        Add
+
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        {% empty %}
+
+                        <div class="col-12 text-center">
+
+                            No Menu Items
+
+                        </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Current Order -->
+
+        <div class="col-lg-4">
+
+            <div class="card shadow-sm">
+
+                <div class="card-header">
+
+                    <strong>
+                        Current Order
+                    </strong>
+
+                </div>
+
+                <div
+                    class="card-body"
+                    id="current-order">
+
+                    {% include "orders/partials/current_order.html" %}
+
+                </div>
+
+                <div class="card-footer">
+
+                    <div class="d-grid">
+
+<button
+    class="btn btn-success btn-lg w-100"
+    id="send-kitchen"
+    data-guest="{{ guest.id }}">
+
+    <i class="bi bi-printer"></i>
+
+    Send To Kitchen
+
+</button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="{% static 'js/waiter_pos.js' %}"></script>
+
+<script>
+
+const searchInput = document.getElementById("menu-search");
+
+searchInput.addEventListener("keyup", function(){
+
+    const keyword = this.value.toLowerCase();
+
+    document.querySelectorAll(".menu-card").forEach(function(card){
+
+        const itemName = card.dataset.name;
+
+        if(itemName.includes(keyword)){
+
+            card.style.display = "";
+
+        }else{
+
+            card.style.display = "none";
+
+        }
+
+    });
+
+});
+
+</script>
+
+{% endblock %}

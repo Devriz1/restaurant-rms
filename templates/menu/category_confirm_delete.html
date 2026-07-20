@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Delete Category{% endblock %}
+
+{% block content %}
+
+<div class="card">
+
+    <div class="card-header bg-danger text-white">
+
+        Delete Category
+
+    </div>
+
+    <div class="card-body">
+
+        <p>
+
+            Are you sure you want to delete
+
+            <strong>{{ object.name }}</strong>?
+
+        </p>
+
+        <form method="post">
+
+            {% csrf_token %}
+
+            <button class="btn btn-danger">
+
+                Delete
+
+            </button>
+
+            <a href="{% url 'menu:category-list' %}"
+               class="btn btn-secondary">
+
+                Cancel
+
+            </a>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

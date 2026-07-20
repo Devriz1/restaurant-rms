@@ -1,0 +1,53 @@
+.billing-grid{
+
+    height:100%;
+
+    display:grid;
+
+    gap:15px;
+
+    grid-template-columns:
+
+        2.2fr
+
+        1fr
+
+        1fr;
+
+}
+.bill-items{
+
+    display:flex;
+
+    flex-direction:column;
+
+    height:100%;
+
+}
+.bill-items-list{
+
+    flex:1;
+
+    overflow-y:auto;
+
+    overflow-x:hidden;
+
+}
+.bill-summary{
+
+    display:flex;
+
+    flex-direction:column;
+
+    height:100%;
+
+}
+.payment-panel{
+
+    display:flex;
+
+    flex-direction:column;
+
+    height:100%;
+
+}

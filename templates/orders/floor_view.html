@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}Floor View{% endblock %}
+
+{% block content %}
+
+<h2 class="mb-4">
+    🍽 Floor View
+</h2>
+
+{% for area in areas %}
+
+<div class="card mb-4">
+
+    <div class="card-header">
+
+        <h5 class="mb-0">
+            {{ area.name }}
+        </h5>
+
+    </div>
+
+    <div class="card-body">
+
+        <div class="row">
+
+            {% for table in area.tables.all %}
+
+            <div class="col-md-3 mb-3">
+
+                <a href="{% url 'orders:open-table' table.id %}"
+                   class="text-decoration-none text-dark">
+
+                    <div class="card h-100 shadow-sm">
+
+                        <div class="card-body text-center">
+
+                            <h4 class="mb-3">
+                                🍽 {{ table.table_number }}
+                            </h4>
+
+                            {% if table.display_name %}
+                                <p class="text-muted mb-2">
+                                    {{ table.display_name }}
+                                </p>
+                            {% endif %}
+
+                            <p class="mb-3">
+                                👥 {{ table.capacity }} Seats
+                            </p>
+
+                           {% if table.current_status == "available" %} 
+
+                                <span class="badge bg-success">
+                                    Available
+                                </span>
+
+                            {% elif table.current_status == "occupied" %}
+
+                                <span class="badge bg-danger">
+                                    Occupied
+                                </span>
+
+                            {% elif table.current_status == "reserved" %}
+
+                                <span class="badge bg-warning text-dark">
+                                    Reserved
+                                </span>
+
+                            {% elif table.current_status == "cleaning" %}
+
+                                <span class="badge bg-info text-dark">
+                                    Cleaning
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-secondary">
+                                    {{ table.get_status_display }}
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                </a>
+
+            </div>
+
+            {% empty %}
+
+            <div class="col-12">
+
+                <div class="alert alert-info mb-0">
+                    No tables found in this dining area.
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% empty %}
+
+<div class="alert alert-warning">
+
+    No dining areas available.
+
+</div>
+
+{% endfor %}
+
+{% endblock %}

@@ -1,0 +1,202 @@
+:root{
+
+    --navbar-height:70px;
+
+    --page-padding:15px;
+
+    --panel-gap:15px;
+
+    --panel-radius:10px;
+
+    --panel-bg:#ffffff;
+
+    --panel-border:#dee2e6;
+
+    --panel-shadow:0 2px 8px rgba(0,0,0,.08);
+
+    --header-height:55px;
+
+    --footer-height:65px;
+
+    --body-bg:#f5f6fa;
+
+}
+html,
+body{
+
+    height:100%;
+
+    overflow:hidden;
+
+    background:var(--body-bg);
+
+}
+.wrapper{
+
+    height:100vh;
+
+    overflow:hidden;
+
+}
+.main-content{
+
+    height:calc(100vh - var(--navbar-height));
+
+    padding:var(--page-padding);
+
+    overflow:hidden;
+
+}
+.page-grid{
+
+    height:100%;
+
+    display:grid;
+
+    gap:var(--panel-gap);
+
+}
+.billing-grid{
+
+    grid-template-columns:
+
+    2fr
+
+    1fr
+
+    1fr;
+
+}
+.rms-panel{
+
+    background:var(--panel-bg);
+
+    border:1px solid var(--panel-border);
+
+    border-radius:var(--panel-radius);
+
+    box-shadow:var(--panel-shadow);
+
+    display:flex;
+
+    flex-direction:column;
+
+    overflow:hidden;
+
+}
+.panel-header{
+
+    height:var(--header-height);
+
+    padding:15px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    border-bottom:1px solid #ececec;
+
+    flex-shrink:0;
+
+}
+.panel-body{
+
+    flex:1;
+
+    overflow:hidden;
+
+}
+.scroll-area{
+
+    height:100%;
+
+    overflow-y:auto;
+
+    overflow-x:hidden;
+
+}
+.panel-footer{
+
+    height:var(--footer-height);
+
+    padding:10px 15px;
+
+    border-top:1px solid #ececec;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:flex-end;
+
+    gap:10px;
+
+    flex-shrink:0;
+
+}
+.btn{
+
+    border-radius:8px;
+
+}
+.table{
+
+    margin-bottom:0;
+
+}
+.table thead{
+
+    position:sticky;
+
+    top:0;
+
+    background:#fff;
+
+    z-index:5;
+
+}
+.scroll-area::-webkit-scrollbar{
+
+    width:8px;
+
+}
+.scroll-area::-webkit-scrollbar-thumb{
+
+    background:#b5b5b5;
+
+    border-radius:20px;
+
+}
+@media(max-width:1400px){
+
+    :root{
+
+        --page-padding:10px;
+
+    }
+
+}
+@media(max-width:1200px){
+
+    .billing-grid{
+
+        grid-template-columns:
+
+        1.8fr
+
+        1fr;
+
+    }
+
+}
+@media(max-width:992px){
+
+    .billing-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+}

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+
+    <title>KOT {{ kot.ticket_number }}</title>
+
+    <style>
+
+        body{
+
+            font-family: monospace;
+
+            width:80mm;
+
+            margin:auto;
+
+            font-size:15px;
+
+        }
+
+        h2{
+
+            text-align:center;
+
+            margin-bottom:5px;
+
+        }
+
+        hr{
+
+            border:none;
+
+            border-top:1px dashed #000;
+
+        }
+
+        table{
+
+            width:100%;
+
+            border-collapse:collapse;
+
+        }
+
+        td{
+
+            padding:4px 0;
+
+        }
+
+        .center{
+
+            text-align:center;
+
+        }
+
+        @media print{
+
+            @page{
+
+                size:80mm auto;
+
+                margin:2mm;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<h2>Kitchen Order Ticket</h2>
+
+<hr>
+
+<b>KOT :</b> {{ kot.ticket_number }}<br>
+
+<b>Table :</b> {{ table.table_number }}<br>
+
+<b>Guest :</b> {{ guest.guest_number }}<br>
+
+<b>Waiter :</b> {{ kot.created_by.get_full_name|default:kot.created_by.username }}<br>
+
+<b>Time :</b> {{ kot.created_at|date:"d M Y h:i A" }}
+
+<hr>
+
+<table>
+
+{% for item in items %}
+
+<tr>
+
+<td>
+
+{{ item.quantity }} × {{ item.menu_item.name }}
+
+</td>
+
+</tr>
+
+{% if item.notes %}
+
+<tr>
+
+<td>
+
+&nbsp;&nbsp;&nbsp;• {{ item.notes }}
+
+</td>
+
+</tr>
+
+{% endif %}
+
+{% endfor %}
+
+</table>
+
+<hr>
+
+<div class="center">
+
+*** Kitchen Copy ***
+
+</div>
+
+<script>
+
+window.onload=function(){
+
+    window.print();
+
+}
+
+window.onafterprint=function(){
+
+    window.location.href="{% url 'orders:guest-order' guest.id %}";
+
+}
+
+</script>
+
+</body>
+
+</html>

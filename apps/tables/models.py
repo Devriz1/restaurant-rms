@@ -26,7 +26,6 @@ class RestaurantTable(models.Model):
 
     STATUS_CHOICES = [
         ("available", "Available"),
-        ("occupied", "Occupied"),
         ("reserved", "Reserved"),
         ("cleaning", "Cleaning"),
         ("out_of_service", "Out of Service"),
@@ -61,6 +60,22 @@ class RestaurantTable(models.Model):
     class Meta:
         ordering = ["area", "table_number"]
         unique_together = ["area", "table_number"]
-
+    
     def __str__(self):
         return self.display_name or self.table_number
+    
+    @property
+    def is_occupied(self):
+        return self.sessions.filter(status="open").exists()
+
+
+    @property
+    def current_status(self):
+
+     if self.status != "available":
+        return self.status
+
+     if self.is_occupied:
+        return "occupied"
+
+     return "available"
