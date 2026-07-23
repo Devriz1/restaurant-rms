@@ -1,27 +1,127 @@
-<nav class="navbar navbar-light bg-white border-bottom px-4">
+{% load static %}
 
-    <h4 class="mb-0">Dashboard</h4>
+<nav class="app-navbar">
 
-    <div class="dropdown">
+    <div class="navbar-left">
 
-        <a class="btn btn-light dropdown-toggle"
-           data-bs-toggle="dropdown">
+        <button class="menu-btn" id="menuToggle">
 
-            {{ request.user.username }}
+            <i class="bi bi-list"></i>
 
-        </a>
+        </button>
 
-        <ul class="dropdown-menu dropdown-menu-end">
+        <div>
 
-            <li>
-                <a class="dropdown-item"
-                   href="{% url 'logout' %}">
-                    Logout
-                </a>
-            </li>
+            <div class="breadcrumb">
 
-        </ul>
+                Dashboard
+
+                <span>/</span>
+
+                {% block breadcrumb %}
+                Home
+                {% endblock %}
+
+            </div>
+
+            <h1 class="navbar-title">
+
+                {% block page_title %}
+                Dashboard
+                {% endblock %}
+
+            </h1>
+
+        </div>
+
+    </div>
+
+    <div class="navbar-right">
+
+        <div class="clock-card">
+
+            <i class="bi bi-clock"></i>
+
+            <span id="clock"></span>
+
+        </div>
+
+        <button class="icon-btn">
+
+            <i class="bi bi-bell"></i>
+
+        </button>
+
+        <div class="dropdown">
+
+            <button
+                class="profile-btn dropdown-toggle"
+                data-bs-toggle="dropdown">
+
+                <i class="bi bi-person-circle"></i>
+
+                {{ request.user.username }}
+
+            </button>
+
+            <ul class="dropdown-menu dropdown-menu-end">
+
+                <li>
+
+                    <a class="dropdown-item" href="#">
+
+                        Profile
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <hr class="dropdown-divider">
+
+                </li>
+
+                <li>
+
+                    <a class="dropdown-item text-danger"
+                       href="{% url 'logout' %}">
+
+                        Logout
+
+                    </a>
+
+                </li>
+
+            </ul>
+
+        </div>
 
     </div>
 
 </nav>
+
+<script>
+
+function updateClock(){
+
+    const now=new Date();
+
+    document.getElementById("clock").innerHTML=
+    now.toLocaleTimeString();
+
+}
+
+updateClock();
+
+setInterval(updateClock,1000);
+
+document.getElementById("menuToggle").onclick=function(){
+
+    document
+    .querySelector(".sidebar-wrapper")
+    .classList.toggle("active");
+
+}
+
+</script>

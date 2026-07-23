@@ -1,72 +1,143 @@
-{% include "includes/messages.html" %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>{% block title %}Restaurant RMS{% endblock %}</title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
-    {% load static %}
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="{% static 'css/style.css' %}" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>
+        {% block title %}Restaurant RMS{% endblock %}
+    </title>
+
+    <!-- Fonts -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap"
+          rel="stylesheet">
+
+    <!-- Bootstrap -->
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <!-- Icons -->
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+    <!-- Global CSS -->
+
+    <link rel="stylesheet"
+          href="{% static 'css/core/variables.css' %}">
+
+    <link rel="stylesheet"
+          href="{% static 'css/core/layout.css' %}">
+
+    <link rel="stylesheet"
+          href="{% static 'css/core/responsive.css' %}">
+
+    <link rel="stylesheet"
+          href="{% static 'css/components/sidebar.css' %}">
+
+    <link rel="stylesheet"
+          href="{% static 'css/components/navbar.css' %}">
+
+    <link rel="stylesheet"
+          href="{% static 'css/components/buttons.css' %}">
+
+    <link rel="stylesheet"
+          href="{% static 'css/components/forms.css' %}">
+
+    <link rel="stylesheet"
+          href="{% static 'css/components/cards.css' %}">
+
+    <link rel="stylesheet"
+          href="{% static 'css/components/tables.css' %}">
+
+    <link rel="stylesheet"
+          href="{% static 'css/style.css' %}">
+
+    {% block extra_css %}
+    {% endblock %}
+
 </head>
 
 <body>
 
-<div class="d-flex">
+<div class="app-layout">
 
-    {% include "includes/sidebar.html" %}
+    <!-- Sidebar -->
 
-    <div class="flex-grow-1">
+    <aside class="sidebar-wrapper">
 
-        {% include "includes/navbar.html" %}
+        {% include "includes/sidebar.html" %}
 
-        <main class="p-4">
+    </aside>
+
+    <!-- Main -->
+
+    <div class="main-wrapper">
+
+        <!-- Navbar -->
+
+        <header class="navbar-wrapper">
+
+            {% include "includes/navbar.html" %}
+
+        </header>
+
+        <!-- Messages -->
+
+        {% include "includes/messages.html" %}
+
+        <!-- Page -->
+
+        <main class="content-wrapper">
 
             {% block content %}
             {% endblock %}
 
         </main>
 
-    </div>
+        <!-- Footer -->
 
-</div>
-<div class="toast-container position-fixed top-0 end-0 p-3">
+        <footer class="status-bar">
 
-    <div
-        id="appToast"
-        class="toast text-bg-success border-0"
-        role="alert"
-        aria-live="assertive"
-        aria-atomic="true">
+            <div>
 
-        <div class="d-flex">
-
-            <div
-                class="toast-body"
-                id="toast-message">
-
-                Success
+                Restaurant RMS v2.0
 
             </div>
 
-            <button
-                type="button"
-                class="btn-close btn-close-white me-2 m-auto"
-                data-bs-dismiss="toast">
-            </button>
+            <div>
 
-        </div>
+                Logged in :
+                {{ request.user.username }}
+
+            </div>
+
+        </footer>
 
     </div>
 
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+
 <script src="{% static 'js/app.js' %}"></script>
 
+{% block extra_js %}
+{% endblock %}
+
 </body>
+
 </html>

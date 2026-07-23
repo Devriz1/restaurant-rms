@@ -1,95 +1,174 @@
-<div class="sidebar bg-dark text-white">
+{% load static %}
 
-    <div class="logo p-3 border-bottom">
-        <h4 class="m-0">🍽 RMS</h4>
+<div class="sidebar">
+
+    <!-- ========================= -->
+    <!-- LOGO -->
+    <!-- ========================= -->
+
+    <div class="sidebar-logo">
+
+        <div class="logo-icon">
+            🍽
+        </div>
+
+        <div class="logo-text">
+
+            <h3>Restaurant RMS</h3>
+
+            <small>Version 2.0</small>
+
+        </div>
+
     </div>
 
-    <ul class="nav flex-column mt-3">
+    <!-- ========================= -->
+    <!-- MAIN -->
+    <!-- ========================= -->
 
-        <li class="nav-item">
-            <a href="{% url 'dashboard:home' %}" class="nav-link text-white">
-                <i class="bi bi-speedometer2"></i> Dashboard
-            </a>
-        </li>
+    <div class="sidebar-section">
 
-        <li class="nav-item">
-            <a href="{% url 'restaurant:settings' %}" class="nav-link text-white">
-    <i class="bi bi-shop"></i>
-    Restaurant
+        <div class="sidebar-title">
+
+            MAIN
+
+        </div>
+
+        <a href="{% url 'dashboard:home' %}" class="sidebar-link">
+
+            <i class="bi bi-speedometer2"></i>
+
+            <span>Dashboard</span>
+
+        </a>
+
+    </div>
+
+    <!-- ========================= -->
+    <!-- MANAGEMENT -->
+    <!-- ========================= -->
+
+    <div class="sidebar-section">
+
+        <div class="sidebar-title">
+
+            MANAGEMENT
+
+        </div>
+
+        <a href="{% url 'restaurant:settings' %}" class="sidebar-link">
+
+            <i class="bi bi-shop"></i>
+
+            <span>Restaurant</span>
+
+        </a>
+
+        <a href="{% url 'tables:area-list' %}" class="sidebar-link">
+
+            <i class="bi bi-grid"></i>
+
+            <span>Dining Areas</span>
+
+        </a>
+
+        <a href="{% url 'tables:table-list' %}" class="sidebar-link">
+
+            <i class="bi bi-table"></i>
+
+            <span>Restaurant Tables</span>
+
+        </a>
+
+        <a href="{% url 'menu:category-list' %}" class="sidebar-link">
+
+            <i class="bi bi-tags"></i>
+
+            <span>Categories</span>
+
+        </a>
+
+        <a href="{% url 'menu:item-list' %}" class="sidebar-link">
+
+            <i class="bi bi-cup-hot"></i>
+
+            <span>Menu Items</span>
+
+        </a>
+
+    </div>
+
+    <!-- ========================= -->
+    <!-- OPERATIONS -->
+    <!-- ========================= -->
+
+    <div class="sidebar-section">
+
+        <div class="sidebar-title">
+
+            OPERATIONS
+
+        </div>
+
+        <a href="{% url 'orders:floor-view' %}" class="sidebar-link">
+
+            <i class="bi bi-grid-3x3-gap"></i>
+
+            <span>Floor View</span>
+
+        </a>
+
+        <a href="#" class="sidebar-link">
+
+            <i class="bi bi-journal-check"></i>
+
+            <span>Orders</span>
+
+        </a>
+
+        <a href="{% url 'billing:dashboard' %}" class="sidebar-link">
+
+            <i class="bi bi-receipt"></i>
+
+            <span>Billing</span>
+
+        </a>
+
+    </div>
+
+    <!-- ========================= -->
+    <!-- REPORTS -->
+    <!-- ========================= -->
+
+    <div class="sidebar-section">
+
+        <div class="sidebar-title">
+
+            REPORTS
+
+        </div>
+
+        <a href="{% url 'reports:dashboard' %}" class="nav-link text-white">
+    <i class="bi bi-bar-chart"></i>
+    <span>Reports</span>
 </a>
-        </li>
 
-        <li class="nav-item">
-    <span class="nav-link text-white fw-bold">
-        <i class="bi bi-grid"></i> Tables
-    </span>
+    </div>
 
-    <ul class="nav flex-column ms-4">
+    <!-- ========================= -->
+    <!-- FOOTER -->
+    <!-- ========================= -->
 
-        <li class="nav-item">
-            <a href="{% url 'tables:area-list' %}" class="nav-link text-white">
-                Dining Areas
-            </a>
-        </li>
+    <div class="sidebar-footer">
 
-        <li class="nav-item">
-            <a href="{% url 'tables:table-list' %}" class="nav-link text-white">
-                Restaurant Tables
-            </a>
-        </li>
+        Logged in
 
-    </ul>
-</li>
+        <strong>
 
-<li class="nav-item">
+            {{ request.user.username }}
 
-    <span class="nav-link text-white fw-bold">
-        <i class="bi bi-journal-text"></i> Menu
-    </span>
+        </strong>
 
-    <ul class="nav flex-column ms-4">
-
-        <li class="nav-item">
-            <a href="{% url 'menu:category-list' %}" class="nav-link text-white">
-                Categories
-            </a>
-        </li>
-
-        <li class="nav-item">
-            <a href="{% url 'menu:item-list' %}" class="nav-link text-white">
-    Menu Items
-</a>
-        </li>
-
-    </ul>
-
-</li>
-
-        <li class="nav-item">
-            <a href="#" class="nav-link text-white">
-                <i class="bi bi-receipt"></i> Orders
-            </a>
-        </li>
-        <li class="nav-item">
-    <a href="{% url 'orders:floor-view' %}" class="nav-link text-white">
-        <i class="bi bi-grid-3x3-gap"></i>
-        Floor View
-    </a>
-</li>
-
-        <li class="nav-item">
-    <a class="nav-link text-white" href="{% url 'billing:dashboard' %}">
-        <i class="bi bi-receipt"></i>
-        <span>Billing</span>
-    </a>
-</li>
-
-        <li class="nav-item">
-            <a href="#" class="nav-link text-white">
-                <i class="bi bi-bar-chart"></i> Reports
-            </a>
-        </li>
-
-    </ul>
+    </div>
 
 </div>

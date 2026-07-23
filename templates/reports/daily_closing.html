@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+Daily Closing
+{% endblock %}
+
+
+
+{% block content %}
+
+
+<div class="reports-container">
+
+
+<div class="reports-header">
+
+<h2>
+Daily Closing Report
+</h2>
+
+
+<p>
+{{ today }}
+</p>
+
+</div>
+
+
+
+
+<div class="report-cards">
+
+
+<div class="report-card">
+
+<h4>
+Total Sales
+</h4>
+
+<h2>
+₹ {{ total_sales }}
+</h2>
+
+</div>
+
+
+
+<div class="report-card">
+
+<h4>
+Total Bills
+</h4>
+
+<h2>
+{{ total_bills }}
+</h2>
+
+</div>
+
+
+
+<div class="report-card">
+
+<h4>
+Transactions
+</h4>
+
+<h2>
+{{ total_transactions }}
+</h2>
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+<div class="report-box">
+
+
+<h3>
+Payment Settlement
+</h3>
+
+
+
+<table class="table">
+
+
+<thead>
+
+<tr>
+
+<th>
+Payment Method
+</th>
+
+
+<th>
+Amount
+</th>
+
+</tr>
+
+</thead>
+
+
+
+<tbody>
+
+
+<tr>
+
+<td>
+Cash
+</td>
+
+<td>
+₹ {{ cash }}
+</td>
+
+</tr>
+
+
+
+<tr>
+
+<td>
+UPI
+</td>
+
+<td>
+₹ {{ upi }}
+</td>
+
+</tr>
+
+
+
+<tr>
+
+<td>
+Card
+</td>
+
+<td>
+₹ {{ card }}
+</td>
+
+</tr>
+
+
+
+</tbody>
+
+
+</table>
+
+
+
+</div>
+
+
+
+</div>
+
+
+{% endblock %}

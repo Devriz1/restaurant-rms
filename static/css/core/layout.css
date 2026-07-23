@@ -1,0 +1,369 @@
+/* ==========================================================
+   RESTAURANT RMS
+   CORE LAYOUT
+========================================================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html,
+body{
+
+    height:100%;
+    width:100%;
+    overflow:hidden;
+
+    font-family:'Inter',sans-serif;
+
+    background:#f5f7fb;
+}
+
+/* ==========================================================
+   VARIABLES (temporary)
+========================================================== */
+
+:root{
+
+    --sidebar-width:280px;
+
+    --navbar-height:70px;
+
+    --footer-height:34px;
+
+    --background:#f5f7fb;
+
+    --card:#ffffff;
+
+    --border:#e5e7eb;
+
+    --primary:#2563eb;
+
+    --text:#1f2937;
+
+    --muted:#6b7280;
+
+    --shadow:
+        0 10px 30px rgba(0,0,0,.05);
+
+}
+
+/* ==========================================================
+   APPLICATION
+========================================================== */
+
+.app-layout{
+
+    display:grid;
+
+    grid-template-columns:
+        var(--sidebar-width)
+        1fr;
+
+    height:100vh;
+
+}
+
+/* ==========================================================
+   SIDEBAR
+========================================================== */
+
+.sidebar-wrapper{
+
+    background:#111827;
+
+    overflow-y:auto;
+
+    overflow-x:hidden;
+
+    border-right:1px solid rgba(255,255,255,.08);
+
+}
+
+/* ==========================================================
+   MAIN
+========================================================== */
+
+.main-wrapper{
+
+    display:grid;
+
+    grid-template-rows:
+
+        var(--navbar-height)
+
+        1fr
+
+        var(--footer-height);
+
+    overflow:hidden;
+
+}
+
+/* ==========================================================
+   NAVBAR
+========================================================== */
+
+.navbar-wrapper{
+
+    background:#fff;
+
+    border-bottom:1px solid var(--border);
+
+    display:flex;
+
+    align-items:center;
+
+    padding:0 24px;
+
+    z-index:100;
+
+}
+
+/* ==========================================================
+   CONTENT
+========================================================== */
+
+.content-wrapper{
+
+    overflow:auto;
+
+    padding:24px;
+
+    background:var(--background);
+
+}
+
+/* Nice scrollbar */
+
+.content-wrapper::-webkit-scrollbar{
+
+    width:10px;
+
+}
+
+.content-wrapper::-webkit-scrollbar-thumb{
+
+    background:#d1d5db;
+
+    border-radius:20px;
+
+}
+
+.content-wrapper::-webkit-scrollbar-track{
+
+    background:transparent;
+
+}
+
+/* ==========================================================
+   STATUS BAR
+========================================================== */
+
+.status-bar{
+
+    background:#ffffff;
+
+    border-top:1px solid var(--border);
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    padding:0 20px;
+
+    font-size:13px;
+
+    color:var(--muted);
+
+}
+
+/* ==========================================================
+   PAGE
+========================================================== */
+
+.page{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:20px;
+
+}
+
+/* ==========================================================
+   PAGE HEADER
+========================================================== */
+
+.page-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+}
+
+.page-header h1{
+
+    font-size:30px;
+
+    font-weight:700;
+
+    color:var(--text);
+
+}
+
+.page-header p{
+
+    margin-top:4px;
+
+    color:var(--muted);
+
+}
+
+/* ==========================================================
+   CARD
+========================================================== */
+
+.card-box{
+
+    background:#fff;
+
+    border-radius:14px;
+
+    box-shadow:var(--shadow);
+
+    border:1px solid var(--border);
+
+    padding:20px;
+
+}
+
+/* ==========================================================
+   GRID
+========================================================== */
+
+.grid-2{
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:20px;
+
+}
+
+.grid-3{
+
+    display:grid;
+
+    grid-template-columns:repeat(3,1fr);
+
+    gap:20px;
+
+}
+
+.grid-4{
+
+    display:grid;
+
+    grid-template-columns:repeat(4,1fr);
+
+    gap:20px;
+
+}
+
+/* ==========================================================
+   FLEX
+========================================================== */
+
+.flex{
+
+    display:flex;
+
+}
+
+.flex-between{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+}
+
+.flex-center{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+}
+
+.gap-10{
+
+    gap:10px;
+
+}
+
+.gap-20{
+
+    gap:20px;
+
+}
+
+/* ==========================================================
+   TABLE RESPONSIVE
+========================================================== */
+
+.table-wrapper{
+
+    overflow:auto;
+
+    border-radius:12px;
+
+}
+
+/* ==========================================================
+   IMAGE
+========================================================== */
+
+img{
+
+    max-width:100%;
+
+    display:block;
+
+}
+
+/* ==========================================================
+   LINKS
+========================================================== */
+
+a{
+
+    text-decoration:none;
+
+}
+
+/* ==========================================================
+   INPUT
+========================================================== */
+
+input,
+select,
+textarea{
+
+    outline:none;
+
+}

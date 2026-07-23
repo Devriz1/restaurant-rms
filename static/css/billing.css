@@ -1,53 +1,575 @@
-.billing-grid{
+/* ==========================================================
+   RESTAURANT RMS
+   POS BILLING SCREEN
+========================================================== */
 
-    height:100%;
+
+.pos-billing-page{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:20px;
+
+    height:calc(100vh - 120px);
+
+}
+
+
+
+
+
+/* ==========================================================
+   HEADER
+========================================================== */
+
+
+.pos-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    background:#ffffff;
+
+    padding:20px 25px;
+
+    border-radius:16px;
+
+    border:1px solid #e5e7eb;
+
+}
+
+
+.pos-header h1{
+
+    margin:0;
+
+    font-size:32px;
+
+    font-weight:700;
+
+}
+
+
+.pos-header p{
+
+    margin:8px 0 0;
+
+    color:#6b7280;
+
+}
+
+
+
+.pos-order-number{
+
+    background:#eff6ff;
+
+    color:#2563eb;
+
+    padding:12px 20px;
+
+    border-radius:12px;
+
+    font-weight:700;
+
+}
+
+
+
+
+
+/* ==========================================================
+   MAIN POS LAYOUT
+========================================================== */
+
+
+.pos-layout{
 
     display:grid;
 
-    gap:15px;
+    grid-template-columns:2fr 1fr;
 
-    grid-template-columns:
-
-        2.2fr
-
-        1fr
-
-        1fr;
-
-}
-.bill-items{
-
-    display:flex;
-
-    flex-direction:column;
-
-    height:100%;
-
-}
-.bill-items-list{
+    gap:20px;
 
     flex:1;
 
-    overflow-y:auto;
-
-    overflow-x:hidden;
+    min-height:0;
 
 }
-.bill-summary{
+
+
+
+
+
+/* ==========================================================
+   PANELS
+========================================================== */
+
+
+.pos-items-panel,
+.pos-summary-panel{
+
+    background:white;
+
+    border-radius:18px;
+
+    border:1px solid #e5e7eb;
+
+    padding:25px;
+
+    overflow:auto;
+
+}
+
+
+
+
+
+.panel-title{
+
+    font-size:22px;
+
+    font-weight:700;
+
+    margin-bottom:20px;
+
+}
+
+
+
+
+
+/* ==========================================================
+   ITEMS TABLE
+========================================================== */
+
+
+.pos-table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+}
+
+
+
+.pos-table th{
+
+    background:#f8fafc;
+
+    padding:15px;
+
+    text-align:left;
+
+    color:#475569;
+
+}
+
+
+
+.pos-table td{
+
+    padding:16px 15px;
+
+    border-bottom:1px solid #f1f5f9;
+
+}
+
+
+
+.item-title{
+
+    font-weight:600;
+
+    font-size:16px;
+
+}
+
+
+
+
+
+/* ==========================================================
+   SUMMARY
+========================================================== */
+
+
+.summary-line{
 
     display:flex;
 
-    flex-direction:column;
+    justify-content:space-between;
 
-    height:100%;
+    padding:15px 0;
+
+    font-size:18px;
 
 }
-.payment-panel{
+
+
+
+.summary-field{
+
+    margin-bottom:15px;
+
+}
+
+
+
+.summary-field label{
+
+    display:block;
+
+    font-weight:600;
+
+    margin-bottom:6px;
+
+}
+
+
+
+
+
+.summary-field input,
+.summary-field select{
+
+    width:100%;
+
+    padding:12px;
+
+    border-radius:10px;
+
+    border:1px solid #d1d5db;
+
+}
+
+
+
+
+
+/* ==========================================================
+   TOTAL
+========================================================== */
+
+
+.total-box{
+
+    background:#111827;
+
+    color:white;
+
+    padding:20px;
+
+    border-radius:16px;
+
+    text-align:center;
+
+    margin:20px 0;
+
+}
+
+
+
+.total-box span{
+
+    font-size:15px;
+
+    opacity:.8;
+
+}
+
+
+
+.total-box h1{
+
+    margin:8px 0 0;
+
+    font-size:38px;
+
+}
+
+
+
+
+
+/* ==========================================================
+   PAYMENT
+========================================================== */
+
+
+.payment-section h3{
+
+    margin-bottom:15px;
+
+}
+
+
+
+.payment-control{
+
+    width:100%;
+
+    padding:14px;
+
+    margin-bottom:12px;
+
+    border-radius:10px;
+
+    border:1px solid #d1d5db;
+
+    font-size:16px;
+
+}
+
+
+
+
+
+/* ==========================================================
+   BUTTONS
+========================================================== */
+
+
+.pos-buttons{
+
+    display:grid;
+
+    grid-template-columns:1fr 1.5fr;
+
+    gap:12px;
+
+}
+
+
+
+.btn-update,
+.btn-pay{
+
+    border:none;
+
+    padding:15px;
+
+    border-radius:12px;
+
+    font-size:16px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+}
+
+
+
+.btn-update{
+
+    background:#e5e7eb;
+
+}
+
+
+
+.btn-pay{
+
+    background:#16a34a;
+
+    color:white;
+
+}
+
+
+
+
+
+.btn-pay:hover{
+
+    background:#15803d;
+
+}
+
+.payment-section label{
+
+    display:block;
+
+    font-weight:600;
+
+    margin-bottom:6px;
+
+    margin-top:10px;
+
+}
+
+
+.payment-section label span{
+
+    color:#6b7280;
+
+    font-size:13px;
+
+    font-weight:400;
+
+}
+
+.balance-box{
+
+    margin-top:15px;
+
+    padding:15px;
+
+    background:#f1f5f9;
+
+    border-radius:12px;
+
+    font-size:20px;
 
     display:flex;
 
-    flex-direction:column;
+    justify-content:space-between;
 
-    height:100%;
+}
+
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+
+/* 1600 */
+
+@media(max-width:1600px){
+
+    .pos-layout{
+
+        grid-template-columns:1.8fr 1fr;
+
+    }
+
+}
+
+
+
+/* 1440 */
+
+@media(max-width:1440px){
+
+    .pos-layout{
+
+        grid-template-columns:1.5fr 1fr;
+
+    }
+
+
+}
+
+
+
+/* 1366 */
+
+@media(max-width:1366px){
+
+    .pos-billing-page{
+
+        height:auto;
+
+    }
+
+
+    .pos-layout{
+
+        grid-template-columns:1fr;
+
+    }
+
+
+    .pos-summary-panel{
+
+        max-width:none;
+
+    }
+
+
+}
+
+
+
+/* 1024 */
+
+@media(max-width:1024px){
+
+
+    .pos-header{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+        gap:15px;
+
+    }
+
+
+}
+
+
+
+
+
+/* 768 */
+
+@media(max-width:768px){
+
+
+    .pos-buttons{
+
+        grid-template-columns:1fr;
+
+    }
+
+
+    .pos-items-panel,
+    .pos-summary-panel{
+
+        padding:18px;
+
+    }
+
+
+}
+
+
+
+
+
+/* 576 */
+
+@media(max-width:576px){
+
+
+    .pos-header h1{
+
+        font-size:26px;
+
+    }
+
+
+    .pos-table{
+
+        min-width:650px;
+
+    }
+
+
+    .pos-items-panel{
+
+        overflow-x:auto;
+
+    }
+
 
 }

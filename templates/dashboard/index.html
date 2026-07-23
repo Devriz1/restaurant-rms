@@ -1,27 +1,339 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Dashboard{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock %}
+
 {% block content %}
 
-{% include "components/page_header.html" with title="Dashboard" subtitle="Welcome back!" %}
+<div class="dashboard-page">
 
-<div class="row g-4">
+    <!-- ========================================= -->
+    <!-- PAGE HEADER -->
+    <!-- ========================================= -->
 
-    <div class="col-lg-3 col-md-6">
-        {% include "components/card.html" with title="Today's Sales" value="₹0.00" icon="bi-cash-stack" %}
+    <div class="dashboard-header">
+
+        <div>
+
+            <h1>Dashboard</h1>
+
+            <p>
+
+                Welcome back,
+                {{ request.user.username }}
+
+            </p>
+
+        </div>
+
+        <div class="dashboard-date">
+
+            Restaurant Overview
+
+        </div>
+
     </div>
 
-    <div class="col-lg-3 col-md-6">
-        {% include "components/card.html" with title="Orders" value="0" icon="bi-receipt" %}
+    <!-- ========================================= -->
+    <!-- KPI -->
+    <!-- ========================================= -->
+
+    <div class="dashboard-cards">
+
+        <div class="dashboard-card">
+
+            <div class="card-icon blue">
+
+                <i class="bi bi-cash-stack"></i>
+
+            </div>
+
+            <div>
+
+                <h5>Today's Sales</h5>
+
+                <h2>₹0.00</h2>
+
+            </div>
+
+        </div>
+
+        <div class="dashboard-card">
+
+            <div class="card-icon green">
+
+                <i class="bi bi-grid"></i>
+
+            </div>
+
+            <div>
+
+                <h5>Open Tables</h5>
+
+                <h2>
+
+                    {{ occupied_tables }}
+
+                </h2>
+
+            </div>
+
+        </div>
+
+        <div class="dashboard-card">
+
+            <div class="card-icon orange">
+
+                <i class="bi bi-people"></i>
+
+            </div>
+
+            <div>
+
+                <h5>Active Guests</h5>
+
+                <h2>
+
+                    {{ active_guests }}
+
+                </h2>
+
+            </div>
+
+        </div>
+
+        <div class="dashboard-card">
+
+            <div class="card-icon red">
+
+                <i class="bi bi-receipt"></i>
+
+            </div>
+
+            <div>
+
+                <h5>Pending Bills</h5>
+
+                <h2>
+
+                    {{ pending_bills }}
+
+                </h2>
+
+            </div>
+
+        </div>
+
     </div>
 
-    <div class="col-lg-3 col-md-6">
-        {% include "components/card.html" with title="Tables" value="0" icon="bi-grid" %}
+    <!-- ========================================= -->
+    <!-- SECOND ROW -->
+    <!-- ========================================= -->
+
+    <div class="dashboard-grid">
+
+        <!-- Restaurant Status -->
+
+        <div class="panel">
+
+            <div class="panel-header">
+
+                Restaurant Status
+
+            </div>
+
+            <div class="panel-body">
+
+                <div class="status-item">
+
+                    <span>
+
+                        Total Tables
+
+                    </span>
+
+                    <strong>
+
+                        {{ total_tables }}
+
+                    </strong>
+
+                </div>
+
+                <div class="status-item">
+
+                    <span>
+
+                        Occupied
+
+                    </span>
+
+                    <strong class="text-danger">
+
+                        {{ occupied_tables }}
+
+                    </strong>
+
+                </div>
+
+                <div class="status-item">
+
+                    <span>
+
+                        Available
+
+                    </span>
+
+                    <strong class="text-success">
+
+                        {{ available_tables }}
+
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Quick Actions -->
+
+        <div class="panel">
+
+            <div class="panel-header">
+
+                Quick Actions
+
+            </div>
+
+            <div class="panel-body actions">
+
+                <a href="{% url 'orders:floor-view' %}" class="action-btn">
+
+                    <i class="bi bi-grid-3x3-gap"></i>
+
+                    Floor View
+
+                </a>
+
+                <a href="{% url 'billing:dashboard' %}" class="action-btn">
+
+                    <i class="bi bi-receipt"></i>
+
+                    Billing
+
+                </a>
+
+                <a href="{% url 'menu:item-list' %}" class="action-btn">
+
+                    <i class="bi bi-cup-hot"></i>
+
+                    Menu
+
+                </a>
+
+                <a href="{% url 'tables:table-list' %}" class="action-btn">
+
+                    <i class="bi bi-table"></i>
+
+                    Tables
+
+                </a>
+
+            </div>
+
+        </div>
+
     </div>
 
-    <div class="col-lg-3 col-md-6">
-        {% include "components/card.html" with title="Customers" value="0" icon="bi-people" %}
+    <!-- ========================================= -->
+    <!-- RECENT ORDERS -->
+    <!-- ========================================= -->
+
+    <div class="panel mt-4">
+
+        <div class="panel-header">
+
+            Recent Orders
+
+        </div>
+
+        <div class="panel-body">
+
+            <table class="dashboard-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Order</th>
+
+                        <th>Table</th>
+
+                        <th>Guest</th>
+
+                        <th>Status</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% for order in recent_orders %}
+
+                    <tr>
+
+                        <td>
+
+                            {{ order.order_number }}
+
+                        </td>
+
+                        <td>
+
+                            {{ order.session.table.display_name }}
+
+                        </td>
+
+                        <td>
+
+                            Guest {{ order.guest_number }}
+
+                        </td>
+
+                        <td>
+
+                            {{ order.status }}
+
+                        </td>
+
+                    </tr>
+
+                {% empty %}
+
+                    <tr>
+
+                        <td colspan="4">
+
+                            No Orders Found
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
     </div>
 
 </div>

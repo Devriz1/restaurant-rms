@@ -1,8 +1,12 @@
 from django import forms
+
+from apps.core.forms import BaseModelForm
+
 from .models import Bill
 
 
-class BillForm(forms.ModelForm):
+
+class BillForm(BaseModelForm):
 
     class Meta:
 
@@ -19,29 +23,52 @@ class BillForm(forms.ModelForm):
 
             "discount_type": forms.Select(
                 attrs={
-                    "class": "form-select",
+                    "class":
+                    "form-select"
                 }
             ),
 
             "discount": forms.NumberInput(
                 attrs={
-                    "class": "form-control",
                     "step": "0.01",
+                    "placeholder":
+                    "Discount",
                 }
             ),
 
             "service_charge": forms.NumberInput(
                 attrs={
-                    "class": "form-control",
                     "step": "0.01",
+                    "placeholder":
+                    "Service Charge",
                 }
             ),
 
             "tax": forms.NumberInput(
                 attrs={
-                    "class": "form-control",
                     "step": "0.01",
+                    "placeholder":
+                    "Tax",
                 }
             ),
 
         }
+
+
+    def clean_discount(self):
+
+        discount = self.cleaned_data.get(
+            "discount"
+        )
+
+        if discount is None:
+
+            discount = 0
+
+        if discount < 0:
+
+            raise forms.ValidationError(
+                "Discount cannot be negative."
+            )
+
+        return discount

@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+Reports
+{% endblock %}
+
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/reports.css' %}">
+{% endblock %}
+
+
+
+{% block content %}
+
+<div class="reports-dashboard">
+
+
+    <div class="page-title">
+
+        <h1>
+            Reports
+        </h1>
+
+        <p>
+            Restaurant analytics and business reports
+        </p>
+
+    </div>
+
+
+
+    <div class="report-grid">
+
+
+        <!-- Sales Report -->
+
+        <a href="{% url 'reports:sales' %}" class="report-card">
+
+            <i class="bi bi-cash-stack"></i>
+
+            <h3>
+                Sales Report
+            </h3>
+
+            <p>
+                Daily, weekly and monthly sales
+            </p>
+
+        </a>
+
+
+
+
+        <!-- Payment Report -->
+
+        <a href="{% url 'reports:payments' %}" class="report-card">
+
+            <i class="bi bi-credit-card"></i>
+
+            <h3>
+                Payment Report
+            </h3>
+
+            <p>
+                Cash, UPI and Card analysis
+            </p>
+
+        </a>
+
+
+
+
+        <!-- Item Report -->
+
+        <a href="{% url 'reports:items' %}" class="report-card">
+
+            <i class="bi bi-cup-hot"></i>
+
+            <h3>
+                Item Report
+            </h3>
+
+            <p>
+                Top selling menu items
+            </p>
+
+        </a>
+
+
+
+
+        <!-- Waiter Report -->
+
+        <a href="{% url 'reports:waiters' %}" class="report-card">
+
+            <i class="bi bi-person-badge"></i>
+
+            <h3>
+                Waiter Report
+            </h3>
+
+            <p>
+                Waiter performance and orders
+            </p>
+
+        </a>
+
+
+
+
+        <!-- Daily Closing -->
+
+        <a href="{% url 'reports:daily-closing' %}" class="report-card">
+
+            <i class="bi bi-calendar-check"></i>
+
+            <h3>
+                Daily Closing
+            </h3>
+
+            <p>
+                End of day sales settlement
+            </p>
+
+        </a>
+
+
+
+    </div>
+
+
+</div>
+
+
+{% endblock %}

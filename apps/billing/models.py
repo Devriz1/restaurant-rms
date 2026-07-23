@@ -37,12 +37,6 @@ class Bill(models.Model):
         related_name="bills",
     )
 
-    subtotal = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        default=Decimal("0.00"),
-    )
-
     discount_type = models.CharField(
         max_length=10,
         choices=DISCOUNT_TYPE_CHOICES,
@@ -97,31 +91,35 @@ class Bill(models.Model):
     class Meta:
         ordering = ["-id"]
 
-    def calculate_totals(self):
+    @property
+    def subtotal(self):
+        return self.guest_order.subtotal
 
-        subtotal = Decimal("0.00")
+    @property
+    def discount_amount(self):
 
-        for item in self.items.all():
-            subtotal += item.line_total
-
-        self.subtotal = subtotal
+        subtotal = self.subtotal
 
         if self.discount_type == "percent":
 
-            discount_amount = (
+            amount = (
                 subtotal * self.discount
             ) / Decimal("100")
 
         else:
 
-            discount_amount = self.discount
+            amount = self.discount
 
-        if discount_amount > subtotal:
-            discount_amount = subtotal
+        if amount > subtotal:
+            amount = subtotal
+
+        return amount
+
+    def calculate_totals(self):
 
         self.grand_total = (
-            subtotal
-            - discount_amount
+            self.subtotal
+            - self.discount_amount
             + self.service_charge
             + self.tax
         )
@@ -131,20 +129,26 @@ class Bill(models.Model):
 
     def save(self, *args, **kwargs):
 
+        self.calculate_totals()
+
         if not self.bill_number:
 
-            last = Bill.objects.order_by("-id").first()
+            last_bill = Bill.objects.order_by("-id").first()
 
-            if last and last.bill_number:
+            if last_bill:
 
                 try:
+
                     number = int(
-                        last.bill_number.replace("BILL", "")
+                        last_bill.bill_number.replace(
+                            "BILL",
+                            "",
+                        )
                     ) + 1
 
                 except ValueError:
 
-                    number = 1
+                    number = last_bill.id + 1
 
             else:
 
@@ -161,43 +165,8 @@ class Bill(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
+
         return self.bill_number
-
-
-class BillItem(models.Model):
-
-    bill = models.ForeignKey(
-        Bill,
-        on_delete=models.CASCADE,
-        related_name="items",
-    )
-
-    menu_item_name = models.CharField(
-        max_length=150,
-    )
-
-    quantity = models.PositiveIntegerField()
-
-    unit_price = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-    )
-
-    line_total = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-    )
-
-    notes = models.CharField(
-        max_length=255,
-        blank=True,
-    )
-
-    class Meta:
-        ordering = ["id"]
-
-    def __str__(self):
-        return self.menu_item_name
 
 
 class Payment(models.Model):
@@ -242,4 +211,5 @@ class Payment(models.Model):
         ordering = ["-paid_at"]
 
     def __str__(self):
-        return f"{self.bill.bill_number} - {self.payment_method}"
+
+        return f"{self.bill.bill_number} ({self.payment_method})"

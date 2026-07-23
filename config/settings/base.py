@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'apps.printing',
     'apps.api',
     "widget_tweaks",
+    'apps.core',
 
 ]
 

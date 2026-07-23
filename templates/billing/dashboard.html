@@ -1,89 +1,187 @@
 {% extends "base.html" %}
+{% load static %}
 
-{% block title %}Billing{% endblock %}
+
+{% block title %}
+Billing Dashboard
+{% endblock %}
+
+
+{% block extra_css %}
+
+<link rel="stylesheet" href="{% static 'css/billing_dashboard.css' %}">
+
+{% endblock %}
+
+
 
 {% block content %}
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>Billing Dashboard</h2>
-</div>
 
-<div class="card shadow-sm">
+<div class="billing-dashboard">
 
-    <div class="card-body">
 
-        <table class="table table-hover align-middle">
+    <!-- HEADER -->
 
-            <thead>
+    <div class="billing-dashboard-header">
 
-            <tr>
-                <th>Order</th>
-                <th>Table</th>
-                <th>Guest</th>
-                <th>Items</th>
-                <th>Total</th>
-                <th></th>
-            </tr>
 
-            </thead>
+        <div>
 
-            <tbody>
+            <h1>
+                Billing Dashboard
+            </h1>
 
-            {% for guest in guests %}
 
-            <tr>
+            <p>
+                Orders waiting for payment
+            </p>
 
-                <td>{{ guest.order_number }}</td>
 
-                <td>{{ guest.session.table }}</td>
+        </div>
 
-                <td>
 
-                    {% if guest.guest_name %}
-                        {{ guest.guest_name }}
-                    {% else %}
-                        Guest {{ guest.guest_number }}
-                    {% endif %}
 
-                </td>
+        <div class="billing-search">
 
-                <td>{{ guest.items.count }}</td>
 
-                <td>₹{{ guest.subtotal }}</td>
+            <input
+                type="text"
+                id="billSearch"
+                placeholder="Search table or guest..."
+            >
 
-                <td>
 
-                    <a href="{% url 'billing:billing-screen' guest.id %}"
-                       class="btn btn-primary btn-sm">
+        </div>
 
-                        View Bill
 
-                    </a>
 
-                </td>
+    </div>
 
-            </tr>
 
-            {% empty %}
 
-            <tr>
 
-                <td colspan="6" class="text-center">
+    <!-- BILL LIST -->
 
-                    No bills pending.
 
-                </td>
+    <div class="bill-grid">
 
-            </tr>
 
-            {% endfor %}
+        {% for guest in guests %}
 
-            </tbody>
 
-        </table>
+
+<div class="bill-card">
+
+    <div class="bill-card-header">
+
+        <div>
+
+            <h3>{{ guest.session.table.display_name }}</h3>
+
+            <span>
+                {{ guest.session.table.area.name }}
+            </span>
+
+        </div>
+
+        <div class="bill-status">
+            {{ guest.status }}
+        </div>
+
+    </div>
+
+    <div class="bill-info">
+
+        <div>
+
+            <small>Floor</small>
+
+            <strong>
+                {{ guest.session.table.area.name }}
+            </strong>
+
+        </div>
+
+        <div>
+
+            <small>Guest</small>
+
+            <strong>
+                {{ guest.guest_number }}
+            </strong>
+
+        </div>
+
+        <div>
+
+            <small>Items</small>
+
+            <strong>
+                {{ guest.items.count }}
+            </strong>
+
+        </div>
+
+        <div>
+
+            <small>Total</small>
+
+            <strong>
+                ₹ {{ guest.subtotal }}
+            </strong>
+
+        </div>
+
+    </div>
+
+    <div class="bill-action">
+
+        <a href="{% url 'billing:billing-screen' guest.id %}">
+            Open Bill
+        </a>
 
     </div>
 
 </div>
+
+
+
+
+        {% empty %}
+
+
+
+        <div class="empty-bills">
+
+
+            <i class="bi bi-receipt"></i>
+
+
+            <h3>
+                No Pending Bills
+            </h3>
+
+
+            <p>
+                All customers have completed payment.
+            </p>
+
+
+        </div>
+
+
+
+        {% endfor %}
+
+
+
+    </div>
+
+
+
+</div>
+
+
 
 {% endblock %}

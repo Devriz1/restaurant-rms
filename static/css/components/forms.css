@@ -1,0 +1,45 @@
+/* ==========================================================
+   TABLE
+========================================================== */
+
+.table-rms{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+}
+
+.table-rms thead{
+
+    background:#f8fafc;
+
+}
+
+.table-rms th{
+
+    padding:16px;
+
+    text-align:left;
+
+    font-weight:700;
+
+    color:#374151;
+
+    border-bottom:1px solid #e5e7eb;
+
+}
+
+.table-rms td{
+
+    padding:16px;
+
+    border-bottom:1px solid #eef2f7;
+
+}
+
+.table-rms tbody tr:hover{
+
+    background:#f9fafb;
+
+}

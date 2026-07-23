@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+Waiter Report
+{% endblock %}
+
+
+
+{% block content %}
+
+
+<div class="reports-container">
+
+
+<div class="reports-header">
+
+<h2>
+Waiter Performance Report
+</h2>
+
+</div>
+
+
+
+<div class="report-box">
+
+
+<h3>
+Waiter Summary
+</h3>
+
+
+
+<table class="table">
+
+
+<thead>
+
+<tr>
+
+<th>
+Waiter
+</th>
+
+
+<th>
+KOT Count
+</th>
+
+
+<th>
+Items Served
+</th>
+
+
+</tr>
+
+</thead>
+
+
+
+<tbody>
+
+
+{% for waiter in waiters %}
+
+
+<tr>
+
+
+<td>
+{{ waiter.created_by__username }}
+</td>
+
+
+<td>
+{{ waiter.total_kots }}
+</td>
+
+
+<td>
+{{ waiter.total_items }}
+</td>
+
+
+</tr>
+
+
+{% empty %}
+
+
+<tr>
+
+<td colspan="3">
+
+No waiter data found
+
+</td>
+
+</tr>
+
+
+{% endfor %}
+
+
+</tbody>
+
+
+</table>
+
+
+</div>
+
+
+</div>
+
+
+
+{% endblock %}

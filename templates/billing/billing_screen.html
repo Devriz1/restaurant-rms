@@ -1,33 +1,544 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Billing{% endblock %}
+
+{% block title %}
+Billing
+{% endblock %}
+
+
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/rms-layout.css' %}">
+
 <link rel="stylesheet" href="{% static 'css/billing.css' %}">
+
 {% endblock %}
+
+
+
+
 
 {% block content %}
 
-<div class="main-content">
 
-    <div class="billing-grid page-grid">
+<div class="pos-billing-page">
 
-        <div class="rms-panel">
-            {% include "billing/partials/bill_items.html" %}
-        </div>
 
-        <div class="rms-panel">
-            {% include "billing/partials/bill_summary.html" %}
-        </div>
+<!-- ======================================================
+     HEADER
+====================================================== -->
 
-        <div class="rms-panel">
-            {% include "billing/partials/payment_panel.html" %}
-        </div>
+
+<div class="pos-header">
+
+
+    <div>
+
+        <h1>
+            Billing
+        </h1>
+
+
+        <p>
+
+            Table:
+            <strong>
+                {{ guest.session.table.display_name }}
+            </strong>
+
+            |
+
+            Guest:
+            <strong>
+                {{ guest.guest_number }}
+            </strong>
+
+        </p>
+
 
     </div>
 
+
+
+    <div class="pos-order-number">
+
+
+        {{ guest.order_number }}
+
+
+    </div>
+
+
 </div>
+
+
+
+
+
+<form method="post">
+
+{% csrf_token %}
+
+
+
+
+
+<div class="pos-layout">
+
+
+
+
+
+<!-- ======================================================
+     LEFT SIDE ITEMS
+====================================================== -->
+
+
+<div class="pos-items-panel">
+
+
+<div class="panel-title">
+
+    Order Items
+
+</div>
+
+
+
+
+<div class="items-table-wrapper">
+
+
+<table class="pos-table">
+
+
+<thead>
+
+<tr>
+
+<th>
+Item
+</th>
+
+
+<th>
+Qty
+</th>
+
+
+<th>
+Price
+</th>
+
+
+<th>
+Total
+</th>
+
+
+</tr>
+
+</thead>
+
+
+
+<tbody>
+
+
+{% for item in items %}
+
+
+
+<tr>
+
+
+<td>
+
+<div class="item-title">
+
+{{ item.menu_item.name }}
+
+</div>
+
+
+</td>
+
+
+
+<td>
+
+{{ item.quantity }}
+
+</td>
+
+
+
+<td>
+
+₹ {{ item.unit_price }}
+
+</td>
+
+
+
+
+<td>
+
+₹ {{ item.line_total }}
+
+</td>
+
+
+
+</tr>
+
+
+
+
+{% empty %}
+
+
+<tr>
+
+<td colspan="4">
+
+No items found
+
+</td>
+
+</tr>
+
+
+
+{% endfor %}
+
+
+
+</tbody>
+
+
+</table>
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<!-- ======================================================
+     RIGHT BILL PANEL
+====================================================== -->
+
+
+<div class="pos-summary-panel">
+
+
+<div class="panel-title">
+
+Bill Summary
+
+</div>
+
+
+
+
+
+<div class="summary-line">
+
+
+<span>
+Subtotal
+</span>
+
+
+<strong>
+
+₹ {{ bill.subtotal }}
+
+</strong>
+
+
+</div>
+
+
+
+
+
+<div class="summary-field">
+
+
+<label>
+
+Discount Type
+
+</label>
+
+
+{{ form.discount_type }}
+
+
+</div>
+
+
+
+
+
+<div class="summary-field">
+
+
+<label>
+
+Discount
+
+</label>
+
+
+{{ form.discount }}
+
+
+</div>
+
+
+
+
+
+<div class="summary-field">
+
+
+<label>
+
+Service Charge
+
+</label>
+
+
+{{ form.service_charge }}
+
+
+</div>
+
+
+
+
+
+<div class="summary-field">
+
+
+<label>
+
+Tax
+
+</label>
+
+
+{{ form.tax }}
+
+
+</div>
+
+
+
+
+
+<hr>
+
+
+
+
+
+<div class="total-box">
+
+
+<span>
+
+Grand Total
+
+</span>
+
+
+<h1>
+
+₹ {{ bill.grand_total }}
+
+</h1>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="payment-section">
+
+
+<h3>
+Payment
+</h3>
+
+
+
+<label>
+Payment Method
+</label>
+
+
+<select
+name="payment_method"
+class="payment-control">
+
+
+<option value="cash">
+Cash
+</option>
+
+
+<option value="upi">
+UPI
+</option>
+
+
+<option value="card">
+Card
+</option>
+
+
+</select>
+
+
+
+
+
+<label>
+Amount Received
+</label>
+
+
+<input
+
+type="number"
+
+step="0.01"
+
+name="amount"
+
+value="{{ bill.grand_total }}"
+
+class="payment-control"
+
+placeholder="Amount received"
+
+>
+
+
+
+
+
+<label>
+
+Reference Number
+<span>
+(Optional)
+</span>
+
+</label>
+
+
+
+<input
+
+type="text"
+
+name="reference_number"
+
+class="payment-control"
+
+placeholder="UPI ID / Transaction ID / Card Reference (Optional)"
+
+>
+
+
+
+</div>
+
+
+
+
+
+<div class="pos-buttons">
+
+
+
+<button
+
+type="submit"
+
+name="action"
+
+value="update_bill"
+
+class="btn-update">
+
+Update Bill
+
+</button>
+
+
+
+
+
+<button
+
+type="submit"
+
+name="action"
+
+value="complete_payment"
+
+class="btn-pay">
+
+Complete Payment
+
+</button>
+
+
+
+</div>
+
+
+
+
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+</form>
+
+
+
+</div>
+
+{% endblock %}
+
+
+{% block extra_js %}
+
+<script src="{% static 'js/billing.js' %}"></script>
 
 {% endblock %}
