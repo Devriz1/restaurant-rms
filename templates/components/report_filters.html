@@ -2,82 +2,76 @@
 
 <form method="get">
 
-<div class="quick-filters">
+    <div class="quick-filters">
 
-<a href="?range=today"
-class="quick-btn {% if request.GET.range == 'today' or not request.GET.range %}active{% endif %}">
-Today
-</a>
+        <a href="?range=today"
+           class="quick-btn {% if request.GET.range == 'today' or not request.GET.range %}active{% endif %}">
+            Today
+        </a>
 
-<a href="?range=yesterday"
-class="quick-btn {% if request.GET.range == 'yesterday' %}active{% endif %}">
-Yesterday
-</a>
+        <a href="?range=yesterday"
+           class="quick-btn {% if request.GET.range == 'yesterday' %}active{% endif %}">
+            Yesterday
+        </a>
 
-<a href="?range=week"
-class="quick-btn {% if request.GET.range == 'week' %}active{% endif %}">
-Last 7 Days
-</a>
+        <a href="?range=week"
+           class="quick-btn {% if request.GET.range == 'week' %}active{% endif %}">
+            Last 7 Days
+        </a>
 
-<a href="?range=month"
-class="quick-btn {% if request.GET.range == 'month' %}active{% endif %}">
-This Month
-</a>
+        <a href="?range=month"
+           class="quick-btn {% if request.GET.range == 'month' %}active{% endif %}">
+            This Month
+        </a>
 
-<a href="?range=last_month"
-class="quick-btn {% if request.GET.range == 'last_month' %}active{% endif %}">
-Last Month
-</a>
+        <a href="?range=last_month"
+           class="quick-btn {% if request.GET.range == 'last_month' %}active{% endif %}">
+            Last Month
+        </a>
 
-<a href="?range=year"
-class="quick-btn {% if request.GET.range == 'year' %}active{% endif %}">
-This Year
-</a>
+        <a href="?range=year"
+           class="quick-btn {% if request.GET.range == 'year' %}active{% endif %}">
+            This Year
+        </a>
 
-<a href="?range=all"
-class="quick-btn {% if request.GET.range == 'all' %}active{% endif %}">
-All
-</a>
+        <a href="?range=all"
+           class="quick-btn {% if request.GET.range == 'all' %}active{% endif %}">
+            All
+        </a>
 
-</div>
+    </div>
 
-<div class="filter-group">
+    <div class="filter-group">
 
-<input
-type="date"
-name="from_date"
-value="{{ request.GET.from_date }}"
-class="report-control">
+        <input
+            type="date"
+            name="from_date"
+            value="{{ request.GET.from_date }}"
+            class="report-control">
 
-<input
-type="date"
-name="to_date"
-value="{{ request.GET.to_date }}"
-class="report-control">
+        <input
+            type="date"
+            name="to_date"
+            value="{{ request.GET.to_date }}"
+            class="report-control">
 
-<input
-type="text"
-name="search"
-value="{{ request.GET.search }}"
-placeholder="Search Bill / Table / Guest..."
-class="report-control">
+        <input
+            type="text"
+            name="search"
+            value="{{ request.GET.search }}"
+            placeholder="{{ search_placeholder|default:'Search...' }}"
+            class="report-control">
 
-<button
-class="btn btn-primary">
+        <button class="btn btn-primary">
+            Apply
+        </button>
 
-Apply
+        <a href="{% url reset_url %}"
+           class="btn btn-secondary">
+            Reset
+        </a>
 
-</button>
-
-<a
-href="{% url 'reports:sales' %}"
-class="btn btn-secondary">
-
-Reset
-
-</a>
-
-</div>
+    </div>
 
 </form>
 

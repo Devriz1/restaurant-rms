@@ -1,113 +1,132 @@
-from datetime import timedelta
+from datetime import date, timedelta
 
 from django.db.models import Q
-from django.utils import timezone
 
 
-def apply_report_filters(request, queryset):
+def apply_report_filters(
+    request,
+    queryset,
+    date_field="created_at",
+    search_fields=None,
+):
 
-    today = timezone.localdate()
+    if search_fields is None:
+        search_fields = []
 
-    # Default to Today
-    range_filter = request.GET.get("range", "today")
+    # ===========================
+    # Quick Date Filters
+    # ===========================
 
-    from_date = request.GET.get("from_date")
+    today = date.today()
 
-    to_date = request.GET.get("to_date")
+    report_range = request.GET.get("range")
 
-    search = request.GET.get("search")
-
-    # ----------------------------------
-    # QUICK FILTERS
-    # ----------------------------------
-# TODAY
-    if range_filter == "today":
-
-        queryset = queryset.filter(
-        created_at__date=today
-    )
-
-# YESTERDAY
-    elif range_filter == "yesterday":
+    if report_range == "today":
 
         queryset = queryset.filter(
-        created_at__date=today - timedelta(days=1)
-    )
-
-# LAST 7 DAYS
-    elif range_filter == "week":
-
-        queryset = queryset.filter(
-        created_at__date__gte=today - timedelta(days=6)
-    )
-
-# THIS MONTH
-    elif range_filter == "month":
-
-        queryset = queryset.filter(
-        created_at__year=today.year,
-        created_at__month=today.month,
-    )
-
-# LAST MONTH
-    elif range_filter == "last_month":
-
-        first_day = today.replace(day=1)
-
-        last_month = first_day - timedelta(days=1)
-
-        queryset = queryset.filter(
-            created_at__year=last_month.year,
-            created_at__month=last_month.month,
+            **{f"{date_field}__date": today}
         )
 
-# THIS YEAR
-    elif range_filter == "year":
+    elif report_range == "yesterday":
 
         queryset = queryset.filter(
-        created_at__year=today.year
-    )
+            **{
+                f"{date_field}__date":
+                today - timedelta(days=1)
+            }
+        )
 
-# ALL
-    elif range_filter == "all":
+    elif report_range == "week":
 
-        pass
-    # ----------------------------------
-    # CUSTOM DATE
-    # ----------------------------------
+        queryset = queryset.filter(
+            **{
+                f"{date_field}__date__gte":
+                today - timedelta(days=6)
+            }
+        )
+
+    elif report_range == "month":
+
+        queryset = queryset.filter(
+            **{
+                f"{date_field}__year": today.year,
+                f"{date_field}__month": today.month,
+            }
+        )
+
+    elif report_range == "last_month":
+
+        if today.month == 1:
+
+            month = 12
+            year = today.year - 1
+
+        else:
+
+            month = today.month - 1
+            year = today.year
+
+        queryset = queryset.filter(
+            **{
+                f"{date_field}__year": year,
+                f"{date_field}__month": month,
+            }
+        )
+
+    elif report_range == "year":
+
+        queryset = queryset.filter(
+            **{
+                f"{date_field}__year":
+                today.year
+            }
+        )
+
+    # ===========================
+    # Custom Dates
+    # ===========================
+
+    from_date = request.GET.get("from_date")
 
     if from_date:
 
         queryset = queryset.filter(
-            created_at__date__gte=from_date
+            **{
+                f"{date_field}__date__gte":
+                from_date
+            }
         )
+
+    to_date = request.GET.get("to_date")
 
     if to_date:
 
         queryset = queryset.filter(
-            created_at__date__lte=to_date
+            **{
+                f"{date_field}__date__lte":
+                to_date
+            }
         )
 
+    # ===========================
+    # Search
+    # ===========================
 
-    # ----------------------------------
-    # SEARCH
-    # ----------------------------------
+    search = request.GET.get("search")
 
-    if search:
+    if search and search_fields:
 
-        queryset = queryset.filter(
+        query = Q()
 
-            Q(bill_number__icontains=search)
+        for field in search_fields:
 
-            |
+            query |= Q(
+                **{
+                    f"{field}__icontains":
+                    search
+                }
+            )
 
-            Q(session__table__display_name__icontains=search)
-
-            |
-
-            Q(guest_order__guest_number__icontains=search)
-
-        )
-
+        queryset = queryset.filter(query)
 
     return queryset

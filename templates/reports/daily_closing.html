@@ -1,173 +1,293 @@
 {% extends "base.html" %}
-
+{% load static %}
 
 {% block title %}
 Daily Closing
 {% endblock %}
 
+{% block extra_css %}
 
+<link rel="stylesheet" href="{% static 'css/reports.css' %}">
+<link rel="stylesheet" href="{% static 'css/report_customizer.css' %}">
+
+{% endblock %}
 
 {% block content %}
 
+<div class="reports-page">
 
-<div class="reports-container">
+    <!-- ==========================================
+         HEADER
+    =========================================== -->
+
+    <div class="reports-header">
+
+        <div>
+
+            <h1>Daily Closing</h1>
+
+            <p>End of day sales settlement</p>
+
+        </div>
+
+    </div>
 
 
-<div class="reports-header">
+    <!-- ==========================================
+         FILTERS
+    =========================================== -->
 
-<h2>
-Daily Closing Report
-</h2>
+    {% include "components/report_filters.html" %}
 
 
-<p>
-{{ today }}
-</p>
+    <!-- ==========================================
+         SUMMARY CARDS
+    =========================================== -->
+
+    {% include "components/report_summary_cards.html" %}
+
+
+    <!-- ==========================================
+         CUSTOMIZE
+    =========================================== -->
+
+    <div class="report-actions">
+
+        <button
+            type="button"
+            id="openCustomizer"
+            class="btn btn-outline-primary">
+
+            <i class="bi bi-layout-three-columns"></i>
+
+            Customize Report
+
+        </button>
+
+    </div>
+
+    {% include "components/report_customizer.html" %}
+
+
+    <!-- ==========================================
+         DAILY CLOSING TABLE
+    =========================================== -->
+
+    <div class="report-table">
+
+        <table id="dailyClosingTable">
+
+            <thead>
+
+                <tr>
+
+                    <th data-column="bill">Bill No</th>
+
+                    <th data-column="date">Date</th>
+
+                    <th data-column="table">Table</th>
+
+                    <th data-column="guest">Guest</th>
+
+                    <th data-column="cashier">Cashier</th>
+
+                    <th data-column="total">Total</th>
+
+                    <th data-column="status">Status</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+            {% for bill in bills %}
+
+                <tr>
+
+                    <td data-column="bill">
+
+                        {{ bill.bill_number }}
+
+                    </td>
+
+                    <td data-column="date">
+
+                        {{ bill.created_at|date:"d M Y H:i" }}
+
+                    </td>
+
+                    <td data-column="table">
+
+                        {{ bill.session.table.display_name }}
+
+                    </td>
+
+                    <td data-column="guest">
+
+                        Guest {{ bill.guest_order.guest_number }}
+
+                    </td>
+
+                    <td data-column="cashier">
+
+                        {{ bill.created_by }}
+
+                    </td>
+
+                    <td data-column="total">
+
+                        ₹ {{ bill.grand_total }}
+
+                    </td>
+
+                    <td data-column="status">
+
+                        <span class="status-badge status-paid">
+
+                            {{ bill.status|title }}
+
+                        </span>
+
+                    </td>
+
+                </tr>
+
+            {% empty %}
+
+                <tr>
+
+                    <td colspan="7" class="text-center py-5">
+
+                        No closing records found.
+
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+<!-- ==========================================
+     PAYMENT SETTLEMENT
+========================================== -->
+
+<div class="card shadow-sm border-0 mt-4">
+
+    <div class="card-header bg-white">
+
+        <h5 class="mb-0">
+
+            <i class="bi bi-cash-stack text-success"></i>
+
+            Payment Settlement
+
+        </h5>
+
+    </div>
+
+    <div class="card-body p-0">
+
+        <table class="table table-hover table-bordered mb-0">
+
+            <tbody>
+
+                <tr>
+
+                    <td class="fw-semibold">
+
+                        Cash
+
+                    </td>
+
+                    <td class="text-end text-success fw-bold">
+
+                        ₹ {{ cash }}
+
+                    </td>
+
+                </tr>
+
+                <tr>
+
+                    <td class="fw-semibold">
+
+                        UPI
+
+                    </td>
+
+                    <td class="text-end text-success fw-bold">
+
+                        ₹ {{ upi }}
+
+                    </td>
+
+                </tr>
+
+                <tr>
+
+                    <td class="fw-semibold">
+
+                        Card
+
+                    </td>
+
+                    <td class="text-end text-success fw-bold">
+
+                        ₹ {{ card }}
+
+                    </td>
+
+                </tr>
+
+                <tr class="table-light">
+
+                    <td class="fw-bold">
+
+                        Total Collection
+
+                    </td>
+
+                    <td class="text-end fw-bold text-primary">
+
+                        ₹ {{ total_sales }}
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+    <!-- ==========================================
+         EXPORT
+    =========================================== -->
+
+    {% include "components/report_export_buttons.html" %}
 
 </div>
 
+{% endblock %}
 
 
+{% block extra_js %}
 
-<div class="report-cards">
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
 
+<script src="{% static 'js/report_customizer.js' %}"></script>
 
-<div class="report-card">
+<script src="{% static 'js/report_sort.js' %}"></script>
 
-<h4>
-Total Sales
-</h4>
-
-<h2>
-₹ {{ total_sales }}
-</h2>
-
-</div>
-
-
-
-<div class="report-card">
-
-<h4>
-Total Bills
-</h4>
-
-<h2>
-{{ total_bills }}
-</h2>
-
-</div>
-
-
-
-<div class="report-card">
-
-<h4>
-Transactions
-</h4>
-
-<h2>
-{{ total_transactions }}
-</h2>
-
-</div>
-
-
-</div>
-
-
-
-
-
-
-<div class="report-box">
-
-
-<h3>
-Payment Settlement
-</h3>
-
-
-
-<table class="table">
-
-
-<thead>
-
-<tr>
-
-<th>
-Payment Method
-</th>
-
-
-<th>
-Amount
-</th>
-
-</tr>
-
-</thead>
-
-
-
-<tbody>
-
-
-<tr>
-
-<td>
-Cash
-</td>
-
-<td>
-₹ {{ cash }}
-</td>
-
-</tr>
-
-
-
-<tr>
-
-<td>
-UPI
-</td>
-
-<td>
-₹ {{ upi }}
-</td>
-
-</tr>
-
-
-
-<tr>
-
-<td>
-Card
-</td>
-
-<td>
-₹ {{ card }}
-</td>
-
-</tr>
-
-
-
-</tbody>
-
-
-</table>
-
-
-
-</div>
-
-
-
-</div>
-
+<script src="{% static 'js/report_search.js' %}"></script>
 
 {% endblock %}

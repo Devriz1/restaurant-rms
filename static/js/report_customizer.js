@@ -5,11 +5,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const closeBtn = document.getElementById("closeCustomizer");
     const overlay = document.querySelector(".customizer-overlay");
 
-    // ===============================
+    // ===============================================
     // OPEN
-    // ===============================
+    // ===============================================
 
-    if (openBtn) {
+    if (openBtn && drawer) {
 
         openBtn.addEventListener("click", function () {
 
@@ -19,11 +19,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     }
 
-    // ===============================
+    // ===============================================
     // CLOSE
-    // ===============================
+    // ===============================================
 
-    if (closeBtn) {
+    if (closeBtn && drawer) {
 
         closeBtn.addEventListener("click", function () {
 
@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     }
 
-    if (overlay) {
+    if (overlay && drawer) {
 
         overlay.addEventListener("click", function () {
 
@@ -43,9 +43,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     }
 
-    // ===============================
+    // ===============================================
     // SORTABLE
-    // ===============================
+    // ===============================================
 
     const columnList = document.getElementById("columnList");
 
@@ -68,96 +68,116 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // ===============================================
-// APPLY
-// ===============================================
+    // APPLY
+    // ===============================================
 
-const applyBtn = document.getElementById("applyColumns");
+    const applyBtn = document.getElementById("applyColumns");
 
-if (applyBtn) {
+    if (applyBtn) {
 
-    applyBtn.addEventListener("click", function () {
+        applyBtn.addEventListener("click", function () {
 
-        const table = document.getElementById("salesReportTable");
+            // Automatically find the report table
+            const table =
+                document.getElementById("salesReportTable") ||
+                document.getElementById("paymentReportTable") ||
+                document.getElementById("itemReportTable") ||
+                document.getElementById("waiterReportTable") ||
+                document.getElementById("dailyClosingTable");
 
-        const headerRow = table.tHead.rows[0];
+            if (!table) return;
+            const headerRow = table.tHead.rows[0];
+            const bodyRows = table.tBodies[0].rows;
 
-        const bodyRows = table.tBodies[0].rows;
+            const order = [];
 
-        // Get current order from customizer
-        const order = [];
+            document.querySelectorAll("#columnList .column-option").forEach(function (item) {
 
-        document.querySelectorAll("#columnList .column-option").forEach(item => {
+                const checkbox = item.querySelector("input");
 
-            const checkbox = item.querySelector("input");
+                order.push({
 
-            order.push({
+                    column: checkbox.dataset.column,
 
-                column: checkbox.dataset.column,
+                    visible: checkbox.checked
 
-                visible: checkbox.checked
+                });
 
             });
 
-        });
+            // ==========================
+            // REORDER HEADER
+            // ==========================
 
-        // ---------- REORDER HEADER ----------
+            const newHeaders = [];
 
-        const newHeaders = [];
+            order.forEach(function (col) {
 
-        order.forEach(col => {
-
-            const th = headerRow.querySelector(
-                `th[data-column="${col.column}"]`
-            );
-
-            if (th) {
-
-                th.style.display = col.visible ? "" : "none";
-
-                newHeaders.push(th);
-
-            }
-
-        });
-
-        newHeaders.forEach(th => headerRow.appendChild(th));
-
-
-
-        // ---------- REORDER BODY ----------
-
-        Array.from(bodyRows).forEach(row => {
-
-            const newCells = [];
-
-            order.forEach(col => {
-
-                const td = row.querySelector(
-                    `td[data-column="${col.column}"]`
+                const th = headerRow.querySelector(
+                    `th[data-column="${col.column}"]`
                 );
 
-                if (td) {
+                if (th) {
 
-                    td.style.display = col.visible ? "" : "none";
+                    th.style.display = col.visible ? "" : "none";
 
-                    newCells.push(td);
+                    newHeaders.push(th);
 
                 }
 
             });
 
-            newCells.forEach(td => row.appendChild(td));
+            newHeaders.forEach(function (th) {
+
+                headerRow.appendChild(th);
+
+            });
+
+            // ==========================
+            // REORDER BODY
+            // ==========================
+
+            Array.from(bodyRows).forEach(function (row) {
+
+                const newCells = [];
+
+                order.forEach(function (col) {
+
+                    const td = row.querySelector(
+                        `td[data-column="${col.column}"]`
+                    );
+
+                    if (td) {
+
+                        td.style.display = col.visible ? "" : "none";
+
+                        newCells.push(td);
+
+                    }
+
+                });
+
+                newCells.forEach(function (td) {
+
+                    row.appendChild(td);
+
+                });
+
+            });
+
+            if (drawer) {
+
+                drawer.classList.remove("show");
+
+            }
 
         });
 
-        drawer.classList.remove("show");
+    }
 
-    });
-
-}
-    // ===============================
+    // ===============================================
     // RESET
-    // ===============================
+    // ===============================================
 
     const resetBtn = document.getElementById("resetColumns");
 
@@ -165,16 +185,19 @@ if (applyBtn) {
 
         resetBtn.addEventListener("click", function () {
 
-            document
-                .querySelectorAll("#reportCustomizer input[type='checkbox']")
-                .forEach(function (checkbox) {
+            document.querySelectorAll(
+                "#reportCustomizer input[type='checkbox']"
+            ).forEach(function (checkbox) {
 
-                    checkbox.checked = true;
+                checkbox.checked = true;
 
-                });
+            });
 
-            // Automatically apply the reset
-            applyBtn.click();
+            if (applyBtn) {
+
+                applyBtn.click();
+
+            }
 
         });
 

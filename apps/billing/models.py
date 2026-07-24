@@ -213,3 +213,75 @@ class Payment(models.Model):
     def __str__(self):
 
         return f"{self.bill.bill_number} ({self.payment_method})"
+
+
+class DailyClosing(models.Model):
+
+    date = models.DateField(unique=True)
+
+    opening_balance = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        default=0
+    )
+
+    cash_sales = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        default=0
+    )
+
+    upi_sales = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        default=0
+    )
+
+    card_sales = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        default=0
+    )
+
+    total_sales = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        default=0
+    )
+
+    closing_balance = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        default=0
+    )
+
+    total_bills = models.PositiveIntegerField(
+        default=0
+    )
+
+    total_transactions = models.PositiveIntegerField(
+        default=0
+    )
+
+    closed_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
+
+    closed_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    notes = models.TextField(
+        blank=True
+    )
+
+    class Meta:
+
+        ordering = ["-date"]
+
+    def __str__(self):
+
+        return f"{self.date}"

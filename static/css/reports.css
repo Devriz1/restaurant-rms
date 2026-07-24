@@ -449,6 +449,118 @@ background:#0d6efd;
 color:#fff;
 
 }
+
+/* ==========================================================
+   PAYMENT SETTLEMENT
+========================================================== */
+
+/* ==========================================================
+   PAYMENT SETTLEMENT
+========================================================== */
+
+.payment-settlement{
+
+    margin-top:30px;
+
+    background:#fff;
+
+    border:1px solid #e9ecef;
+
+    border-radius:14px;
+
+    overflow:hidden;
+
+    box-shadow:0 4px 12px rgba(0,0,0,.06);
+
+}
+
+.payment-settlement-header{
+
+    padding:18px 22px;
+
+    background:#f8f9fa;
+
+    border-bottom:1px solid #e9ecef;
+
+}
+
+.payment-settlement-header h4{
+
+    margin:0;
+
+    font-size:18px;
+
+    font-weight:600;
+
+    color:#212529;
+
+}
+
+.payment-settlement table{
+
+    width:100% !important;
+
+    min-width:0 !important;
+
+    max-width:100% !important;
+
+    table-layout:fixed !important;
+
+    border-collapse:collapse;
+
+}
+
+.payment-settlement tbody tr{
+
+    transition:.25s;
+
+}
+
+.payment-settlement tbody tr:hover{
+
+    background:#f8f9fa;
+
+}
+
+.payment-settlement td{
+
+    padding:18px 22px;
+
+    border-bottom:1px solid #ececec;
+
+    font-size:15px;
+
+}
+
+.payment-settlement td:first-child{
+
+    font-weight:600;
+
+    color:#495057;
+
+}
+
+.payment-settlement td:last-child{
+
+    text-align:right;
+
+    font-weight:700;
+
+    color:#198754;
+
+}
+
+.payment-settlement tr:last-child td{
+
+    background:#f8f9fa;
+
+    border-bottom:none;
+
+    font-size:17px;
+
+    font-weight:700;
+
+}
 /* ==========================================================
    RMS REPORTS
    PART 4

@@ -1,120 +1,109 @@
 {% extends "base.html" %}
-
+{% load static %}
 
 {% block title %}
 Waiter Report
 {% endblock %}
 
-
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/reports.css' %}">
+<link rel="stylesheet" href="{% static 'css/report_customizer.css' %}">
+{% endblock %}
 
 {% block content %}
 
+<div class="reports-page">
 
-<div class="reports-container">
+    <div class="reports-header">
 
+        <div>
 
-<div class="reports-header">
+            <h1>Waiter Report</h1>
 
-<h2>
-Waiter Performance Report
-</h2>
+            <p>Waiter performance summary</p>
 
-</div>
+        </div>
 
+    </div>
 
+    {% include "components/report_filters.html" %}
 
-<div class="report-box">
+    {% include "components/report_summary_cards.html" %}
 
+    <div class="report-actions">
 
-<h3>
-Waiter Summary
-</h3>
+        <button
+            id="openCustomizer"
+            class="btn btn-outline-primary">
 
+            <i class="bi bi-layout-three-columns"></i>
 
+            Customize Report
 
-<table class="table">
+        </button>
 
+    </div>
 
-<thead>
+    {% include "components/report_customizer.html" %}
 
-<tr>
+    <div class="report-table">
 
-<th>
-Waiter
-</th>
+    <table id="waiterReportTable">
 
+        <thead>
 
-<th>
-KOT Count
-</th>
+            <tr>
 
+                <th data-column="waiter">Waiter</th>
 
-<th>
-Items Served
-</th>
+                <th data-column="kots">KOT</th>
 
+                <th data-column="items">Items</th>
 
-</tr>
+            </tr>
 
-</thead>
+        </thead>
 
+        <tbody>
 
+            {% for waiter in waiters %}
 
-<tbody>
+            <tr>
 
+                <td data-column="waiter">
+                    {{ waiter.created_by__username }}
+                </td>
 
-{% for waiter in waiters %}
+                <td data-column="kots">
+                    {{ waiter.total_kots }}
+                </td>
 
+                <td data-column="items">
+                    {{ waiter.total_items }}
+                </td>
 
-<tr>
+            </tr>
 
+            {% empty %}
 
-<td>
-{{ waiter.created_by__username }}
-</td>
+            <tr>
 
+                <td colspan="3" class="text-center py-5">
+                    No waiter records found.
+                </td>
 
-<td>
-{{ waiter.total_kots }}
-</td>
+            </tr>
 
+            {% endfor %}
 
-<td>
-{{ waiter.total_items }}
-</td>
+        </tbody>
 
-
-</tr>
-
-
-{% empty %}
-
-
-<tr>
-
-<td colspan="3">
-
-No waiter data found
-
-</td>
-
-</tr>
-
-
-{% endfor %}
-
-
-</tbody>
-
-
-</table>
-
+    </table>
 
 </div>
 
+    {% include "components/report_export_buttons.html" %}
 
 </div>
-
-
 
 {% endblock %}

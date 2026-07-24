@@ -1,134 +1,192 @@
 {% extends "base.html" %}
-
+{% load static %}
 
 {% block title %}
 Item Report
 {% endblock %}
 
-
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/reports.css' %}">
+<link rel="stylesheet" href="{% static 'css/report_customizer.css' %}">
+{% endblock %}
 
 {% block content %}
 
+<div class="reports-page">
 
-<div class="reports-container">
+    <!-- Header -->
+
+    <div class="reports-header">
+
+        <div>
+
+            <h1>
+                Item Report
+            </h1>
+
+            <p>
+                Menu item sales analysis
+            </p>
+
+        </div>
+
+    </div>
 
 
-<div class="reports-header">
+    <!-- Filters -->
 
-<h2>
-Item Sales Report
-</h2>
+    {% include "components/report_filters.html" %}
 
+
+    <!-- Summary -->
+
+    <div class="summary-cards">
+
+        <div class="summary-card">
+
+            <small>Total Quantity Sold</small>
+
+            <h2>{{ total_quantity }}</h2>
+
+        </div>
+
+        <div class="summary-card">
+
+            <small>Total Revenue</small>
+
+            <h2>₹ {{ total_sales }}</h2>
+
+        </div>
+
+        <div class="summary-card">
+
+            <small>Total Orders</small>
+
+            <h2>{{ total_orders }}</h2>
+
+        </div>
+
+    </div>
+
+
+    <!-- Customize -->
+
+    <div class="report-actions">
+
+        <button
+            id="openCustomizer"
+            class="btn btn-outline-primary">
+
+            <i class="bi bi-layout-three-columns"></i>
+
+            Customize Report
+
+        </button>
+
+    </div>
+
+    {% include "components/report_customizer.html" %}
+
+
+    <!-- Table -->
+
+    <div class="report-table">
+
+        <table id="itemReportTable">
+
+            <thead>
+
+            <tr>
+
+                <th data-column="item">Item</th>
+
+                <th data-column="category">Category</th>
+
+                <th data-column="qty">Quantity</th>
+
+                <th data-column="orders">Orders</th>
+
+                <th data-column="sales">Revenue</th>
+
+            </tr>
+
+            </thead>
+
+            <tbody>
+
+            {% for item in items %}
+
+            <tr>
+
+                <td data-column="item">
+
+                    {{ item.menu_item__name }}
+
+                </td>
+
+                <td data-column="category">
+
+                    {{ item.menu_item__category__name }}
+
+                </td>
+
+                <td data-column="qty">
+
+                    {{ item.total_quantity }}
+
+                </td>
+
+                <td data-column="orders">
+
+                    {{ item.total_orders }}
+
+                </td>
+
+                <td data-column="sales">
+
+                    ₹ {{ item.total_sales }}
+
+                </td>
+
+            </tr>
+
+            {% empty %}
+
+            <tr>
+
+                <td colspan="5" class="text-center py-5">
+
+                    No item sales found.
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <!-- Export -->
+
+    {% include "components/report_export_buttons.html" %}
 
 </div>
 
+{% endblock %}
 
+{% block extra_js %}
 
-<div class="report-box">
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
 
+<script src="{% static 'js/report_customizer.js' %}"></script>
 
-<h3>
-Top Selling Items
-</h3>
+<script src="{% static 'js/report_sort.js' %}"></script>
 
-
-
-<table class="table">
-
-
-<thead>
-
-<tr>
-
-<th>
-Item
-</th>
-
-
-<th>
-Quantity Sold
-</th>
-
-
-<th>
-Orders
-</th>
-
-
-<th>
-Revenue
-</th>
-
-
-</tr>
-
-</thead>
-
-
-
-<tbody>
-
-
-{% for item in items %}
-
-
-<tr>
-
-
-<td>
-{{ item.menu_item__name }}
-</td>
-
-
-<td>
-{{ item.total_quantity }}
-</td>
-
-
-<td>
-{{ item.total_orders }}
-</td>
-
-
-<td>
-₹ {{ item.total_sales }}
-</td>
-
-
-</tr>
-
-
-{% empty %}
-
-
-<tr>
-
-<td colspan="4">
-
-No sales found
-
-</td>
-
-</tr>
-
-
-{% endfor %}
-
-
-
-</tbody>
-
-
-</table>
-
-
-
-</div>
-
-
-
-</div>
-
-
+<script src="{% static 'js/report_search.js' %}"></script>
 
 {% endblock %}

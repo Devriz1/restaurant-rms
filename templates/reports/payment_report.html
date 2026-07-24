@@ -1,267 +1,231 @@
 {% extends "base.html" %}
-
+{% load static %}
 
 {% block title %}
 Payment Report
 {% endblock %}
 
 
+{% block extra_css %}
+
+<link rel="stylesheet" href="{% static 'css/reports.css' %}">
+<link rel="stylesheet" href="{% static 'css/report_customizer.css' %}">
+
+{% endblock %}
+
 
 {% block content %}
 
+<div class="reports-page">
 
-<div class="reports-container">
+    <!-- ===========================================
+         PAGE HEADER
+    ============================================ -->
+
+    <div class="reports-header">
+
+        <div>
+
+            <h1>
+                Payment Report
+            </h1>
+
+            <p>
+                Restaurant payment summary
+            </p>
+
+        </div>
+
+    </div>
 
 
-<div class="reports-header">
+    <!-- ===========================================
+         FILTERS
+    ============================================ -->
 
-<h2>
-Payment Report
-</h2>
+    {% include "components/report_filters.html" %}
+
+
+    <!-- ===========================================
+         SUMMARY CARDS
+    ============================================ -->
+
+        <div class="summary-cards">
+
+    <div class="summary-card">
+
+        <small>Total Collection</small>
+
+        <h2>₹ {{ total_amount }}</h2>
+
+    </div>
+
+    <div class="summary-card">
+
+        <small>Total Transactions</small>
+
+        <h2>{{ total_transactions }}</h2>
+
+    </div>
+
+    <div class="summary-card">
+
+        <small>Cash Collection</small>
+
+        <h2>₹ {{ cash }}</h2>
+
+    </div>
+
+    <div class="summary-card">
+
+        <small>UPI Collection</small>
+
+        <h2>₹ {{ upi }}</h2>
+
+    </div>
 
 </div>
 
 
+    <!-- ===========================================
+         REPORT ACTIONS
+    ============================================ -->
 
-<div class="report-cards">
+    <div class="report-actions">
+
+        <button
+            type="button"
+            id="openCustomizer"
+            class="btn btn-outline-primary">
+
+            <i class="bi bi-layout-three-columns"></i>
+
+            Customize Report
+
+        </button>
+
+    </div>
 
 
-<div class="report-card">
+    <!-- ===========================================
+         REPORT CUSTOMIZER
+    ============================================ -->
 
-<h4>
-Total Collection
-</h4>
+    {% include "components/report_customizer.html" %}
 
-<h2>
-₹ {{ total_amount }}
-</h2>
+
+    <!-- ===========================================
+         PAYMENT TABLE
+    ============================================ -->
+
+    <div class="report-table">
+
+        <table id="paymentReportTable">
+
+            <thead>
+
+            <tr>
+
+                <th data-column="bill">Bill No</th>
+
+                <th data-column="date">Date</th>
+
+                <th data-column="method">Payment Method</th>
+
+                <th data-column="amount">Amount</th>
+
+                <th data-column="reference">Reference</th>
+
+                <th data-column="cashier">Received By</th>
+
+            </tr>
+
+            </thead>
+
+            <tbody>
+
+            {% for payment in payments %}
+
+            <tr>
+
+                <td data-column="bill">
+
+                    {{ payment.bill.bill_number }}
+
+                </td>
+
+                <td data-column="date">
+
+                    {{ payment.paid_at|date:"d M Y H:i" }}
+
+                </td>
+
+                <td data-column="method">
+
+                    {{ payment.get_payment_method_display }}
+
+                </td>
+
+                <td data-column="amount">
+
+                    ₹ {{ payment.amount }}
+
+                </td>
+
+                <td data-column="reference">
+
+                    {{ payment.reference_number|default:"-" }}
+
+                </td>
+
+                <td data-column="cashier">
+
+                    {{ payment.received_by }}
+
+                </td>
+
+            </tr>
+
+            {% empty %}
+
+            <tr>
+
+                <td colspan="6" class="text-center py-5">
+
+                    No payment records found.
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <!-- ===========================================
+         EXPORT BUTTONS
+    ============================================ -->
+
+    {% include "components/report_export_buttons.html" %}
 
 </div>
 
+{% endblock %}
 
 
-<div class="report-card">
+{% block extra_js %}
 
-<h4>
-Transactions
-</h4>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
 
-<h2>
-{{ total_transactions }}
-</h2>
+<script src="{% static 'js/report_customizer.js' %}"></script>
 
-</div>
+<script src="{% static 'js/report_sort.js' %}"></script>
 
-
-</div>
-
-
-
-
-
-<div class="report-box">
-
-
-<h3>
-Payment Summary
-</h3>
-
-
-<table class="table">
-
-
-<thead>
-
-<tr>
-
-<th>
-Method
-</th>
-
-
-<th>
-Transactions
-</th>
-
-
-<th>
-Amount
-</th>
-
-
-</tr>
-
-</thead>
-
-
-
-<tbody>
-
-
-{% for item in summary %}
-
-<tr>
-
-<td>
-{{ item.payment_method|title }}
-</td>
-
-
-<td>
-{{ item.total_transactions }}
-</td>
-
-
-<td>
-₹ {{ item.total_amount }}
-</td>
-
-
-</tr>
-
-
-{% empty %}
-
-<tr>
-
-<td colspan="3">
-
-No payments available
-
-</td>
-
-</tr>
-
-{% endfor %}
-
-
-</tbody>
-
-
-</table>
-
-
-</div>
-
-
-
-
-
-
-<div class="report-box mt-4">
-
-
-<h3>
-Payment History
-</h3>
-
-
-
-<table class="table">
-
-
-<thead>
-
-<tr>
-
-<th>
-Bill
-</th>
-
-
-<th>
-Method
-</th>
-
-
-<th>
-Amount
-</th>
-
-
-<th>
-Received By
-</th>
-
-
-<th>
-Date
-</th>
-
-
-</tr>
-
-</thead>
-
-
-
-<tbody>
-
-
-{% for payment in payments %}
-
-
-<tr>
-
-
-<td>
-{{ payment.bill.bill_number }}
-</td>
-
-
-
-<td>
-{{ payment.payment_method|title }}
-</td>
-
-
-
-<td>
-₹ {{ payment.amount }}
-</td>
-
-
-
-<td>
-{{ payment.received_by.username }}
-</td>
-
-
-
-<td>
-{{ payment.paid_at|date:"d-m-Y H:i" }}
-</td>
-
-
-</tr>
-
-
-{% empty %}
-
-<tr>
-
-<td colspan="5">
-
-No payment records
-
-</td>
-
-</tr>
-
-
-{% endfor %}
-
-
-</tbody>
-
-
-</table>
-
-
-</div>
-
-
-</div>
-
+<script src="{% static 'js/report_search.js' %}"></script>
 
 {% endblock %}
