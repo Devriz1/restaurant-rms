@@ -1,0 +1,270 @@
+{% extends "base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}
+{{ title }}
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/users.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="users-page">
+
+    <div class="users-header">
+
+        <div>
+
+            <h1>
+
+                <i class="bi bi-person-plus-fill"></i>
+
+                {{ title }}
+
+            </h1>
+
+            <p>
+
+                Create and manage system users and permissions.
+
+            </p>
+
+        </div>
+
+    </div>
+
+    <form method="post">
+
+        {% csrf_token %}
+
+        <div class="user-form-layout">
+
+            <!-- ===================================================== -->
+            <!-- USER DETAILS -->
+            <!-- ===================================================== -->
+
+            <div class="user-details-card">
+
+                <h4>
+
+                    User Information
+
+                </h4>
+
+                <div class="form-group">
+
+                    <label>Username</label>
+
+                    {{ form.username|add_class:"form-control" }}
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>First Name</label>
+
+                    {{ form.first_name|add_class:"form-control" }}
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Last Name</label>
+
+                    {{ form.last_name|add_class:"form-control" }}
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Phone Number</label>
+
+                    {{ form.phone_number|add_class:"form-control" }}
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Email</label>
+
+                    {{ form.email|add_class:"form-control" }}
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Role</label>
+
+                    {{ form.role|add_class:"form-select" }}
+
+                </div>
+
+                <div class="form-check mb-4">
+
+                    {{ form.is_active }}
+
+                    <label class="form-check-label">
+
+                        Active User
+
+                    </label>
+
+                </div>
+
+                <hr>
+
+                {% if form.password1 %}
+
+                    <!-- ADD USER -->
+
+                    <div class="form-group">
+
+                        <label>Password</label>
+
+                        {{ form.password1|add_class:"form-control" }}
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Confirm Password</label>
+
+                        {{ form.password2|add_class:"form-control" }}
+
+                    </div>
+
+                {% else %}
+
+                    <!-- EDIT USER -->
+
+                    <div class="form-group">
+
+                        <label>
+
+                            Password
+
+                        </label>
+
+                        <div class="d-flex justify-content-between align-items-center">
+
+                            <span class="text-muted">
+
+                                Password is hidden for security.
+
+                            </span>
+
+                            <button
+                                type="button"
+                                class="btn btn-outline-primary btn-sm"
+                                data-bs-toggle="modal"
+                                data-bs-target="#passwordModal">
+
+                                <i class="bi bi-key-fill"></i>
+
+                                Change Password
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+            <!-- ===================================================== -->
+            <!-- PERMISSIONS -->
+            <!-- ===================================================== -->
+
+            <div class="permission-card">
+
+                <h4>
+
+                    Permission Matrix
+
+                </h4>
+
+                <div class="permission-table">
+
+                    {% regroup permissions by category as permission_groups %}
+
+                    {% for group in permission_groups %}
+
+                    <div class="permission-group">
+
+                        <h5>
+
+                            {{ group.grouper }}
+
+                        </h5>
+
+                        {% for permission in group.list %}
+
+                        <label class="permission-item">
+
+                            <input
+                                type="checkbox"
+                                name="permissions"
+                                value="{{ permission.id }}"
+                                {% if permission.id in user_permissions %}
+                                    checked
+                                {% endif %}
+                            >
+
+                            <span>
+
+                                {{ permission.name }}
+
+                            </span>
+
+                        </label>
+
+                        {% endfor %}
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="mt-4 d-flex gap-2">
+
+            <button
+                type="submit"
+                class="btn btn-primary">
+
+                <i class="bi bi-check-circle"></i>
+
+                Save User
+
+            </button>
+
+            <a
+                href="{% url 'accounts:user-list' %}"
+                class="btn btn-secondary">
+
+                Cancel
+
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% if not form.password1 %}
+
+    {% include "accounts/password_modal.html" %}
+
+{% endif %}
+
+{% endblock %}

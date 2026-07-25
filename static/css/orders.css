@@ -1,0 +1,595 @@
+/* ==========================================================
+   RESTAURANT RMS
+   LIVE ORDERS
+   PART 1
+   Layout + Header + Statistics
+========================================================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+/* ==========================================
+   PAGE
+========================================== */
+
+.orders-page{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:25px;
+
+    padding:25px;
+
+}
+
+/* ==========================================
+   HEADER
+========================================== */
+
+.orders-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:24px 30px;
+
+    background:linear-gradient(
+        135deg,
+        #0f172a,
+        #1e293b
+    );
+
+    border-radius:18px;
+
+    color:#fff;
+
+    box-shadow:0 15px 40px rgba(0,0,0,.15);
+
+}
+
+.orders-header h1{
+
+    font-size:32px;
+
+    font-weight:700;
+
+    margin-bottom:8px;
+
+}
+
+.orders-header p{
+
+    margin:0;
+
+    color:#cbd5e1;
+
+    font-size:15px;
+
+}
+
+/* ==========================================
+   STATS
+========================================== */
+
+.orders-stats{
+
+    display:grid;
+
+    grid-template-columns:repeat(
+        auto-fit,
+        minmax(220px,1fr)
+    );
+
+    gap:20px;
+
+}
+
+.stat-card{
+
+    background:#fff;
+
+    border-radius:18px;
+
+    padding:24px;
+
+    box-shadow:0 12px 30px rgba(0,0,0,.08);
+
+    transition:.3s;
+
+    border:1px solid #eef2f7;
+
+}
+
+.stat-card:hover{
+
+    transform:translateY(-5px);
+
+    box-shadow:0 20px 45px rgba(0,0,0,.12);
+
+}
+
+.stat-card span{
+
+    display:block;
+
+    color:#64748b;
+
+    font-size:14px;
+
+    margin-bottom:12px;
+
+}
+
+.stat-card h2{
+
+    font-size:34px;
+
+    font-weight:700;
+
+    color:#0f172a;
+
+    margin:0;
+
+}
+/* ==========================================================
+   RESTAURANT RMS
+   LIVE ORDERS
+   PART 2
+   Search + Orders Grid + Order Cards
+========================================================== */
+
+
+/* ==========================================
+   SEARCH
+========================================== */
+
+.orders-search{
+
+    display:flex;
+
+    align-items:center;
+
+}
+
+.orders-search input{
+
+    width:100%;
+
+    max-width:420px;
+
+    height:48px;
+
+    border-radius:12px;
+
+    border:1px solid #dbe3ec;
+
+    padding:0 18px;
+
+    font-size:15px;
+
+    transition:.25s;
+
+    background:#fff;
+
+}
+
+.orders-search input:focus{
+
+    border-color:#2563eb;
+
+    box-shadow:0 0 0 .2rem rgba(37,99,235,.15);
+
+}
+
+
+/* ==========================================
+   GRID
+========================================== */
+
+.orders-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(
+        auto-fill,
+        minmax(360px,1fr)
+    );
+
+    gap:24px;
+
+}
+
+
+/* ==========================================
+   ORDER CARD
+========================================== */
+
+.order-card{
+
+    background:#fff;
+
+    border-radius:18px;
+
+    overflow:hidden;
+
+    border:1px solid #e8edf3;
+
+    box-shadow:0 12px 28px rgba(0,0,0,.07);
+
+    transition:.30s;
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+.order-card:hover{
+
+    transform:translateY(-6px);
+
+    box-shadow:0 20px 40px rgba(0,0,0,.12);
+
+}
+
+
+/* ==========================================
+   CARD HEADER
+========================================== */
+
+.order-card-header{
+
+    padding:20px 24px;
+
+    background:linear-gradient(
+        135deg,
+        #2563eb,
+        #1d4ed8
+    );
+
+    color:#fff;
+
+}
+
+.order-card-header h3{
+
+    font-size:22px;
+
+    font-weight:700;
+
+    margin-bottom:6px;
+
+}
+
+.order-card-header small{
+
+    color:#dbeafe;
+
+    font-size:13px;
+
+}
+
+
+/* ==========================================
+   CARD BODY
+========================================== */
+
+.order-card-body{
+
+    padding:22px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:18px;
+
+    min-height:220px;
+
+}
+
+
+/* ==========================================
+   GUEST BLOCK
+========================================== */
+
+.guest-block{
+
+    padding-bottom:15px;
+
+    border-bottom:1px dashed #e5e7eb;
+
+}
+
+.guest-block:last-child{
+
+    border-bottom:none;
+
+    padding-bottom:0;
+
+}
+
+.guest-block h5{
+
+    font-size:16px;
+
+    font-weight:700;
+
+    color:#0f172a;
+
+    margin-bottom:12px;
+
+}
+
+.guest-block ul{
+
+    margin:0;
+
+    padding-left:18px;
+
+}
+
+.guest-block li{
+
+    color:#475569;
+
+    margin-bottom:8px;
+
+    line-height:1.5;
+
+}
+
+
+/* ==========================================
+   FOOTER
+========================================== */
+
+.order-card-footer{
+
+    padding:18px 22px;
+
+    border-top:1px solid #edf2f7;
+
+    background:#fafbfd;
+
+}
+/* ==========================================================
+   RESTAURANT RMS
+   LIVE ORDERS
+   PART 3
+   Statistics + Badges + Premium Styling
+========================================================== */
+
+
+/* ==========================================
+   SUMMARY
+========================================== */
+
+.order-summary{
+
+    display:grid;
+
+    grid-template-columns:repeat(3,1fr);
+
+    gap:14px;
+
+    margin-bottom:20px;
+
+}
+
+.summary-box{
+
+    background:#f8fafc;
+
+    border:1px solid #e2e8f0;
+
+    border-radius:12px;
+
+    padding:14px;
+
+    text-align:center;
+
+    transition:.25s;
+
+}
+
+.summary-box:hover{
+
+    background:#eff6ff;
+
+    border-color:#bfdbfe;
+
+}
+
+.summary-box small{
+
+    display:block;
+
+    color:#64748b;
+
+    font-size:12px;
+
+    margin-bottom:6px;
+
+}
+
+.summary-box strong{
+
+    display:block;
+
+    font-size:22px;
+
+    color:#0f172a;
+
+    font-weight:700;
+
+}
+
+
+/* ==========================================
+   STATUS BADGE
+========================================== */
+
+.status-badge{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:6px 12px;
+
+    border-radius:999px;
+
+    font-size:12px;
+
+    font-weight:600;
+
+}
+
+.status-badge.active{
+
+    background:#dcfce7;
+
+    color:#15803d;
+
+}
+
+
+/* ==========================================
+   GUEST TITLE
+========================================== */
+
+.guest-block h5{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:12px;
+
+    color:#0f172a;
+
+    font-weight:700;
+
+}
+
+
+/* ==========================================
+   ITEM LIST
+========================================== */
+
+.guest-block ul{
+
+    list-style:none;
+
+    padding:0;
+
+    margin:0;
+
+}
+
+.guest-block li{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:10px 14px;
+
+    margin-bottom:8px;
+
+    border-radius:10px;
+
+    background:#f8fafc;
+
+    border:1px solid #edf2f7;
+
+    transition:.25s;
+
+}
+
+.guest-block li:hover{
+
+    background:#eff6ff;
+
+    border-color:#bfdbfe;
+
+}
+
+
+/* ==========================================
+   CARD FOOTER BUTTON
+========================================== */
+
+.order-card-footer .btn{
+
+    border-radius:12px;
+
+    font-weight:600;
+
+    height:46px;
+
+}
+
+
+/* ==========================================
+   EMPTY PAGE
+========================================== */
+
+.empty-orders{
+
+    width:100%;
+
+    grid-column:1/-1;
+
+    text-align:center;
+
+    padding:80px 20px;
+
+    background:#fff;
+
+    border-radius:18px;
+
+    border:2px dashed #dbe3ec;
+
+}
+
+.empty-orders i{
+
+    font-size:60px;
+
+    color:#94a3b8;
+
+}
+
+.empty-orders h3{
+
+    margin-top:20px;
+
+    font-size:28px;
+
+    color:#1e293b;
+
+}
+
+.empty-orders p{
+
+    color:#64748b;
+
+    margin-top:10px;
+
+}

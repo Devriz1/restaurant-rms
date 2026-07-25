@@ -8,7 +8,7 @@ from django.views.decorators.http import require_POST
 
 from apps.menu.models import MenuCategory, MenuItem
 from apps.tables.models import DiningArea, RestaurantTable
-
+from django.db.models import Prefetch
 from .models import (
     GuestOrder,
     KitchenOrderTicket,
@@ -364,4 +364,80 @@ def kot_print(request, kot_id):
             "guest": kot.guest_order,
             "table": kot.guest_order.session.table,
         },
+    )
+
+@login_required
+def orders_dashboard(request):
+
+    sessions = (
+        TableSession.objects
+        .filter(status="OPEN")
+        .select_related("table")
+        .prefetch_related(
+            Prefetch(
+                "guest_orders",
+                queryset=GuestOrder.objects.prefetch_related(
+                    "items__menu_item"
+                ),
+            )
+        )
+        .order_by("table__display_name")
+    )
+
+    active_tables = sessions.count()
+
+    total_guests = 0
+
+    total_items = 0
+
+    for session in sessions:
+
+        guest_count = session.guest_orders.count()
+
+        session.total_guests = guest_count
+
+        total_guests += guest_count
+
+        item_count = 0
+
+        last_updated = None
+
+        for guest in session.guest_orders.all():
+
+            for item in guest.items.all():
+
+                item_count += item.quantity
+
+                if (
+                    last_updated is None
+                    or item.created_at > last_updated
+                ):
+                    last_updated = item.created_at
+
+        session.total_items = item_count
+
+        session.last_updated = last_updated
+
+        total_items += item_count
+
+    context = {
+
+        "sessions": sessions,
+
+        "active_tables": active_tables,
+
+        "total_guests": total_guests,
+
+        "total_items": total_items,
+
+    }
+
+    return render(
+
+        request,
+
+        "orders/orders_dashboard.html",
+
+        context,
+
     )

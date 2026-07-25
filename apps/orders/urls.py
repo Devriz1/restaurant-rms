@@ -51,4 +51,9 @@ path(
     views.kot_print,
     name="kot-print",
 ),
+path(
+        "live-orders/",
+        views.orders_dashboard,
+        name="orders-dashboard",
+    ),
 ]

@@ -1,0 +1,239 @@
+.users-page{
+
+    padding:30px;
+
+}
+
+.users-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:25px;
+
+}
+
+.users-header h1{
+
+    font-size:30px;
+
+    font-weight:700;
+
+}
+
+.users-header p{
+
+    color:#777;
+
+}
+
+.users-table{
+
+    background:#fff;
+
+    border-radius:14px;
+
+    overflow:hidden;
+
+    box-shadow:0 5px 18px rgba(0,0,0,.08);
+
+}
+
+.users-table table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+}
+
+.users-table th{
+
+    background:#f8f9fa;
+
+    padding:18px;
+
+    text-align:left;
+
+    font-weight:600;
+
+}
+
+.users-table td{
+
+    padding:18px;
+
+    border-top:1px solid #ececec;
+
+}
+
+.users-table tr:hover{
+
+    background:#f8fbff;
+
+}
+
+.users-table .btn{
+
+    margin-right:6px;
+
+}
+.user-form-layout{
+
+    display:grid;
+
+    grid-template-columns:380px 1fr;
+
+    gap:25px;
+
+}
+
+.user-details-card{
+
+    background:#fff;
+
+    border-radius:14px;
+
+    padding:25px;
+
+    box-shadow:0 5px 18px rgba(0,0,0,.08);
+
+}
+
+.permission-card{
+
+    background:#fff;
+
+    border-radius:14px;
+
+    padding:25px;
+
+    box-shadow:0 5px 18px rgba(0,0,0,.08);
+
+}
+
+.user-details-card h4,
+
+.permission-card h4{
+
+    margin-bottom:25px;
+
+    font-weight:700;
+
+}
+
+.form-group{
+
+    margin-bottom:18px;
+
+}
+
+.permission-placeholder{
+
+    height:600px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    border:2px dashed #d9d9d9;
+
+    border-radius:12px;
+
+}
+
+.permission-placeholder i{
+
+    font-size:70px;
+
+    color:#0d6efd;
+
+    margin-bottom:20px;
+
+}
+
+.permission-placeholder h5{
+
+    font-weight:700;
+
+    margin-bottom:10px;
+
+}
+
+.permission-placeholder p{
+
+    color:#777;
+
+}
+.permission-table{
+
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:25px;
+
+}
+
+.permission-group{
+
+    background:#fafafa;
+
+    border:1px solid #e9ecef;
+
+    border-radius:10px;
+
+    padding:18px;
+
+}
+
+.permission-group h5{
+
+    margin-bottom:15px;
+
+    font-size:17px;
+
+    font-weight:700;
+
+    color:#0d6efd;
+
+}
+
+.permission-item{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    margin-bottom:12px;
+
+    cursor:pointer;
+
+}
+
+.permission-item input{
+
+    width:18px;
+
+    height:18px;
+
+}
+
+@media(max-width:1200px){
+
+.user-form-layout{
+
+    grid-template-columns:1fr;
+
+}
+
+}

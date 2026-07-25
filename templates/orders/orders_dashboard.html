@@ -1,0 +1,333 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+Live Orders
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/orders.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="orders-page">
+
+    <!-- ========================================= -->
+    <!-- PAGE HEADER -->
+    <!-- ========================================= -->
+
+    <div class="orders-header">
+
+        <div>
+
+            <h1>
+
+                <i class="bi bi-journal-text"></i>
+
+                Live Orders
+
+            </h1>
+
+            <p>
+
+                Monitor all active restaurant orders in real time.
+
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- ========================================= -->
+    <!-- DASHBOARD STATS -->
+    <!-- ========================================= -->
+
+    <div class="orders-stats">
+
+        <div class="stat-card">
+
+            <span>Active Tables</span>
+
+            <h2>
+
+                {{ active_tables }}
+
+            </h2>
+
+        </div>
+
+        <div class="stat-card">
+
+            <span>Open Sessions</span>
+
+            <h2>
+
+                {{ active_tables }}
+
+            </h2>
+
+        </div>
+
+        <div class="stat-card">
+
+            <span>Today's Orders</span>
+
+            <h2>
+
+                {{ total_items }}
+
+            </h2>
+
+        </div>
+
+        <div class="stat-card">
+
+            <span>Guests</span>
+
+            <h2>
+
+                {{ total_guests }}
+
+            </h2>
+
+        </div>
+
+    </div>
+
+
+    <!-- ========================================= -->
+    <!-- SEARCH -->
+    <!-- ========================================= -->
+
+    <div class="orders-search">
+
+        <input
+            type="text"
+            id="orderSearch"
+            placeholder="Search Table..."
+
+            class="form-control">
+
+    </div>
+
+
+    <!-- ========================================= -->
+    <!-- TABLE CARDS -->
+    <!-- ========================================= -->
+
+    <div class="orders-grid">
+
+        {% for session in sessions %}
+
+        <div
+            class="order-card"
+            data-table="{{ session.table.display_name|lower }}">
+
+            <!-- Header -->
+
+            <div class="order-card-header">
+
+                <div>
+
+                    <h3>
+
+                        🍽 {{ session.table.display_name }}
+
+                    </h3>
+
+                    <small>
+
+                        Session :
+                        {{ session.session_number }}
+
+                    </small>
+<br>
+
+<small>
+
+Updated :
+
+{% if session.last_updated %}
+
+{{ session.last_updated|date:"h:i A" }}
+
+{% else %}
+
+--
+
+{% endif %}
+
+</small>
+                </div>
+
+            </div>
+
+<div class="order-summary">
+
+    <div class="summary-box">
+
+        <small>Guests</small>
+
+        <strong>
+
+            {{ session.total_guests }}
+
+        </strong>
+
+    </div>
+
+    <div class="summary-box">
+
+        <small>Items</small>
+
+        <strong>
+
+            {{ session.total_items }}
+
+        </strong>
+
+    </div>
+
+    <div class="summary-box">
+
+        <small>Status</small>
+
+        <span class="status-badge active">
+
+            Active
+
+        </span>
+
+    </div>
+
+</div>
+            <!-- Guests -->
+
+            <div class="order-card-body">
+
+                {% for guest in session.guest_orders.all %}
+
+                    <div class="guest-block">
+
+                        <h5>
+
+                            Guest {{ guest.guest_number }}
+
+                        </h5>
+
+                        <ul>
+
+                            {% for item in guest.items.all %}
+
+                                <li>
+
+    <span>
+
+        {{ item.menu_item.name }}
+
+    </span>
+
+    <strong>
+
+        ×{{ item.quantity }}
+
+    </strong>
+
+</li>
+
+                            {% empty %}
+
+                                <li>
+
+                                    No Items
+
+                                </li>
+
+                            {% endfor %}
+
+                        </ul>
+
+                    </div>
+
+                {% empty %}
+
+                    <p>
+
+                        No Guests
+
+                    </p>
+
+                {% endfor %}
+
+            </div>
+
+
+            <!-- Footer -->
+
+            <div class="order-card-footer">
+
+                <a
+                    href="{% url 'orders:session-detail' session.id %}"
+                    class="btn btn-primary w-100">
+
+                    Open Order
+
+                </a>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <div class="empty-orders">
+
+            <i class="bi bi-journal-x"></i>
+
+            <h3>
+
+                No Active Orders
+
+            </h3>
+
+            <p>
+
+                Orders will appear here once waiters start taking orders.
+
+            </p>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script>
+
+const search=document.getElementById("orderSearch");
+
+search?.addEventListener("keyup",function(){
+
+const value=this.value.toLowerCase();
+
+document.querySelectorAll(".order-card").forEach(card=>{
+
+card.style.display=
+card.dataset.table.includes(value)
+?"block":"none";
+
+});
+
+});
+
+</script>
+
+{% endblock %}

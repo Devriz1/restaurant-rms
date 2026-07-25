@@ -1,0 +1,224 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+Printer Settings
+{% endblock %}
+
+{% block extra_css %}
+
+<link rel="stylesheet" href="{% static 'css/printer_settings.css' %}">
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="printer-page">
+
+    <!-- ==========================================
+         HEADER
+    =========================================== -->
+
+    <div class="printer-header">
+
+        <div>
+
+            <h1>
+
+                <i class="bi bi-printer"></i>
+
+                Printer Settings
+
+            </h1>
+
+            <p>
+
+                Configure printers used by the restaurant
+
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <form method="post">
+
+        {% csrf_token %}
+
+        <!-- ==========================================
+             PRINTERS
+        =========================================== -->
+
+        <div class="printer-grid">
+
+            <div class="printer-card">
+
+                <h3>
+
+                    <i class="bi bi-receipt"></i>
+
+                    Billing Printer
+
+                </h3>
+
+                {{ form.billing_printer }}
+
+            </div>
+
+
+            <div class="printer-card">
+
+                <h3>
+
+                    <i class="bi bi-egg-fried"></i>
+
+                    Kitchen Printer
+
+                </h3>
+
+                {{ form.kitchen_printer }}
+
+            </div>
+
+
+            <div class="printer-card">
+
+                <h3>
+
+                    <i class="bi bi-file-earmark-text"></i>
+
+                    Report Printer
+
+                </h3>
+
+                {{ form.report_printer }}
+
+            </div>
+
+
+            <div class="printer-card">
+
+                <h3>
+
+                    <i class="bi bi-printer-fill"></i>
+
+                    Receipt Printer
+
+                </h3>
+
+                {{ form.receipt_printer }}
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ==========================================
+             PRINT OPTIONS
+        =========================================== -->
+
+        <div class="settings-card mt-4">
+
+            <h3>
+
+                Print Options
+
+            </h3>
+
+            <div class="settings-grid">
+
+                <div>
+
+                    <label>
+
+                        Bill Copies
+
+                    </label>
+
+                    {{ form.bill_copies }}
+
+                </div>
+
+                <div>
+
+                    <label>
+
+                        KOT Copies
+
+                    </label>
+
+                    {{ form.kot_copies }}
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ==========================================
+             AUTO PRINT
+        =========================================== -->
+
+        <div class="settings-card mt-4">
+
+            <h3>
+
+                Automatic Printing
+
+            </h3>
+
+            <div class="checkbox-group">
+
+                <label>
+
+                    {{ form.auto_print_bill }}
+
+                    Auto Print Bill
+
+                </label>
+
+                <label>
+
+                    {{ form.auto_print_kot }}
+
+                    Auto Print Kitchen Order Ticket
+
+                </label>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ==========================================
+             ACTION BUTTONS
+        =========================================== -->
+
+        <div class="d-flex gap-2 mt-4">
+
+    <button type="submit" class="btn btn-primary">
+
+        Save Settings
+
+    </button>
+
+    <a href="{% url 'settings:test-printer' %}"
+       class="btn btn-outline-success">
+
+        Print Test Page
+
+    </a>
+
+</div>
+
+    </form>
+
+</div>
+
+{% endblock %}

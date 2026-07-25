@@ -15,9 +15,8 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = []
-
-
+ALLOWED_HOSTS = [
+]
 # Application definition
 
 INSTALLED_APPS = [
@@ -36,7 +35,7 @@ INSTALLED_APPS = [
     'apps.billing',
     'apps.reports',
     'apps.inventory',
-    'apps.printing',
+    'apps.settings',
     'apps.api',
     "widget_tweaks",
     'apps.core',
@@ -102,18 +101,6 @@ AUTH_USER_MODEL = "accounts.User"
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
 ]
 
 

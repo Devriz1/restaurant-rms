@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+Users & Roles
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/users.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="users-page">
+
+    <div class="users-header">
+
+        <div>
+
+            <h1>
+
+                <i class="bi bi-people-fill"></i>
+
+                Users & Roles
+
+            </h1>
+
+            <p>
+
+                Manage system users and permissions
+
+            </p>
+
+        </div>
+
+        <a href="{% url 'accounts:user-add' %}"
+
+           class="btn btn-primary">
+
+            <i class="bi bi-plus-circle"></i>
+
+            Add User
+
+        </a>
+
+    </div>
+
+
+    <div class="users-table">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Username</th>
+
+                    <th>Name</th>
+
+                    <th>Phone</th>
+
+                    <th>Role</th>
+
+                    <th>Status</th>
+
+                    <th width="180">
+
+                        Action
+
+                    </th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+            {% for user in users %}
+
+                <tr>
+
+                    <td>
+
+                        {{ user.username }}
+
+                    </td>
+
+                    <td>
+
+                        {{ user.first_name }} {{ user.last_name }}
+
+                    </td>
+
+                    <td>
+
+                        {{ user.phone_number }}
+
+                    </td>
+
+                    <td>
+
+                        {{ user.get_role_display }}
+
+                    </td>
+
+                    <td>
+
+                        {% if user.is_active %}
+
+                            <span class="badge bg-success">
+
+                                Active
+
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge bg-danger">
+
+                                Disabled
+
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+
+                        <a
+
+                            href="{% url 'accounts:user-edit' user.id %}"
+
+                            class="btn btn-sm btn-warning">
+
+                            <i class="bi bi-pencil"></i>
+
+                        </a>
+
+                        <a
+
+                            href="{% url 'accounts:user-delete' user.id %}"
+
+                            class="btn btn-sm btn-danger">
+
+                            <i class="bi bi-trash"></i>
+
+                        </a>
+
+                    </td>
+
+                </tr>
+
+            {% empty %}
+
+                <tr>
+
+                    <td colspan="6"
+
+                        class="text-center py-5">
+
+                        No users found.
+
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

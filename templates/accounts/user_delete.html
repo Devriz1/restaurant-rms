@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+Delete User
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/users.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="users-page">
+
+    <div class="users-header">
+
+        <div>
+
+            <h1>
+
+                <i class="bi bi-trash-fill text-danger"></i>
+
+                Delete User
+
+            </h1>
+
+            <p>
+
+                This action cannot be undone.
+
+            </p>
+
+        </div>
+
+    </div>
+
+    <div class="user-details-card">
+
+        <h4>
+
+            Confirm Delete
+
+        </h4>
+
+        <p class="mb-4">
+
+            Are you sure you want to delete the following user?
+
+        </p>
+
+        <table class="table">
+
+            <tr>
+
+                <th width="180">
+
+                    Username
+
+                </th>
+
+                <td>
+
+                    {{ user.username }}
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <th>
+
+                    Name
+
+                </th>
+
+                <td>
+
+                    {{ user.first_name }} {{ user.last_name }}
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <th>
+
+                    Role
+
+                </th>
+
+                <td>
+
+                    {{ user.get_role_display }}
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <th>
+
+                    Email
+
+                </th>
+
+                <td>
+
+                    {{ user.email }}
+
+                </td>
+
+            </tr>
+
+        </table>
+
+        <form method="post">
+
+            {% csrf_token %}
+
+            <button
+                type="submit"
+                class="btn btn-danger">
+
+                <i class="bi bi-trash-fill"></i>
+
+                Delete User
+
+            </button>
+
+            <a
+                href="{% url 'accounts:user-list' %}"
+                class="btn btn-secondary">
+
+                Cancel
+
+            </a>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

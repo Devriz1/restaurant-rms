@@ -1,10 +1,11 @@
 {% load static %}
+{% load permissions %}
 
 <div class="sidebar">
 
-    <!-- ========================= -->
+    <!-- ====================================================== -->
     <!-- LOGO -->
-    <!-- ========================= -->
+    <!-- ====================================================== -->
 
     <div class="sidebar-logo">
 
@@ -22,16 +23,17 @@
 
     </div>
 
-    <!-- ========================= -->
+
+    <!-- ====================================================== -->
     <!-- MAIN -->
-    <!-- ========================= -->
+    <!-- ====================================================== -->
+
+    {% if request.user|has_permission:"dashboard.view" %}
 
     <div class="sidebar-section">
 
         <div class="sidebar-title">
-
             MAIN
-
         </div>
 
         <a href="{% url 'dashboard:home' %}" class="sidebar-link">
@@ -44,18 +46,22 @@
 
     </div>
 
-    <!-- ========================= -->
-    <!-- MANAGEMENT -->
-    <!-- ========================= -->
+    {% endif %}
+
+
+    <!-- ====================================================== -->
+    <!-- MASTER DATA -->
+    <!-- ====================================================== -->
+
+    {% if request.user|has_any_permission:"restaurant.view,areas.view,tables.view,categories.view,menu.view" %}
 
     <div class="sidebar-section">
 
         <div class="sidebar-title">
-
-            MANAGEMENT
-
+            MASTER DATA
         </div>
 
+        {% if request.user|has_permission:"restaurant.view" %}
         <a href="{% url 'restaurant:settings' %}" class="sidebar-link">
 
             <i class="bi bi-shop"></i>
@@ -63,7 +69,9 @@
             <span>Restaurant</span>
 
         </a>
+        {% endif %}
 
+        {% if request.user|has_permission:"areas.view" %}
         <a href="{% url 'tables:area-list' %}" class="sidebar-link">
 
             <i class="bi bi-grid"></i>
@@ -71,7 +79,9 @@
             <span>Dining Areas</span>
 
         </a>
+        {% endif %}
 
+        {% if request.user|has_permission:"tables.view" %}
         <a href="{% url 'tables:table-list' %}" class="sidebar-link">
 
             <i class="bi bi-table"></i>
@@ -79,7 +89,9 @@
             <span>Restaurant Tables</span>
 
         </a>
+        {% endif %}
 
+        {% if request.user|has_permission:"categories.view" %}
         <a href="{% url 'menu:category-list' %}" class="sidebar-link">
 
             <i class="bi bi-tags"></i>
@@ -87,7 +99,9 @@
             <span>Categories</span>
 
         </a>
+        {% endif %}
 
+        {% if request.user|has_permission:"menu.view" %}
         <a href="{% url 'menu:item-list' %}" class="sidebar-link">
 
             <i class="bi bi-cup-hot"></i>
@@ -95,21 +109,26 @@
             <span>Menu Items</span>
 
         </a>
+        {% endif %}
 
     </div>
 
-    <!-- ========================= -->
+    {% endif %}
+
+
+    <!-- ====================================================== -->
     <!-- OPERATIONS -->
-    <!-- ========================= -->
+    <!-- ====================================================== -->
+
+    {% if request.user|has_any_permission:"orders.view,billing.view" %}
 
     <div class="sidebar-section">
 
         <div class="sidebar-title">
-
             OPERATIONS
-
         </div>
 
+        {% if request.user|has_permission:"orders.view" %}
         <a href="{% url 'orders:floor-view' %}" class="sidebar-link">
 
             <i class="bi bi-grid-3x3-gap"></i>
@@ -118,14 +137,16 @@
 
         </a>
 
-        <a href="#" class="sidebar-link">
+        <a href="{% url 'orders:orders-dashboard' %}" class="sidebar-link">
 
             <i class="bi bi-journal-check"></i>
 
             <span>Orders</span>
 
         </a>
+        {% endif %}
 
+        {% if request.user|has_permission:"billing.view" %}
         <a href="{% url 'billing:dashboard' %}" class="sidebar-link">
 
             <i class="bi bi-receipt"></i>
@@ -133,35 +154,96 @@
             <span>Billing</span>
 
         </a>
+        {% endif %}
 
     </div>
 
-    <!-- ========================= -->
+    {% endif %}
+
+
+    <!-- ====================================================== -->
     <!-- REPORTS -->
-    <!-- ========================= -->
+    <!-- ====================================================== -->
+
+    {% if request.user|has_permission:"reports.view" %}
 
     <div class="sidebar-section">
 
         <div class="sidebar-title">
-
             REPORTS
-
         </div>
 
-        <a href="{% url 'reports:dashboard' %}" class="nav-link text-white">
-    <i class="bi bi-bar-chart"></i>
-    <span>Reports</span>
-</a>
+        <a href="{% url 'reports:dashboard' %}" class="sidebar-link">
+
+            <i class="bi bi-bar-chart-line"></i>
+
+            <span>Reports</span>
+
+        </a>
 
     </div>
 
-    <!-- ========================= -->
+    {% endif %}
+
+
+    <!-- ====================================================== -->
+    <!-- SETTINGS -->
+    <!-- ====================================================== -->
+
+    {% if request.user|has_any_permission:"printer.view,users.view,backup.view,restore.view" %}
+
+    <div class="sidebar-section">
+
+        <div class="sidebar-title">
+            SETTINGS
+        </div>
+
+        {% if request.user|has_permission:"printer.view" %}
+        <a href="{% url 'settings:printer-settings' %}" class="sidebar-link">
+
+            <i class="bi bi-printer"></i>
+
+            <span>Printer Settings</span>
+
+        </a>
+        {% endif %}
+
+        {% if request.user|has_permission:"users.view" %}
+        <a href="{% url 'accounts:user-list' %}" class="sidebar-link">
+
+            <i class="bi bi-people"></i>
+
+            <span>Users &amp; Roles</span>
+
+        </a>
+        {% endif %}
+
+        {% if request.user|has_permission:"backup.view" %}
+        <a href="#" class="sidebar-link">
+
+            <i class="bi bi-database"></i>
+
+            <span>Backup &amp; Restore</span>
+
+        </a>
+        {% endif %}
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- ====================================================== -->
     <!-- FOOTER -->
-    <!-- ========================= -->
+    <!-- ====================================================== -->
 
     <div class="sidebar-footer">
 
-        Logged in
+        <small>
+
+            Logged in as
+
+        </small>
 
         <strong>
 

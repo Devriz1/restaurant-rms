@@ -5,7 +5,10 @@ from apps.tables.models import RestaurantTable
 from apps.orders.models import GuestOrder
 from apps.billing.models import Bill
 
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import never_cache
 
+@method_decorator(never_cache, name="dispatch")
 class DashboardView(LoginRequiredMixin, TemplateView):
 
     template_name = "dashboard/index.html"

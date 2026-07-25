@@ -1,28 +1,82 @@
-{% extends "base.html" %}
+{% extends "auth_base.html" %}
+{% load widget_tweaks %}
+
+{% block title %}
+Restaurant RMS Login
+{% endblock %}
 
 {% block content %}
-<div class="container mt-5" style="max-width:400px">
 
-<h3>Login</h3>
+<div class="login-page">
 
-<form method="post">
-    {% csrf_token %}
+    <div class="login-card">
 
-    {{ form.username.label_tag }}
-    {{ form.username }}
+        <div class="login-logo">
 
-    <br>
+            🍽
 
-    {{ form.password.label_tag }}
-    {{ form.password }}
+        </div>
 
-    <br>
+        <h2>
 
-    <button class="btn btn-primary w-100">
-        Login
-    </button>
+            Restaurant RMS
 
-</form>
+        </h2>
+
+        <p>
+
+            Restaurant Management System
+
+        </p>
+
+        <form method="post">
+
+            {% csrf_token %}
+
+            <div class="mb-3">
+
+                <label>
+
+                    Username
+
+                </label>
+
+                {{ form.username|add_class:"form-control" }}
+
+            </div>
+
+            <div class="mb-4">
+
+                <label>
+
+                    Password
+
+                </label>
+
+                {{ form.password|add_class:"form-control" }}
+
+            </div>
+
+            <button
+                type="submit"
+                class="btn btn-primary w-100">
+
+                <i class="bi bi-box-arrow-in-right"></i>
+
+                Login
+
+            </button>
+
+        </form>
+
+        <div class="version">
+
+            Version 2.0
+
+        </div>
+
+    </div>
 
 </div>
+
 {% endblock %}
