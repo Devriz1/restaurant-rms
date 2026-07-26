@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+
+{% block title %}
+Table {{ table.table_number }}
+{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+
+        <h2>
+            🍽 Table {{ table.table_number }}
+        </h2>
+
+        <p class="text-muted mb-0">
+            Session
+            <strong>{{ session.session_number }}</strong>
+        </p>
+
+    </div>
+
+    <a href="{% url 'orders:floor-view' %}"
+       class="btn btn-outline-secondary">
+
+        ← Floor View
+
+    </a>
+
+</div>
+
+
+<div class="card mb-4">
+
+    <div class="card-body">
+
+        <div class="row text-center">
+
+            <div class="col-md-4">
+
+                <strong>Area</strong>
+                <br>
+                {{ table.area }}
+
+            </div>
+
+            <div class="col-md-4">
+
+                <strong>Capacity</strong>
+                <br>
+                {{ table.capacity }}
+
+            </div>
+
+            <div class="col-md-4">
+
+                <strong>Status</strong>
+                <br>
+
+                {% if table.current_status == "occupied" %}
+                    <span class="badge bg-danger">
+                        Occupied
+                    </span>
+
+                {% elif table.current_status == "available" %}
+                    <span class="badge bg-success">
+                        Available
+                    </span>
+
+                {% elif table.current_status == "reserved" %}
+                    <span class="badge bg-warning text-dark">
+                        Reserved
+                    </span>
+
+                {% elif table.current_status == "cleaning" %}
+                    <span class="badge bg-info text-dark">
+                        Cleaning
+                    </span>
+
+                {% else %}
+                    <span class="badge bg-secondary">
+                        Out of Service
+                    </span>
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="card">
+
+    <div class="card-header d-flex justify-content-between align-items-center">
+
+        <h4 class="mb-0">
+
+            Guest Orders
+
+        </h4>
+
+        <form method="post"
+              action="{% url 'orders:add-guest' session.id %}"
+              class="d-inline">
+
+            {% csrf_token %}
+
+            <button type="submit" class="btn btn-success">
+
+                <i class="bi bi-plus-circle"></i>
+
+                Add Guest
+
+            </button>
+
+        </form>
+
+    </div>
+
+    <div class="card-body">
+
+        {% if session.guest_orders.count %}
+
+            <div class="row">
+
+                {% for guest in session.guest_orders.all %}
+
+                    <div class="col-md-4 mb-3">
+
+                        <div class="card border-primary h-100">
+
+                            <div class="card-body text-center">
+
+                                <h5>
+
+                                    👤 Guest {{ guest.guest_number }}
+
+                                </h5>
+
+                                <p class="text-muted mb-2">
+
+                                    {{ guest.order_number }}
+
+                                </p>
+
+                                <p>
+
+                                    No Items Yet
+
+                                </p>
+
+<a href="{% url 'orders:guest-order' guest.id %}"
+   class="btn btn-primary btn-sm">
+
+    <i class="bi bi-cart-plus"></i>
+    Add Items
+
+</a>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="text-center py-5">
+
+                <i class="bi bi-people display-4"></i>
+
+                <h5 class="mt-3">
+
+                    No Guest Orders Yet
+
+                </h5>
+
+                <p class="text-muted">
+
+                    Click <strong>Add Guest</strong> to start taking orders.
+
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block title %}Menu Items{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <h2>Menu Items</h2>
+
+    <a href="{% url 'menu:item-add' %}" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i>
+        Add Menu Item
+    </a>
+
+</div>
+
+<div class="card">
+
+    <div class="card-body">
+
+        {% if items %}
+
+        <table class="table table-hover">
+
+            <thead>
+
+                <tr>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Prep Time</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                    <th width="120">Actions</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+            {% for item in items %}
+
+                <tr>
+
+                    <td>{{ item.name }}</td>
+
+                    <td>{{ item.category }}</td>
+
+                    <td>₹ {{ item.price }}</td>
+
+                    <td>{{ item.preparation_time }} mins</td>
+
+                    <td>
+                        {% if item.is_veg %}
+                            <span class="badge bg-success">Veg</span>
+                        {% else %}
+                            <span class="badge bg-danger">Non Veg</span>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if item.is_available %}
+                            <span class="badge bg-success">Available</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Unavailable</span>
+                        {% endif %}
+                    </td>
+
+                    <td>
+
+                        <a href="{% url 'menu:item-edit' item.pk %}"
+                           class="btn btn-sm btn-warning">
+
+                            <i class="bi bi-pencil"></i>
+
+                        </a>
+
+                        <a href="{% url 'menu:item-delete' item.pk %}"
+                           class="btn btn-sm btn-danger">
+
+                            <i class="bi bi-trash"></i>
+
+                        </a>
+
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        {% else %}
+
+        <div class="text-center py-5">
+
+            <h5>No menu items found.</h5>
+
+            <p class="text-muted">
+                Click <strong>Add Menu Item</strong> to create your first menu item.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

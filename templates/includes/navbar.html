@@ -1,0 +1,127 @@
+{% load static %}
+
+<nav class="app-navbar">
+
+    <div class="navbar-left">
+
+        <button class="menu-btn" id="menuToggle">
+
+            <i class="bi bi-list"></i>
+
+        </button>
+
+        <div>
+
+            <div class="breadcrumb">
+
+                Dashboard
+
+                <span>/</span>
+
+                {% block breadcrumb %}
+                Home
+                {% endblock %}
+
+            </div>
+
+            <h1 class="navbar-title">
+
+                {% block page_title %}
+                Dashboard
+                {% endblock %}
+
+            </h1>
+
+        </div>
+
+    </div>
+
+    <div class="navbar-right">
+
+        <div class="clock-card">
+
+            <i class="bi bi-clock"></i>
+
+            <span id="clock"></span>
+
+        </div>
+
+        <button class="icon-btn">
+
+            <i class="bi bi-bell"></i>
+
+        </button>
+
+        <div class="dropdown">
+
+            <button
+                class="profile-btn dropdown-toggle"
+                data-bs-toggle="dropdown">
+
+                <i class="bi bi-person-circle"></i>
+
+                {{ request.user.username }}
+
+            </button>
+
+            <ul class="dropdown-menu dropdown-menu-end">
+
+                <li>
+
+                    <a class="dropdown-item" href="#">
+
+                        Profile
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <hr class="dropdown-divider">
+
+                </li>
+
+                <li>
+
+                    <a class="dropdown-item text-danger"
+                       href="{% url 'logout' %}">
+
+                        Logout
+
+                    </a>
+
+                </li>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+</nav>
+
+<script>
+
+function updateClock(){
+
+    const now=new Date();
+
+    document.getElementById("clock").innerHTML=
+    now.toLocaleTimeString();
+
+}
+
+updateClock();
+
+setInterval(updateClock,1000);
+
+document.getElementById("menuToggle").onclick=function(){
+
+    document
+    .querySelector(".sidebar-wrapper")
+    .classList.toggle("active");
+
+}
+
+</script>

@@ -1,0 +1,508 @@
+/* ==========================================================
+   RESTAURANT RMS
+   DASHBOARD
+==========================================================*/
+
+.dashboard-page{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:25px;
+
+}
+
+/* ==========================================================
+   HEADER
+==========================================================*/
+
+.dashboard-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+}
+
+.dashboard-header h1{
+
+    font-size:34px;
+
+    font-weight:700;
+
+    color:#1f2937;
+
+    margin:0;
+
+}
+
+.dashboard-header p{
+
+    margin-top:6px;
+
+    color:#6b7280;
+
+}
+
+.dashboard-date{
+
+    background:#ffffff;
+
+    padding:12px 20px;
+
+    border-radius:12px;
+
+    border:1px solid #e5e7eb;
+
+    font-weight:600;
+
+    color:#374151;
+
+}
+
+/* ==========================================================
+   KPI CARDS
+==========================================================*/
+
+.dashboard-cards{
+
+    display:grid;
+
+    grid-template-columns:repeat(4,1fr);
+
+    gap:20px;
+
+}
+
+.dashboard-card{
+
+    background:#ffffff;
+
+    border-radius:18px;
+
+    padding:22px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:18px;
+
+    border:1px solid #e5e7eb;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.04);
+
+    transition:.30s;
+
+}
+
+.dashboard-card:hover{
+
+    transform:translateY(-4px);
+
+    box-shadow:0 15px 35px rgba(0,0,0,.08);
+
+}
+
+.card-icon{
+
+    width:68px;
+
+    height:68px;
+
+    border-radius:16px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:28px;
+
+    color:white;
+
+}
+
+.blue{
+
+    background:#2563eb;
+
+}
+
+.green{
+
+    background:#16a34a;
+
+}
+
+.orange{
+
+    background:#f59e0b;
+
+}
+
+.red{
+
+    background:#dc2626;
+
+}
+
+.dashboard-card h5{
+
+    font-size:15px;
+
+    color:#6b7280;
+
+    margin-bottom:8px;
+
+}
+
+.dashboard-card h2{
+
+    font-size:30px;
+
+    font-weight:700;
+
+    margin:0;
+
+    color:#111827;
+
+}
+/* ==========================================================
+   DASHBOARD GRID
+========================================================== */
+
+.dashboard-grid{
+
+    display:grid;
+
+    grid-template-columns:2fr 1fr;
+
+    gap:24px;
+
+}
+
+/* ==========================================================
+   PANEL
+========================================================== */
+
+.panel{
+
+    background:#ffffff;
+
+    border-radius:18px;
+
+    border:1px solid #e5e7eb;
+
+    box-shadow:0 8px 24px rgba(0,0,0,.04);
+
+    overflow:hidden;
+
+}
+
+.panel-header{
+
+    padding:18px 24px;
+
+    border-bottom:1px solid #eef2f7;
+
+    font-size:18px;
+
+    font-weight:700;
+
+    color:#111827;
+
+    background:#fafafa;
+
+}
+
+.panel-body{
+
+    padding:24px;
+
+}
+
+/* ==========================================================
+   STATUS
+========================================================== */
+
+.status-item{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:16px 0;
+
+    border-bottom:1px solid #f1f5f9;
+
+}
+
+.status-item:last-child{
+
+    border-bottom:none;
+
+}
+
+.status-item span{
+
+    color:#6b7280;
+
+    font-size:15px;
+
+}
+
+.status-item strong{
+
+    font-size:18px;
+
+}
+
+/* ==========================================================
+   QUICK ACTIONS
+========================================================== */
+
+.actions{
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:16px;
+
+}
+
+.action-btn{
+
+    background:#f8fafc;
+
+    border:1px solid #e5e7eb;
+
+    border-radius:14px;
+
+    padding:20px;
+
+    text-align:center;
+
+    color:#111827;
+
+    text-decoration:none;
+
+    transition:.30s;
+
+    font-weight:600;
+
+}
+
+.action-btn i{
+
+    display:block;
+
+    font-size:30px;
+
+    margin-bottom:12px;
+
+    color:#2563eb;
+
+}
+
+.action-btn:hover{
+
+    background:#2563eb;
+
+    color:#ffffff;
+
+    transform:translateY(-3px);
+
+}
+
+.action-btn:hover i{
+
+    color:#ffffff;
+
+}
+
+/* ==========================================================
+   TABLE
+========================================================== */
+
+.dashboard-table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+}
+
+.dashboard-table thead{
+
+    background:#f8fafc;
+
+}
+
+.dashboard-table th{
+
+    padding:16px;
+
+    text-align:left;
+
+    font-size:14px;
+
+    font-weight:700;
+
+    color:#374151;
+
+}
+
+.dashboard-table td{
+
+    padding:16px;
+
+    border-bottom:1px solid #eef2f7;
+
+    color:#374151;
+
+}
+
+.dashboard-table tbody tr{
+
+    transition:.25s;
+
+}
+
+.dashboard-table tbody tr:hover{
+
+    background:#f8fafc;
+
+}
+
+/* ==========================================================
+   UTILITIES
+========================================================== */
+
+.text-success{
+
+    color:#16a34a;
+
+}
+
+.text-danger{
+
+    color:#dc2626;
+
+}
+
+.mt-4{
+
+    margin-top:24px;
+
+}
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+/* ---------- 1600 ---------- */
+
+@media (max-width:1600px){
+
+    .dashboard-card{
+
+        padding:18px;
+
+    }
+
+}
+
+/* ---------- 1440 ---------- */
+
+@media (max-width:1440px){
+
+    .dashboard-cards{
+
+        grid-template-columns:repeat(2,1fr);
+
+    }
+
+}
+
+/* ---------- 1366 ---------- */
+
+@media (max-width:1366px){
+
+    .dashboard-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+}
+
+/* ---------- 1024 ---------- */
+
+@media (max-width:1024px){
+
+    .dashboard-header{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+        gap:15px;
+
+    }
+
+}
+
+/* ---------- 768 ---------- */
+
+@media (max-width:768px){
+
+    .dashboard-cards{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .actions{
+
+        grid-template-columns:1fr;
+
+    }
+
+}
+
+/* ---------- 576 ---------- */
+
+@media (max-width:576px){
+
+    .dashboard-header h1{
+
+        font-size:28px;
+
+    }
+
+    .dashboard-card{
+
+        flex-direction:column;
+
+        text-align:center;
+
+    }
+
+    .dashboard-table{
+
+        display:block;
+
+        overflow-x:auto;
+
+        white-space:nowrap;
+
+    }
+
+}

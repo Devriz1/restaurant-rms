@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+Waiter Report
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/reports.css' %}">
+<link rel="stylesheet" href="{% static 'css/report_customizer.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="reports-page">
+
+    <div class="reports-header">
+
+        <div>
+
+            <h1>Waiter Report</h1>
+
+            <p>Waiter performance summary</p>
+
+        </div>
+
+    </div>
+
+    {% include "components/report_filters.html" %}
+
+    {% include "components/report_summary_cards.html" %}
+
+    <div class="report-actions">
+
+        <button
+            id="openCustomizer"
+            class="btn btn-outline-primary">
+
+            <i class="bi bi-layout-three-columns"></i>
+
+            Customize Report
+
+        </button>
+
+    </div>
+
+    {% include "components/report_customizer.html" %}
+
+    <div class="report-table">
+
+    <table id="waiterReportTable">
+
+        <thead>
+
+            <tr>
+
+                <th data-column="waiter">Waiter</th>
+
+                <th data-column="kots">KOT</th>
+
+                <th data-column="items">Items</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for waiter in waiters %}
+
+            <tr>
+
+                <td data-column="waiter">
+                    {{ waiter.created_by__username }}
+                </td>
+
+                <td data-column="kots">
+                    {{ waiter.total_kots }}
+                </td>
+
+                <td data-column="items">
+                    {{ waiter.total_items }}
+                </td>
+
+            </tr>
+
+            {% empty %}
+
+            <tr>
+
+                <td colspan="3" class="text-center py-5">
+                    No waiter records found.
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+    {% include "components/report_export_buttons.html" %}
+
+</div>
+
+{% endblock %}

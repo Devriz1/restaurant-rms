@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Restaurant Settings{% endblock %}
+
+{% block content %}
+
+<h3 class="mb-4">Restaurant Settings</h3>
+
+<form method="post" enctype="multipart/form-data">
+
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+    <button class="btn btn-primary">
+        Save
+    </button>
+
+</form>
+
+{% endblock %}

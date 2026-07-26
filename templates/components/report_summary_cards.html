@@ -1,0 +1,20 @@
+<div class="summary-cards">
+
+{% for card in summary_cards %}
+
+    <div class="summary-card">
+
+        <small>
+            {{ card.title }}
+        </small>
+
+
+        <h2>
+            {{ card.value }}
+        </h2>
+
+    </div>
+
+{% endfor %}
+
+</div>

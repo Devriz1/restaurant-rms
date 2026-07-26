@@ -1,0 +1,123 @@
+{% if order_items %}
+
+    {% for item in order_items %}
+
+    <div class="card mb-3 shadow-sm">
+
+        <div class="card-body">
+
+            <div class="d-flex justify-content-between align-items-start">
+
+                <div>
+
+                    <h6 class="mb-1">
+                        {{ item.menu_item.name }}
+                    </h6>
+
+                    <small class="text-muted">
+                        ₹{{ item.unit_price }} each
+                    </small>
+
+                    <br>
+
+                    {% if item.kot %}
+
+                        <span class="badge bg-success mt-2">
+                            <i class="bi bi-check-circle"></i>
+                            Sent To Kitchen
+                        </span>
+
+                    {% else %}
+
+                        <span class="badge bg-warning text-dark mt-2">
+                            <i class="bi bi-clock"></i>
+                            Pending
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+                <div class="text-end">
+
+                    {% if item.kot %}
+
+                        <h6 class="text-success mb-0">
+                            ₹0.00
+                        </h6>
+
+                    {% else %}
+
+                        <h6 class="fw-bold mb-0">
+                            ₹{{ item.total_price }}
+                        </h6>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+            <div class="mt-3 d-flex align-items-center">
+
+                <button
+                    class="btn btn-outline-danger btn-sm decrease-item"
+                    data-order-item="{{ item.id }}">
+                    -
+                </button>
+
+                <span class="mx-3 fw-bold">
+                    {{ item.quantity }}
+                </span>
+
+                <button
+                    class="btn btn-outline-success btn-sm increase-item"
+                    data-order-item="{{ item.id }}">
+                    +
+                </button>
+
+                <button
+                    class="btn btn-outline-secondary btn-sm ms-auto remove-item"
+                    data-order-item="{{ item.id }}">
+                    <i class="bi bi-trash"></i>
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+    <hr>
+
+    <div class="d-flex justify-content-between">
+
+        <strong>
+            Pending Total
+        </strong>
+
+        <strong class="text-success">
+            ₹{{ pending_total }}
+        </strong>
+
+    </div>
+
+{% else %}
+
+<div class="text-center py-5">
+
+    <i class="bi bi-cart-x display-4"></i>
+
+    <h5>
+        Empty Order
+    </h5>
+
+    <p class="text-muted">
+        Add menu items to start taking the order.
+    </p>
+
+</div>
+
+{% endif %}

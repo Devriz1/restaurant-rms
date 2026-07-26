@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block title %}
+Billing Dashboard
+{% endblock %}
+
+
+{% block extra_css %}
+
+<link rel="stylesheet" href="{% static 'css/billing_dashboard.css' %}">
+
+{% endblock %}
+
+
+
+{% block content %}
+
+
+<div class="billing-dashboard">
+
+
+    <!-- HEADER -->
+
+    <div class="billing-dashboard-header">
+
+
+        <div>
+
+            <h1>
+                Billing Dashboard
+            </h1>
+
+
+            <p>
+                Orders waiting for payment
+            </p>
+
+
+        </div>
+
+
+
+        <div class="billing-search">
+
+
+            <input
+                type="text"
+                id="billSearch"
+                placeholder="Search table or guest..."
+            >
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+
+    <!-- BILL LIST -->
+
+
+    <div class="bill-grid">
+
+
+        {% for guest in guests %}
+
+
+
+<div class="bill-card">
+
+    <div class="bill-card-header">
+
+        <div>
+
+            <h3>{{ guest.session.table.display_name }}</h3>
+
+            <span>
+                {{ guest.session.table.area.name }}
+            </span>
+
+        </div>
+
+        <div class="bill-status">
+            {{ guest.status }}
+        </div>
+
+    </div>
+
+    <div class="bill-info">
+
+        <div>
+
+            <small>Floor</small>
+
+            <strong>
+                {{ guest.session.table.area.name }}
+            </strong>
+
+        </div>
+
+        <div>
+
+            <small>Guest</small>
+
+            <strong>
+                {{ guest.guest_number }}
+            </strong>
+
+        </div>
+
+        <div>
+
+            <small>Items</small>
+
+            <strong>
+                {{ guest.items.count }}
+            </strong>
+
+        </div>
+
+        <div>
+
+            <small>Total</small>
+
+            <strong>
+                ₹ {{ guest.subtotal }}
+            </strong>
+
+        </div>
+
+    </div>
+
+    <div class="bill-action">
+
+        <a href="{% url 'billing:billing-screen' guest.id %}">
+            Open Bill
+        </a>
+
+    </div>
+
+</div>
+
+
+
+
+        {% empty %}
+
+
+
+        <div class="empty-bills">
+
+
+            <i class="bi bi-receipt"></i>
+
+
+            <h3>
+                No Pending Bills
+            </h3>
+
+
+            <p>
+                All customers have completed payment.
+            </p>
+
+
+        </div>
+
+
+
+        {% endfor %}
+
+
+
+    </div>
+
+
+
+</div>
+
+
+
+{% endblock %}

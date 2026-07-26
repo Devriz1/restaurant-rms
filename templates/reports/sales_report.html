@@ -1,0 +1,213 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+Sales Report
+{% endblock %}
+
+
+{% block extra_css %}
+
+<link rel="stylesheet" href="{% static 'css/reports.css' %}">
+<link rel="stylesheet" href="{% static 'css/report_customizer.css' %}">
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="reports-page">
+
+    <!-- ===========================================
+         PAGE HEADER
+    ============================================ -->
+
+    <div class="reports-header">
+
+        <div>
+
+            <h1>
+                Sales Report
+            </h1>
+
+            <p>
+                Restaurant sales summary
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- ===========================================
+         FILTERS
+    ============================================ -->
+
+    {% include "components/report_filters.html" %}
+
+
+    <!-- ===========================================
+         SUMMARY CARDS
+    ============================================ -->
+
+    {% include "components/report_summary_cards.html" %}
+
+
+    <!-- ===========================================
+         REPORT ACTIONS
+    ============================================ -->
+
+    <div class="report-actions">
+
+        <button
+            type="button"
+            id="openCustomizer"
+            class="btn btn-outline-primary">
+
+            <i class="bi bi-layout-three-columns"></i>
+
+            Customize Report
+
+        </button>
+
+    </div>
+
+
+    <!-- ===========================================
+         REPORT CUSTOMIZER
+    ============================================ -->
+
+    {% include "components/report_customizer.html" %}
+
+
+    <!-- ===========================================
+         SALES TABLE
+    ============================================ -->
+
+<div class="report-table">
+
+    <table id="salesReportTable">
+
+        <thead>
+<tr>
+
+<th data-column="bill" data-sort="bill">Bill No <i class="bi bi-arrow-down-up"></i></th>
+
+<th data-column="date" data-sort="date">Date <i class="bi bi-arrow-down-up"></i></th>
+
+<th data-column="floor" data-sort="floor">Floor <i class="bi bi-arrow-down-up"></i></th>
+
+<th data-column="table" data-sort="table">Table <i class="bi bi-arrow-down-up"></i></th>
+
+<th data-column="guest" data-sort="guest">Guest <i class="bi bi-arrow-down-up"></i></th>
+
+<th data-column="total" data-sort="total">Total <i class="bi bi-arrow-down-up"></i></th>
+
+<th data-column="cashier" data-sort="cashier">Cashier <i class="bi bi-arrow-down-up"></i></th>
+
+<th data-column="status" data-sort="status">Status <i class="bi bi-arrow-down-up"></i></th>
+
+</tr>
+</thead>
+        <tbody>
+
+            {% for bill in bills %}
+
+            <tr>
+
+                <td data-column="bill">
+
+                    {{ bill.bill_number }}
+
+                </td>
+
+                <td data-column="date">
+
+                    {{ bill.created_at|date:"d M Y H:i" }}
+
+                </td>
+
+                <td data-column="floor">
+
+                    {{ bill.session.table.area.name }}
+
+                </td>
+
+                <td data-column="table">
+
+                    {{ bill.session.table.display_name }}
+
+                </td>
+
+                <td data-column="guest">
+
+                    Guest {{ bill.guest_order.guest_number }}
+
+                </td>
+
+                <td data-column="total">
+
+                    ₹ {{ bill.grand_total }}
+
+                </td>
+
+                <td data-column="cashier">
+
+                    {{ bill.created_by }}
+
+                </td>
+
+                <td data-column="status">
+
+                    <span class="status-badge status-paid">
+
+                        {{ bill.status|title }}
+
+                    </span>
+
+                </td>
+
+            </tr>
+
+            {% empty %}
+
+            <tr>
+
+                <td colspan="8" class="text-center py-5">
+
+                    No sales found.
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+
+    <!-- ===========================================
+         EXPORT BUTTONS
+    ============================================ -->
+
+    {% include "components/report_export_buttons.html" %}
+
+</div>
+
+{% endblock %}
+
+
+{% block extra_js %}
+
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
+
+<script src="{% static 'js/report_customizer.js' %}"></script>
+
+<script src="{% static 'js/report_sort.js' %}"></script>
+
+<script src="{% static 'js/report_search.js' %}"></script>
+{% endblock %}
