@@ -15,6 +15,8 @@ urlpatterns = [
     path("reports/",include("apps.reports.urls"),),
     path("settings/",include("apps.settings.urls"),),
     path("users/",include("apps.accounts.urls"),),
+    path("backup/",include("apps.backup.urls"),),
+    path("inventory/",include("apps.inventory.urls"),),
 ]
 
 if settings.DEBUG:

@@ -219,7 +219,7 @@
         {% endif %}
 
         {% if request.user|has_permission:"backup.view" %}
-        <a href="#" class="sidebar-link">
+        <a href="{% url 'backup:dashboard' %}" class="sidebar-link">
 
             <i class="bi bi-database"></i>
 

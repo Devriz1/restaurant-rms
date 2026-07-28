@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}
+Inventory Dashboard
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <h2>Inventory Dashboard</h2>
+
+    <hr>
+
+    <div class="row g-4">
+
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5>Ingredients</h5>
+                    <h2>{{ ingredient_count }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5>Categories</h5>
+                    <h2>{{ category_count }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5>Suppliers</h5>
+                    <h2>{{ supplier_count }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5>Low Stock</h5>
+                    <h2>{{ low_stock }}</h2>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

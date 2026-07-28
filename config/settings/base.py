@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'apps.api',
     "widget_tweaks",
     'apps.core',
+    'apps.backup',
 
 ]
 
@@ -109,7 +110,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = "Asia/Kolkata"
 
 USE_I18N = True
 

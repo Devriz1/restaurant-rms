@@ -140,7 +140,7 @@ def billing_screen(request, guest_id):
 
                 )
 
-            # ==========================================
+                        # ==========================================
             # COMPLETE PAYMENT
             # ==========================================
 
@@ -149,7 +149,6 @@ def billing_screen(request, guest_id):
                 amount = request.POST.get("amount")
 
                 if not amount:
-
                     amount = bill.grand_total
 
                 amount = Decimal(amount)
@@ -159,21 +158,15 @@ def billing_screen(request, guest_id):
                     bill=bill,
 
                     payment_method=request.POST.get(
-
                         "payment_method",
-
                         "cash",
-
                     ),
 
                     amount=amount,
 
                     reference_number=request.POST.get(
-
                         "reference_number",
-
                         "",
-
                     ),
 
                     received_by=request.user,
@@ -181,14 +174,19 @@ def billing_screen(request, guest_id):
                 )
 
                 # ======================================
-                # MARK BILL PAID
+                # MARK BILL AS PAID
                 # ======================================
 
                 bill.status = "paid"
-
                 bill.paid_at = timezone.now()
-
                 bill.save()
+
+                # ======================================
+                # MARK GUEST AS PAID
+                # ======================================
+
+                guest.status = "paid"
+                guest.save()
 
                 # ======================================
                 # PRINT RECEIPT
@@ -197,7 +195,6 @@ def billing_screen(request, guest_id):
                 try:
 
                     receipt = build_receipt(bill)
-
                     PrinterManager.print_bill(receipt)
 
                 except Exception as e:
@@ -208,55 +205,38 @@ def billing_screen(request, guest_id):
                     print("=" * 60)
 
                 # ======================================
-                # UPDATE GUEST
+                # CLOSE SESSION IF NO ACTIVE GUESTS
                 # ======================================
 
-                guest.status = "paid"
+                session = guest.session
 
-                guest.save()
+                active_guests = session.guest_orders.filter(
+                    status__in=[
+                        "open",
+                        "preparing",
+                        "ready",
+                        "served",
+                    ]
+                ).exists()
 
-                # ======================================
-                # CLOSE SESSION IF ALL GUESTS PAID
-                # ======================================
+                if not active_guests:
 
-                remaining = (
+                    session.status = "closed"
+                    session.closed_at = timezone.now()
+                    session.save()
 
-                    guest.session.guest_orders
-
-                    .exclude(status="paid")
-
-                    .exists()
-
-                )
-
-                if not remaining:
-
-                    guest.session.status = "closed"
-
-                    guest.session.closed_at = timezone.now()
-
-                    guest.session.save()
-
-                    table = guest.session.table
-
+                    table = session.table
                     table.status = "available"
-
                     table.save()
 
                 messages.success(
-
                     request,
-
                     "Payment completed successfully."
-
                 )
 
                 return redirect(
-
                     "billing:dashboard"
-
                 )
-
     # ======================================================
     # DISPLAY
     # ======================================================

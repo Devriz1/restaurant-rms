@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
 from django.views.decorators.http import require_POST
-
+from django.db.models import Count
 from apps.menu.models import MenuCategory, MenuItem
 from apps.tables.models import DiningArea, RestaurantTable
 from django.db.models import Prefetch
@@ -59,7 +59,6 @@ def open_table(request, table_id):
         session_id=session.id,
     )
 
-
 @login_required
 def session_detail(request, session_id):
 
@@ -68,16 +67,22 @@ def session_detail(request, session_id):
         pk=session_id,
     )
 
+    guests = (
+        session.guest_orders
+        .annotate(item_count=Count("items"))
+        .prefetch_related("items")
+        .order_by("guest_number")
+    )
+
     return render(
         request,
         "orders/table_session.html",
         {
             "session": session,
             "table": session.table,
+            "guests": guests,
         },
     )
-
-
 @login_required
 def add_guest(request, session_id):
 
@@ -93,15 +98,16 @@ def add_guest(request, session_id):
         pk=session_id,
     )
 
-    last_guest = session.guest_orders.order_by(
-        "-guest_number"
-    ).first()
+    last_guest = (
+    session.guest_orders
+    .order_by("-guest_number")
+    .first()
+)
 
-    next_guest = (
-        1
-        if last_guest is None
-        else last_guest.guest_number + 1
-    )
+    next_guest = 1
+
+    if last_guest:
+        next_guest = last_guest.guest_number + 1
 
     GuestOrder.objects.create(
         session=session,
@@ -142,9 +148,11 @@ def guest_order(request, guest_id):
         )
     )
 
-    order_items = guest.items.select_related(
-     "menu_item",
-      )
+    order_items = (
+    guest.items
+    .select_related("menu_item")
+    .order_by("created_at")
+)
 
     pending_total = sum(
     item.line_total
@@ -223,11 +231,14 @@ def add_item(request):
 )
 
     return JsonResponse(
-        {
-            "success": True,
-            "html": html,
-        }
-    )
+    {
+        "success": True,
+        "html": html,
+        "guest_id": guest.id,
+        "guest_items": guest.items.count(),
+        "guest_total": str(guest.subtotal),
+    }
+)
 
 
 @require_POST
@@ -371,7 +382,7 @@ def orders_dashboard(request):
 
     sessions = (
         TableSession.objects
-        .filter(status="OPEN")
+        .filter(status="open")
         .select_related("table")
         .prefetch_related(
             Prefetch(
@@ -441,3 +452,35 @@ def orders_dashboard(request):
         context,
 
     )
+
+@login_required
+def back_to_floor(request, session_id):
+
+    session = get_object_or_404(
+        TableSession,
+        pk=session_id,
+    )
+
+    # Delete only guests with no items and no bill
+    for guest in session.guest_orders.all():
+
+        # Has any order items?
+        if guest.items.exists():
+            continue
+
+        # Has a bill? Skip it.
+        try:
+            guest.bill
+            continue
+        except Exception:
+            pass
+
+        guest.delete()
+
+    # Close session if no guests remain
+    if not session.guest_orders.exists():
+
+        session.status = "closed"
+        session.save()
+
+    return redirect("orders:floor-view")

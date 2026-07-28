@@ -56,11 +56,51 @@ function updateCurrentOrder(html) {
     const container = document.getElementById("current-order");
 
     if (container && html !== undefined) {
+
         container.innerHTML = html;
+
     }
 
 }
 
+
+/* ===========================================
+   UPDATE GUEST CARD
+=========================================== */
+
+function updateGuestCard(guestId, itemCount) {
+
+    const status = document.getElementById(
+        `guest-status-${guestId}`
+    );
+
+    if (!status) return;
+
+    if (itemCount > 0) {
+
+        status.classList.remove("text-muted");
+        status.classList.add("text-success");
+
+        status.innerHTML =
+            itemCount +
+            " item" +
+            (itemCount > 1 ? "s" : "");
+
+    } else {
+
+        status.classList.remove("text-success");
+        status.classList.add("text-muted");
+
+        status.innerHTML = "No Items Yet";
+
+    }
+
+}
+
+
+/* ===========================================
+   UPDATE ITEM
+=========================================== */
 
 function sendOrderUpdate(orderItemId, action) {
 
@@ -92,6 +132,15 @@ function sendOrderUpdate(orderItemId, action) {
 
             updateCurrentOrder(data.html);
 
+            if (data.guest_id !== undefined) {
+
+                updateGuestCard(
+                    data.guest_id,
+                    data.guest_items
+                );
+
+            }
+
         }
 
     })
@@ -100,20 +149,22 @@ function sendOrderUpdate(orderItemId, action) {
 
         console.error(error);
 
-        showToast("Something went wrong.", false);
+        showToast(
+            "Something went wrong.",
+            false
+        );
 
     });
 
 }
 
 
+
 document.addEventListener("click", function (e) {
 
-    /*
-    ---------------------------------
-    ADD ITEM
-    ---------------------------------
-    */
+    /* ===========================================
+       ADD ITEM
+    =========================================== */
 
     if (e.target.closest(".add-item")) {
 
@@ -147,7 +198,14 @@ document.addEventListener("click", function (e) {
 
                 updateCurrentOrder(data.html);
 
-                showToast("Item added successfully.");
+                updateGuestCard(
+                    data.guest_id,
+                    data.guest_items
+                );
+
+                showToast(
+                    "Item added successfully."
+                );
 
             }
 
@@ -157,87 +215,105 @@ document.addEventListener("click", function (e) {
 
             console.error(error);
 
-            showToast("Unable to add item.", false);
+            showToast(
+                "Unable to add item.",
+                false
+            );
 
         });
 
     }
 
 
-    /*
-    ---------------------------------
-    INCREASE
-    ---------------------------------
-    */
+
+    /* ===========================================
+       INCREASE
+    =========================================== */
 
     if (e.target.closest(".increase-item")) {
 
         const button = e.target.closest(".increase-item");
 
-        sendOrderUpdate(button.dataset.orderItem, "increase");
+        sendOrderUpdate(
+            button.dataset.orderItem,
+            "increase"
+        );
 
     }
 
 
-    /*
-    ---------------------------------
-    DECREASE
-    ---------------------------------
-    */
+
+    /* ===========================================
+       DECREASE
+    =========================================== */
 
     if (e.target.closest(".decrease-item")) {
 
         const button = e.target.closest(".decrease-item");
 
-        sendOrderUpdate(button.dataset.orderItem, "decrease");
+        sendOrderUpdate(
+            button.dataset.orderItem,
+            "decrease"
+        );
 
     }
 
 
-    /*
-    ---------------------------------
-    REMOVE
-    ---------------------------------
-    */
+
+    /* ===========================================
+       REMOVE
+    =========================================== */
 
     if (e.target.closest(".remove-item")) {
 
         const button = e.target.closest(".remove-item");
 
-        if (!confirm("Remove this item from the order?")) {
+        if (!confirm(
+            "Remove this item from the order?"
+        )) {
+
             return;
+
         }
 
-        sendOrderUpdate(button.dataset.orderItem, "remove");
+        sendOrderUpdate(
+            button.dataset.orderItem,
+            "remove"
+        );
 
     }
 
 
-    /*
-    ---------------------------------
-    SEND TO KITCHEN
-    ---------------------------------
-    */
+
+    /* ===========================================
+       SEND TO KITCHEN
+    =========================================== */
 
     if (e.target.closest("#send-kitchen")) {
 
         e.preventDefault();
 
-        const button = e.target.closest("#send-kitchen");
+        const button = e.target.closest(
+            "#send-kitchen"
+        );
 
         button.disabled = true;
 
-        fetch(`/orders/guest/${button.dataset.guest}/send/`, {
+        fetch(
+            `/orders/guest/${button.dataset.guest}/send/`,
+            {
 
-            method: "POST",
+                method: "POST",
 
-            headers: {
+                headers: {
 
-                "X-CSRFToken": csrftoken,
+                    "X-CSRFToken": csrftoken,
+
+                }
 
             }
 
-        })
+        )
 
         .then(response => response.json())
 
@@ -246,18 +322,28 @@ document.addEventListener("click", function (e) {
             if (data.success) {
 
                 if (data.html) {
+
                     updateCurrentOrder(data.html);
+
                 }
 
                 showToast(data.message);
 
                 if (data.print_url) {
-                    window.open(data.print_url, "_blank");
+
+                    window.open(
+                        data.print_url,
+                        "_blank"
+                    );
+
                 }
 
             } else {
 
-                showToast(data.message, false);
+                showToast(
+                    data.message,
+                    false
+                );
 
             }
 
@@ -269,7 +355,10 @@ document.addEventListener("click", function (e) {
 
             console.error(error);
 
-            showToast("Unable to send order to kitchen.", false);
+            showToast(
+                "Unable to send order to kitchen.",
+                false
+            );
 
             button.disabled = false;
 
