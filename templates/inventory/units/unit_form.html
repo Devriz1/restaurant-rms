@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+{% if object %}
+Edit Unit
+{% else %}
+Add Unit
+{% endif %}
+{% endblock %}
+
+{% block breadcrumb %}
+Inventory / Units
+{% endblock %}
+
+{% block page_title %}
+{% if object %}
+Edit Unit
+{% else %}
+Add Unit
+{% endif %}
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- Header -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2 class="mb-1">
+
+                {% if object %}
+                Edit Unit
+                {% else %}
+                Add New Unit
+                {% endif %}
+
+            </h2>
+
+            <p class="text-muted mb-0">
+
+                Create and manage inventory measurement units.
+
+            </p>
+
+        </div>
+
+        <a href="{% url 'inventory:unit-list' %}"
+           class="btn btn-outline-secondary">
+
+            <i class="bi bi-arrow-left"></i>
+
+            Back
+
+        </a>
+
+    </div>
+
+    <!-- Form -->
+
+    <div class="card shadow-sm border-0">
+
+        <div class="card-body p-4">
+
+            <form method="post" novalidate>
+
+                {% csrf_token %}
+
+                <div class="row g-4">
+
+                    <!-- Name -->
+
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold">
+
+                            Unit Name
+                            <span class="text-danger">*</span>
+
+                        </label>
+
+                        {{ form.name }}
+
+                        {% if form.name.errors %}
+
+                            <div class="text-danger small mt-1">
+
+                                {{ form.name.errors }}
+
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+                    <!-- Symbol -->
+
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold">
+
+                            Symbol
+                            <span class="text-danger">*</span>
+
+                        </label>
+
+                        {{ form.symbol }}
+
+                        {% if form.symbol.errors %}
+
+                            <div class="text-danger small mt-1">
+
+                                {{ form.symbol.errors }}
+
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+                    <!-- Type -->
+
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold">
+
+                            Unit Type
+
+                        </label>
+
+                        {{ form.unit_type }}
+
+                    </div>
+
+                    <!-- Decimal -->
+
+                    <div class="col-md-3">
+
+                        <div class="form-check mt-4 pt-2">
+
+                            {{ form.decimal_allowed }}
+
+                            <label class="form-check-label">
+
+                                Decimal Allowed
+
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Active -->
+
+                    <div class="col-md-3">
+
+                        <div class="form-check mt-4 pt-2">
+
+                            {{ form.is_active }}
+
+                            <label class="form-check-label">
+
+                                Active
+
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <hr class="my-4">
+
+                <div class="d-flex justify-content-end gap-2">
+
+                    <a href="{% url 'inventory:unit-list' %}"
+                       class="btn btn-light">
+
+                        Cancel
+
+                    </a>
+
+                    <button type="submit"
+                            class="btn btn-primary">
+
+                        <i class="bi bi-check-circle"></i>
+
+                        {% if object %}
+                        Update Unit
+                        {% else %}
+                        Save Unit
+                        {% endif %}
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

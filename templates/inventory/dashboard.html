@@ -1,53 +1,534 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}
 Inventory Dashboard
 {% endblock %}
 
+{% block breadcrumb %}
+Inventory
+{% endblock %}
+
+{% block page_title %}
+Inventory Dashboard
+{% endblock %}
+
 {% block content %}
 
-<div class="container py-4">
+<div class="container-fluid">
 
-    <h2>Inventory Dashboard</h2>
+    <!-- ==========================================
+        PAGE HEADER
+    =========================================== -->
 
-    <hr>
+    <div class="page-header mb-4">
+
+        <h2>
+
+            Inventory Dashboard
+
+        </h2>
+
+        <p class="text-muted">
+
+            Manage restaurant inventory, purchases, stock and recipes.
+
+        </p>
+        <a href="javascript:history.back();" class="btn btn-outline-secondary">
+
+    <i class="bi bi-arrow-left"></i>
+
+    Back
+
+</a>
+
+    </div>
+    <!-- ==========================================
+    SUMMARY CARDS
+========================================== -->
+
+<div class="row g-4 mb-4">
+
+    <div class="col-lg-3 col-md-6">
+
+        <div class="card shadow-sm border-0">
+
+            <div class="card-body">
+
+                <small class="text-muted">
+
+                    Total Units
+
+                </small>
+
+                <h2 class="mt-2">
+
+                    {{ total_units }}
+
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+
+        <div class="card shadow-sm border-0">
+
+            <div class="card-body">
+
+                <small class="text-muted">
+
+                    Active Units
+
+                </small>
+
+                <h2 class="mt-2 text-success">
+
+                    {{ active_units }}
+
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+
+        <div class="card shadow-sm border-0">
+
+            <div class="card-body">
+
+                <small class="text-muted">
+
+                    Weight Units
+
+                </small>
+
+                <h2 class="mt-2 text-primary">
+
+                    {{ weight_units }}
+
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+
+        <div class="card shadow-sm border-0">
+
+            <div class="card-body">
+
+                <small class="text-muted">
+
+                    Volume Units
+
+                </small>
+
+                <h2 class="mt-2 text-warning">
+
+                    {{ volume_units }}
+
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+    <!-- ==========================================
+        SUMMARY CARDS
+    =========================================== -->
 
     <div class="row g-4">
 
-        <div class="col-md-3">
-            <div class="card">
-                <div class="card-body text-center">
-                    <h5>Ingredients</h5>
-                    <h2>{{ ingredient_count }}</h2>
+        <div class="col-lg-3 col-md-6">
+
+            <div class="card shadow-sm border-0 h-100">
+
+                <div class="card-body">
+
+                    <small class="text-muted">
+
+                        Total Materials
+
+                    </small>
+
+                    <h2 class="mt-2">
+
+                        {{ total_materials }}
+
+                    </h2>
+
                 </div>
+
             </div>
+
         </div>
 
-        <div class="col-md-3">
-            <div class="card">
-                <div class="card-body text-center">
-                    <h5>Categories</h5>
-                    <h2>{{ category_count }}</h2>
+        <div class="col-lg-3 col-md-6">
+
+            <div class="card shadow-sm border-0 h-100">
+
+                <div class="card-body">
+
+                    <small class="text-muted">
+
+                        Suppliers
+
+                    </small>
+
+                    <h2 class="mt-2">
+
+                        {{ total_suppliers }}
+
+                    </h2>
+
                 </div>
+
             </div>
+
         </div>
 
-        <div class="col-md-3">
-            <div class="card">
-                <div class="card-body text-center">
-                    <h5>Suppliers</h5>
-                    <h2>{{ supplier_count }}</h2>
+        <div class="col-lg-3 col-md-6">
+
+            <div class="card shadow-sm border-0 h-100">
+
+                <div class="card-body">
+
+                    <small class="text-muted">
+
+                        Low Stock
+
+                    </small>
+
+                    <h2 class="mt-2 text-warning">
+
+                        {{ low_stock }}
+
+                    </h2>
+
                 </div>
+
             </div>
+
         </div>
 
-        <div class="col-md-3">
-            <div class="card">
-                <div class="card-body text-center">
-                    <h5>Low Stock</h5>
-                    <h2>{{ low_stock }}</h2>
+        <div class="col-lg-3 col-md-6">
+
+            <div class="card shadow-sm border-0 h-100">
+
+                <div class="card-body">
+
+                    <small class="text-muted">
+
+                        Out Of Stock
+
+                    </small>
+
+                    <h2 class="mt-2 text-danger">
+
+                        {{ out_of_stock }}
+
+                    </h2>
+
                 </div>
+
             </div>
+
+        </div>
+
+    </div>
+
+    <!-- ==========================================
+        QUICK ACCESS
+    =========================================== -->
+
+    <hr class="my-5">
+
+    <div class="mb-4">
+
+        <h4 class="fw-bold">
+
+            Quick Access
+
+        </h4>
+
+        <p class="text-muted mb-0">
+
+            Navigate to inventory modules.
+
+        </p>
+
+    </div>
+
+    <!-- ==========================================
+        MASTER MODULES
+    =========================================== -->
+
+    <h5 class="fw-semibold mb-3">
+
+        Masters
+
+    </h5>
+
+    <div class="row g-4">
+
+        <div class="col-lg-3 col-md-4 col-sm-6">
+
+            <a href="{% url 'inventory:unit-list' %}" class="text-decoration-none">
+
+                <div class="card shadow-sm border-0 h-100 text-center">
+
+                    <div class="card-body">
+
+                        <i class="bi bi-rulers fs-1 text-primary"></i>
+
+                        <h5 class="mt-3">
+
+                            Units
+
+                        </h5>
+
+                    </div>
+
+                </div>
+
+            </a>
+
+        </div>
+
+        <div class="col-lg-3 col-md-4 col-sm-6">
+
+            <a href="{% url 'inventory:supplier-list' %}" class="text-decoration-none">
+
+                <div class="card shadow-sm border-0 h-100 text-center">
+
+                    <div class="card-body">
+
+                        <i class="bi bi-truck fs-1 text-success"></i>
+
+                        <h5 class="mt-3">
+
+                            Suppliers
+
+                        </h5>
+
+                    </div>
+
+                </div>
+
+            </a>
+
+        </div>
+
+        <div class="col-lg-3 col-md-4 col-sm-6">
+
+            <a href="{% url 'inventory:category-list' %}" class="text-decoration-none">
+
+                <div class="card shadow-sm border-0 h-100 text-center">
+
+                    <div class="card-body">
+
+                        <i class="bi bi-tags fs-1 text-warning"></i>
+
+                        <h5 class="mt-3">
+
+                            Categories
+
+                        </h5>
+
+                    </div>
+
+                </div>
+
+            </a>
+
+        </div>
+
+        <div class="col-lg-3 col-md-4 col-sm-6">
+
+            <a href="{% url 'inventory:material-list' %}" class="text-decoration-none">
+
+                <div class="card shadow-sm border-0 h-100 text-center">
+
+                    <div class="card-body">
+
+                        <i class="bi bi-box-seam fs-1 text-danger"></i>
+
+                        <h5 class="mt-3">
+
+                            Raw Materials
+
+                        </h5>
+
+                    </div>
+
+                </div>
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- ==========================================
+        OPERATIONS
+    =========================================== -->
+
+    <div class="mt-5">
+
+        <h5 class="fw-semibold mb-3">
+
+            Operations
+
+        </h5>
+
+        <div class="row g-4">
+
+            <div class="col-lg-3 col-md-4 col-sm-6">
+
+<a href="{% url 'purchase:purchase-list' %}" class="text-decoration-none">
+
+                    <div class="card shadow-sm border-0 h-100 text-center">
+
+                        <div class="card-body">
+
+                            <i class="bi bi-cart-check fs-1 text-primary"></i>
+
+                            <h5 class="mt-3">
+
+                                Purchases
+
+                            </h5>
+
+                        </div>
+
+                    </div>
+
+                </a>
+
+            </div>
+
+            <div class="col-lg-3 col-md-4 col-sm-6">
+
+                <a href="#" class="text-decoration-none">
+
+                    <div class="card shadow-sm border-0 h-100 text-center">
+
+                        <div class="card-body">
+
+                            <i class="bi bi-boxes fs-1 text-success"></i>
+
+                            <h5 class="mt-3">
+
+                                Stock
+
+                            </h5>
+
+                        </div>
+
+                    </div>
+
+                </a>
+
+            </div>
+
+            <div class="col-lg-3 col-md-4 col-sm-6">
+
+                <a href="#" class="text-decoration-none">
+
+                    <div class="card shadow-sm border-0 h-100 text-center">
+
+                        <div class="card-body">
+
+                            <i class="bi bi-journal-text fs-1 text-warning"></i>
+
+                            <h5 class="mt-3">
+
+                                Recipes
+
+                            </h5>
+
+                        </div>
+
+                    </div>
+
+                </a>
+
+            </div>
+
+            <div class="col-lg-3 col-md-4 col-sm-6">
+
+                <a href="#" class="text-decoration-none">
+
+                    <div class="card shadow-sm border-0 h-100 text-center">
+
+                        <div class="card-body">
+
+                            <i class="bi bi-graph-up fs-1 text-danger"></i>
+
+                            <h5 class="mt-3">
+
+                                Reports
+
+                            </h5>
+
+                        </div>
+
+                    </div>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ==========================================
+        RECENT ACTIVITY
+    =========================================== -->
+
+    <div class="card shadow-sm border-0 mt-5">
+
+        <div class="card-header bg-white">
+
+            <h5 class="mb-0">
+
+                Recent Inventory Activity
+
+            </h5>
+
+        </div>
+
+        <div class="card-body text-center py-5">
+
+            <i class="bi bi-clock-history display-5 text-muted"></i>
+
+            <h5 class="mt-3">
+
+                No Recent Activity
+
+            </h5>
+
+            <p class="text-muted mb-0">
+
+                Inventory activities will appear here once purchases and stock movements begin.
+
+            </p>
+
         </div>
 
     </div>

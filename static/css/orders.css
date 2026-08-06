@@ -1,595 +1,183 @@
 /* ==========================================================
-   RESTAURANT RMS
-   LIVE ORDERS
-   PART 1
-   Layout + Header + Statistics
-========================================================== */
+   RESTAURANT RMS - LIVE ORDERS & FLOOR VIEW STYLING
+   ========================================================== */
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+.orders-page {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    animation: fadeIn 0.3s ease-out forwards;
 }
 
-/* ==========================================
-   PAGE
-========================================== */
-
-.orders-page{
-
-    display:flex;
-
-    flex-direction:column;
-
-    gap:25px;
-
-    padding:25px;
-
+.orders-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 30px;
+    background: var(--brand-gradient);
+    border-radius: var(--border-radius-lg);
+    color: var(--text-white);
+    box-shadow: var(--shadow-lg);
 }
 
-/* ==========================================
-   HEADER
-========================================== */
-
-.orders-header{
-
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
-
-    padding:24px 30px;
-
-    background:linear-gradient(
-        135deg,
-        #0f172a,
-        #1e293b
-    );
-
-    border-radius:18px;
-
-    color:#fff;
-
-    box-shadow:0 15px 40px rgba(0,0,0,.15);
-
+.orders-header h1 {
+    font-size: 1.75rem;
+    font-weight: 800;
+    margin-bottom: 4px;
 }
 
-.orders-header h1{
-
-    font-size:32px;
-
-    font-weight:700;
-
-    margin-bottom:8px;
-
+.orders-header p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.925rem;
 }
 
-.orders-header p{
-
-    margin:0;
-
-    color:#cbd5e1;
-
-    font-size:15px;
-
+/* Orders Statistics */
+.orders-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
 }
 
-/* ==========================================
-   STATS
-========================================== */
-
-.orders-stats{
-
-    display:grid;
-
-    grid-template-columns:repeat(
-        auto-fit,
-        minmax(220px,1fr)
-    );
-
-    gap:20px;
-
+.orders-search {
+    display: flex;
+    align-items: center;
 }
 
-.stat-card{
-
-    background:#fff;
-
-    border-radius:18px;
-
-    padding:24px;
-
-    box-shadow:0 12px 30px rgba(0,0,0,.08);
-
-    transition:.3s;
-
-    border:1px solid #eef2f7;
-
+.orders-search input {
+    width: 100%;
+    max-width: 420px;
+    height: 46px;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+    padding: 0 18px;
+    font-size: 0.925rem;
+    transition: all var(--transition-fast);
+    background-color: var(--bg-card);
+    box-shadow: var(--shadow-sm);
 }
 
-.stat-card:hover{
-
-    transform:translateY(-5px);
-
-    box-shadow:0 20px 45px rgba(0,0,0,.12);
-
+.orders-search input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px var(--primary-light);
 }
 
-.stat-card span{
-
-    display:block;
-
-    color:#64748b;
-
-    font-size:14px;
-
-    margin-bottom:12px;
-
+/* Orders Cards Grid */
+.orders-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 24px;
 }
 
-.stat-card h2{
-
-    font-size:34px;
-
-    font-weight:700;
-
-    color:#0f172a;
-
-    margin:0;
-
-}
-/* ==========================================================
-   RESTAURANT RMS
-   LIVE ORDERS
-   PART 2
-   Search + Orders Grid + Order Cards
-========================================================== */
-
-
-/* ==========================================
-   SEARCH
-========================================== */
-
-.orders-search{
-
-    display:flex;
-
-    align-items:center;
-
+.order-card {
+    background-color: var(--bg-card);
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-md);
+    transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+    display: flex;
+    flex-direction: column;
 }
 
-.orders-search input{
-
-    width:100%;
-
-    max-width:420px;
-
-    height:48px;
-
-    border-radius:12px;
-
-    border:1px solid #dbe3ec;
-
-    padding:0 18px;
-
-    font-size:15px;
-
-    transition:.25s;
-
-    background:#fff;
-
+.order-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
 }
 
-.orders-search input:focus{
-
-    border-color:#2563eb;
-
-    box-shadow:0 0 0 .2rem rgba(37,99,235,.15);
-
+.order-card-header {
+    padding: 18px 24px;
+    background: var(--brand-gradient);
+    color: var(--text-white);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-
-/* ==========================================
-   GRID
-========================================== */
-
-.orders-grid{
-
-    display:grid;
-
-    grid-template-columns:repeat(
-        auto-fill,
-        minmax(360px,1fr)
-    );
-
-    gap:24px;
-
+.order-card-header h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0;
 }
 
-
-/* ==========================================
-   ORDER CARD
-========================================== */
-
-.order-card{
-
-    background:#fff;
-
-    border-radius:18px;
-
-    overflow:hidden;
-
-    border:1px solid #e8edf3;
-
-    box-shadow:0 12px 28px rgba(0,0,0,.07);
-
-    transition:.30s;
-
-    display:flex;
-
-    flex-direction:column;
-
+.order-card-header small {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.8rem;
 }
 
-.order-card:hover{
-
-    transform:translateY(-6px);
-
-    box-shadow:0 20px 40px rgba(0,0,0,.12);
-
+.order-card-body {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    flex: 1;
 }
 
-
-/* ==========================================
-   CARD HEADER
-========================================== */
-
-.order-card-header{
-
-    padding:20px 24px;
-
-    background:linear-gradient(
-        135deg,
-        #2563eb,
-        #1d4ed8
-    );
-
-    color:#fff;
-
+.guest-block {
+    padding-bottom: 14px;
+    border-bottom: 1px dashed var(--border-color);
 }
 
-.order-card-header h3{
-
-    font-size:22px;
-
-    font-weight:700;
-
-    margin-bottom:6px;
-
+.guest-block:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
 }
 
-.order-card-header small{
-
-    color:#dbeafe;
-
-    font-size:13px;
-
+.guest-block h5 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    color: var(--text-primary);
+    font-weight: 700;
+    font-size: 0.95rem;
 }
 
-
-/* ==========================================
-   CARD BODY
-========================================== */
-
-.order-card-body{
-
-    padding:22px;
-
-    display:flex;
-
-    flex-direction:column;
-
-    gap:18px;
-
-    min-height:220px;
-
+.guest-block ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
-
-/* ==========================================
-   GUEST BLOCK
-========================================== */
-
-.guest-block{
-
-    padding-bottom:15px;
-
-    border-bottom:1px dashed #e5e7eb;
-
+.guest-block li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    margin-bottom: 6px;
+    border-radius: var(--border-radius-sm);
+    background-color: #f8fafc;
+    border: 1px solid var(--border-subtle);
+    font-size: 0.875rem;
+    color: var(--text-primary);
 }
 
-.guest-block:last-child{
-
-    border-bottom:none;
-
-    padding-bottom:0;
-
+.order-card-footer {
+    padding: 16px 20px;
+    border-top: 1px solid var(--border-color);
+    background-color: #f8fafc;
 }
 
-.guest-block h5{
-
-    font-size:16px;
-
-    font-weight:700;
-
-    color:#0f172a;
-
-    margin-bottom:12px;
-
+.empty-orders {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+    background-color: var(--bg-card);
+    border-radius: var(--border-radius-lg);
+    border: 2px dashed var(--border-color);
 }
 
-.guest-block ul{
-
-    margin:0;
-
-    padding-left:18px;
-
+.empty-orders i {
+    font-size: 3.5rem;
+    color: var(--text-muted);
 }
 
-.guest-block li{
-
-    color:#475569;
-
-    margin-bottom:8px;
-
-    line-height:1.5;
-
+.empty-orders h3 {
+    margin-top: 16px;
+    font-size: 1.5rem;
+    color: var(--text-primary);
 }
 
-
-/* ==========================================
-   FOOTER
-========================================== */
-
-.order-card-footer{
-
-    padding:18px 22px;
-
-    border-top:1px solid #edf2f7;
-
-    background:#fafbfd;
-
-}
-/* ==========================================================
-   RESTAURANT RMS
-   LIVE ORDERS
-   PART 3
-   Statistics + Badges + Premium Styling
-========================================================== */
-
-
-/* ==========================================
-   SUMMARY
-========================================== */
-
-.order-summary{
-
-    display:grid;
-
-    grid-template-columns:repeat(3,1fr);
-
-    gap:14px;
-
-    margin-bottom:20px;
-
-}
-
-.summary-box{
-
-    background:#f8fafc;
-
-    border:1px solid #e2e8f0;
-
-    border-radius:12px;
-
-    padding:14px;
-
-    text-align:center;
-
-    transition:.25s;
-
-}
-
-.summary-box:hover{
-
-    background:#eff6ff;
-
-    border-color:#bfdbfe;
-
-}
-
-.summary-box small{
-
-    display:block;
-
-    color:#64748b;
-
-    font-size:12px;
-
-    margin-bottom:6px;
-
-}
-
-.summary-box strong{
-
-    display:block;
-
-    font-size:22px;
-
-    color:#0f172a;
-
-    font-weight:700;
-
-}
-
-
-/* ==========================================
-   STATUS BADGE
-========================================== */
-
-.status-badge{
-
-    display:inline-flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    padding:6px 12px;
-
-    border-radius:999px;
-
-    font-size:12px;
-
-    font-weight:600;
-
-}
-
-.status-badge.active{
-
-    background:#dcfce7;
-
-    color:#15803d;
-
-}
-
-
-/* ==========================================
-   GUEST TITLE
-========================================== */
-
-.guest-block h5{
-
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
-
-    margin-bottom:12px;
-
-    color:#0f172a;
-
-    font-weight:700;
-
-}
-
-
-/* ==========================================
-   ITEM LIST
-========================================== */
-
-.guest-block ul{
-
-    list-style:none;
-
-    padding:0;
-
-    margin:0;
-
-}
-
-.guest-block li{
-
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
-
-    padding:10px 14px;
-
-    margin-bottom:8px;
-
-    border-radius:10px;
-
-    background:#f8fafc;
-
-    border:1px solid #edf2f7;
-
-    transition:.25s;
-
-}
-
-.guest-block li:hover{
-
-    background:#eff6ff;
-
-    border-color:#bfdbfe;
-
-}
-
-
-/* ==========================================
-   CARD FOOTER BUTTON
-========================================== */
-
-.order-card-footer .btn{
-
-    border-radius:12px;
-
-    font-weight:600;
-
-    height:46px;
-
-}
-
-
-/* ==========================================
-   EMPTY PAGE
-========================================== */
-
-.empty-orders{
-
-    width:100%;
-
-    grid-column:1/-1;
-
-    text-align:center;
-
-    padding:80px 20px;
-
-    background:#fff;
-
-    border-radius:18px;
-
-    border:2px dashed #dbe3ec;
-
-}
-
-.empty-orders i{
-
-    font-size:60px;
-
-    color:#94a3b8;
-
-}
-
-.empty-orders h3{
-
-    margin-top:20px;
-
-    font-size:28px;
-
-    color:#1e293b;
-
-}
-
-.empty-orders p{
-
-    color:#64748b;
-
-    margin-top:10px;
-
+.empty-orders p {
+    color: var(--text-secondary);
 }

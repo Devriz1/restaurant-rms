@@ -52,5 +52,15 @@ path(
     views.MenuItemDeleteView.as_view(),
     name="item-delete",
 ),
+path(
+    "import/",
+    views.import_menu_items,
+    name="item-import",
+),
 
+path(
+    "export/",
+    views.export_menu_items,
+    name="item-export",
+),
 ]

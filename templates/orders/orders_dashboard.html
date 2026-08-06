@@ -1,333 +1,141 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}
-Live Orders
-{% endblock %}
+{% block title %}Live Orders | Restaurant RMS{% endblock %}
+{% block breadcrumb %}Operations{% endblock %}
+{% block page_title %}Orders Management{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/orders.css' %}">
 {% endblock %}
 
 {% block content %}
-
 <div class="orders-page">
 
-    <!-- ========================================= -->
-    <!-- PAGE HEADER -->
-    <!-- ========================================= -->
-
+    <!-- Orders Header -->
     <div class="orders-header">
-
         <div>
-
-            <h1>
-
-                <i class="bi bi-journal-text"></i>
-
-                Live Orders
-
-            </h1>
-
-            <p>
-
-                Monitor all active restaurant orders in real time.
-
-            </p>
-
+            <h1><i class="bi bi-journal-richtext me-2"></i> Live Table Orders</h1>
+            <p>Monitor all active dining sessions and live orders across tables.</p>
         </div>
-
+        <div>
+            <a href="{% url 'orders:floor-view' %}" class="btn btn-light rounded-pill px-4 fw-bold">
+                <i class="bi bi-grid-3x3-gap-fill me-1 text-primary"></i> Floor View
+            </a>
+        </div>
     </div>
 
-
-    <!-- ========================================= -->
-    <!-- DASHBOARD STATS -->
-    <!-- ========================================= -->
-
+    <!-- Stats Row -->
     <div class="orders-stats">
-
         <div class="stat-card">
-
             <span>Active Tables</span>
-
-            <h2>
-
-                {{ active_tables }}
-
-            </h2>
-
+            <h2>{{ active_tables }}</h2>
         </div>
-
         <div class="stat-card">
-
             <span>Open Sessions</span>
-
-            <h2>
-
-                {{ active_tables }}
-
-            </h2>
-
+            <h2>{{ active_tables }}</h2>
         </div>
-
         <div class="stat-card">
-
-            <span>Today's Orders</span>
-
-            <h2>
-
-                {{ total_items }}
-
-            </h2>
-
+            <span>Total Items Ordered</span>
+            <h2>{{ total_items }}</h2>
         </div>
-
         <div class="stat-card">
-
-            <span>Guests</span>
-
-            <h2>
-
-                {{ total_guests }}
-
-            </h2>
-
+            <span>Seated Guests</span>
+            <h2>{{ total_guests }}</h2>
         </div>
-
     </div>
 
-
-    <!-- ========================================= -->
-    <!-- SEARCH -->
-    <!-- ========================================= -->
-
-    <div class="orders-search">
-
-        <input
-            type="text"
-            id="orderSearch"
-            placeholder="Search Table..."
-
-            class="form-control">
-
+    <!-- Search Toolbar -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div class="orders-search flex-grow-1">
+            <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                <input type="text" id="orderSearch" placeholder="Search table or session number..." class="form-control">
+            </div>
+        </div>
     </div>
 
-
-    <!-- ========================================= -->
-    <!-- TABLE CARDS -->
-    <!-- ========================================= -->
-
+    <!-- Orders Grid -->
     <div class="orders-grid">
-
         {% for session in sessions %}
-
-        <div
-            class="order-card"
-            data-table="{{ session.table.display_name|lower }}">
-
-            <!-- Header -->
-
+        <div class="order-card" data-table="{{ session.table.display_name|lower }}">
             <div class="order-card-header">
-
                 <div>
-
-                    <h3>
-
-                        🍽 {{ session.table.display_name }}
-
-                    </h3>
-
-                    <small>
-
-                        Session :
-                        {{ session.session_number }}
-
-                    </small>
-<br>
-
-<small>
-
-Updated :
-
-{% if session.last_updated %}
-
-{{ session.last_updated|date:"h:i A" }}
-
-{% else %}
-
---
-
-{% endif %}
-
-</small>
+                    <h3><i class="bi bi-table me-2"></i> {{ session.table.display_name }}</h3>
+                    <small>Session #{{ session.session_number }}</small>
                 </div>
-
+                <div class="text-end">
+                    <span class="badge badge-success rounded-pill px-3 py-1">Active</span>
+                </div>
             </div>
 
-<div class="order-summary">
-
-    <div class="summary-box">
-
-        <small>Guests</small>
-
-        <strong>
-
-            {{ session.total_guests }}
-
-        </strong>
-
-    </div>
-
-    <div class="summary-box">
-
-        <small>Items</small>
-
-        <strong>
-
-            {{ session.total_items }}
-
-        </strong>
-
-    </div>
-
-    <div class="summary-box">
-
-        <small>Status</small>
-
-        <span class="status-badge active">
-
-            Active
-
-        </span>
-
-    </div>
-
-</div>
-            <!-- Guests -->
+            <div class="order-summary p-3 border-bottom bg-light">
+                <div class="summary-box">
+                    <small>Guests</small>
+                    <strong>{{ session.total_guests }}</strong>
+                </div>
+                <div class="summary-box">
+                    <small>Items</small>
+                    <strong>{{ session.total_items }}</strong>
+                </div>
+                <div class="summary-box">
+                    <small>Updated</small>
+                    <strong>{% if session.last_updated %}{{ session.last_updated|date:"h:i A" }}{% else %}--{% endif %}</strong>
+                </div>
+            </div>
 
             <div class="order-card-body">
-
                 {% for guest in session.guest_orders.all %}
-
                     <div class="guest-block">
-
                         <h5>
-
-                            Guest {{ guest.guest_number }}
-
+                            <span><i class="bi bi-person me-1 text-primary"></i> Guest {{ guest.guest_number }}</span>
+                            <span class="badge bg-light text-dark border">{{ guest.items.count }} items</span>
                         </h5>
-
                         <ul>
-
                             {% for item in guest.items.all %}
-
                                 <li>
-
-    <span>
-
-        {{ item.menu_item.name }}
-
-    </span>
-
-    <strong>
-
-        ×{{ item.quantity }}
-
-    </strong>
-
-</li>
-
-                            {% empty %}
-
-                                <li>
-
-                                    No Items
-
+                                    <span class="fw-medium">{{ item.menu_item.name }}</span>
+                                    <span class="badge bg-primary rounded-pill px-2 py-1">×{{ item.quantity }}</span>
                                 </li>
-
+                            {% empty %}
+                                <li class="text-muted fst-italic">No items added yet</li>
                             {% endfor %}
-
                         </ul>
-
                     </div>
-
                 {% empty %}
-
-                    <p>
-
-                        No Guests
-
-                    </p>
-
+                    <p class="text-muted text-center py-4">No active guest orders.</p>
                 {% endfor %}
-
             </div>
-
-
-            <!-- Footer -->
 
             <div class="order-card-footer">
-
-                <a
-                    href="{% url 'orders:session-detail' session.id %}"
-                    class="btn btn-primary w-100">
-
-                    Open Order
-
+                <a href="{% url 'orders:session-detail' session.id %}" class="btn btn-primary w-100 rounded-pill">
+                    <i class="bi bi-box-arrow-in-right me-1"></i> Manage Order & Session
                 </a>
-
             </div>
-
         </div>
-
         {% empty %}
-
         <div class="empty-orders">
-
             <i class="bi bi-journal-x"></i>
-
-            <h3>
-
-                No Active Orders
-
-            </h3>
-
-            <p>
-
-                Orders will appear here once waiters start taking orders.
-
-            </p>
-
+            <h3>No Active Table Sessions</h3>
+            <p class="mb-4">No active dining sessions found at the moment.</p>
+            <a href="{% url 'orders:floor-view' %}" class="btn btn-primary rounded-pill px-4">
+                <i class="bi bi-grid-3x3-gap-fill me-1"></i> Go to Floor View
+            </a>
         </div>
-
         {% endfor %}
-
     </div>
 
 </div>
-
 {% endblock %}
 
 {% block extra_js %}
-
 <script>
-
-const search=document.getElementById("orderSearch");
-
-search?.addEventListener("keyup",function(){
-
-const value=this.value.toLowerCase();
-
-document.querySelectorAll(".order-card").forEach(card=>{
-
-card.style.display=
-card.dataset.table.includes(value)
-?"block":"none";
-
+const search = document.getElementById("orderSearch");
+search?.addEventListener("keyup", function(){
+    const value = this.value.toLowerCase();
+    document.querySelectorAll(".order-card").forEach(card => {
+        card.style.display = card.dataset.table.includes(value) ? "flex" : "none";
+    });
 });
-
-});
-
 </script>
-
 {% endblock %}

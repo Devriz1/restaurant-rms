@@ -1,7 +1,6 @@
 from functools import wraps
-
 from django.core.exceptions import PermissionDenied
-
+from django.contrib.auth.decorators import login_required
 
 def permission_required(permission_code):
 
@@ -10,17 +9,18 @@ def permission_required(permission_code):
         @wraps(view_func)
         def wrapper(request, *args, **kwargs):
 
+            if not request.user.is_authenticated:
+                raise PermissionDenied
+
             if request.user.is_superuser:
                 return view_func(request, *args, **kwargs)
 
-            has_permission = request.user.permissions_list.filter(
+            if request.user.permissions_list.filter(
                 permission__code=permission_code
-            ).exists()
+            ).exists():
+                return view_func(request, *args, **kwargs)
 
-            if not has_permission:
-                raise PermissionDenied
-
-            return view_func(request, *args, **kwargs)
+            raise PermissionDenied
 
         return wrapper
 

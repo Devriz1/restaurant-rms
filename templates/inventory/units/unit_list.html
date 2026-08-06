@@ -1,0 +1,476 @@
+{% extends "base.html" %}
+
+{% block title %}
+Units
+{% endblock %}
+
+{% block breadcrumb %}
+Inventory / Units
+{% endblock %}
+
+{% block page_title %}
+Units
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- ==========================================
+    PAGE HEADER
+=========================================== -->
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+
+        <h2 class="mb-1">
+
+            Units
+
+        </h2>
+
+        <p class="text-muted mb-0">
+
+            Manage all inventory measurement units.
+
+        </p>
+
+    </div>
+
+    <div class="d-flex gap-2">
+
+        <a
+            href="{% url 'inventory:dashboard' %}"
+            class="btn btn-outline-secondary">
+
+            <i class="bi bi-arrow-left"></i>
+
+            Back
+
+        </a>
+
+        <a
+            href="{% url 'inventory:unit-add' %}"
+            class="btn btn-primary">
+
+            <i class="bi bi-plus-circle"></i>
+
+            Add Unit
+
+        </a>
+
+    </div>
+
+</div>
+    <!-- ==========================================
+        SUMMARY CARDS
+    =========================================== -->
+
+    <div class="row g-4 mb-4">
+
+        <div class="col-lg-3 col-md-6">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body">
+
+                    <small class="text-muted">
+
+                        Total Units
+
+                    </small>
+
+                    <h2 class="mt-2">
+
+                        {{ total_units }}
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body">
+
+                    <small class="text-muted">
+
+                        Active Units
+
+                    </small>
+
+                    <h2 class="mt-2 text-success">
+
+                        {{ active_units }}
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body">
+
+                    <small class="text-muted">
+
+                        Weight Units
+
+                    </small>
+
+                    <h2 class="mt-2 text-primary">
+
+                        {{ weight_units }}
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body">
+
+                    <small class="text-muted">
+
+                        Volume Units
+
+                    </small>
+
+                    <h2 class="mt-2 text-warning">
+
+                        {{ volume_units }}
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ==========================================
+        SEARCH & FILTER
+    =========================================== -->
+
+    <div class="card shadow-sm border-0 mb-4">
+
+        <div class="card-body">
+
+            <form method="get">
+
+                <div class="row g-3 align-items-end">
+
+                    <div class="col-lg-5">
+
+                        <label class="form-label fw-semibold">
+
+                            Search
+
+                        </label>
+
+                        <input
+                            type="text"
+                            name="q"
+                            value="{{ request.GET.q }}"
+                            class="form-control"
+                            placeholder="Search by Code, Name or Symbol">
+
+                    </div>
+
+                    <div class="col-lg-3">
+
+                        <label class="form-label fw-semibold">
+
+                            Unit Type
+
+                        </label>
+
+                        <select
+                            name="type"
+                            class="form-select">
+
+                            <option value="">
+
+                                All Types
+
+                            </option>
+
+                            <option value="WEIGHT">
+
+                                Weight
+
+                            </option>
+
+                            <option value="VOLUME">
+
+                                Volume
+
+                            </option>
+
+                            <option value="COUNT">
+
+                                Count
+
+                            </option>
+
+                            <option value="LENGTH">
+
+                                Length
+
+                            </option>
+
+                            <option value="PACKAGE">
+
+                                Package
+
+                            </option>
+
+                            <option value="CUSTOM">
+
+                                Custom
+
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-lg-2">
+
+                        <button
+                            class="btn btn-primary w-100">
+
+                            <i class="bi bi-search"></i>
+
+                            Search
+
+                        </button>
+
+                    </div>
+
+                    <div class="col-lg-2">
+
+                        <a
+                            href="{% url 'inventory:unit-list' %}"
+                            class="btn btn-outline-secondary w-100">
+
+                            Reset
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- ==========================================
+        TABLE
+    =========================================== -->
+
+    <div class="card shadow-sm border-0">
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle mb-0">
+
+                <thead class="table-light">
+
+                    <tr>
+
+                        <th>Code</th>
+
+                        <th>Unit</th>
+
+                        <th>Symbol</th>
+
+                        <th>Type</th>
+
+                        <th>Decimal</th>
+
+                        <th>Status</th>
+
+                        <th width="150">
+
+                            Actions
+
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for unit in units %}
+
+                    <tr>
+
+                        <td>
+
+                            <strong>
+
+                                {{ unit.code }}
+
+                            </strong>
+
+                        </td>
+
+                        <td>
+
+                            {{ unit.name }}
+
+                        </td>
+
+                        <td>
+
+                            <span class="badge bg-info">
+
+                                {{ unit.symbol }}
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            {{ unit.get_unit_type_display }}
+
+                        </td>
+
+                        <td>
+
+                            {% if unit.decimal_allowed %}
+
+                                <span class="badge bg-success">
+
+                                    Yes
+
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-secondary">
+
+                                    No
+
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            {% if unit.is_active %}
+
+                                <span class="badge bg-success">
+
+                                    Active
+
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-danger">
+
+                                    Inactive
+
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            <a
+                                href="{% url 'inventory:unit-edit' unit.pk %}"
+                                class="btn btn-sm btn-warning">
+
+                                <i class="bi bi-pencil"></i>
+
+                            </a>
+
+                            <a
+                                href="{% url 'inventory:unit-delete' unit.pk %}"
+                                class="btn btn-sm btn-danger">
+
+                                <i class="bi bi-trash"></i>
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="7" class="text-center py-5">
+
+                            <i class="bi bi-box-seam display-5 text-muted"></i>
+
+                            <h5 class="mt-3">
+
+                                No Units Found
+
+                            </h5>
+
+                            <p class="text-muted">
+
+                                Start by creating your first unit.
+
+                            </p>
+
+                            <a
+                                href="{% url 'inventory:unit-add' %}"
+                                class="btn btn-primary">
+
+                                <i class="bi bi-plus-circle"></i>
+
+                                Add Unit
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

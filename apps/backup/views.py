@@ -8,9 +8,10 @@ from django.http import FileResponse, Http404
 from django.shortcuts import redirect, render
 from django.utils import timezone
 from django.views.decorators.http import require_POST
-
+from apps.accounts.decorators import permission_required
 
 @login_required
+@permission_required("backup.view")
 def dashboard(request):
 
     backup_folder = Path(settings.BASE_DIR) / "backups"
@@ -98,7 +99,7 @@ def dashboard(request):
         context,
     )
 @login_required
-@require_POST
+@permission_required("backup.create")
 def create_backup(request):
 
     database_file = Path(settings.BASE_DIR) / "db.sqlite3"
@@ -194,8 +195,8 @@ def delete_backup(request, filename):
 
 
 @login_required
+@permission_required("backup.restore")
 def restore_backup(request, filename):
-
     backup_folder = Path(settings.BASE_DIR) / "backups"
 
     backup_file = backup_folder / filename

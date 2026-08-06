@@ -1,187 +1,88 @@
 {% extends "base.html" %}
 {% load static %}
 
-
-{% block title %}
-Billing Dashboard
-{% endblock %}
-
+{% block title %}Billing Dashboard | Restaurant RMS{% endblock %}
+{% block breadcrumb %}Billing{% endblock %}
+{% block page_title %}Pending Bills{% endblock %}
 
 {% block extra_css %}
-
 <link rel="stylesheet" href="{% static 'css/billing_dashboard.css' %}">
-
 {% endblock %}
 
-
-
 {% block content %}
-
-
 <div class="billing-dashboard">
 
-
-    <!-- HEADER -->
-
+    <!-- Header & Search Bar -->
     <div class="billing-dashboard-header">
-
-
         <div>
-
-            <h1>
-                Billing Dashboard
-            </h1>
-
-
-            <p>
-                Orders waiting for payment
-            </p>
-
-
+            <h1><i class="bi bi-receipt-cutoff me-2 text-primary"></i> Pending Billing Dashboard</h1>
+            <p>Active customer orders waiting for payment processing and checkout.</p>
         </div>
-
-
-
-        <div class="billing-search">
-
-
-            <input
-                type="text"
-                id="billSearch"
-                placeholder="Search table or guest..."
-            >
-
-
+        <div class="input-group" style="max-width: 340px;">
+            <span class="input-group-text"><i class="bi bi-search"></i></span>
+            <input type="text" id="billSearch" placeholder="Search table or guest..." class="form-control">
         </div>
-
-
-
     </div>
 
-
-
-
-    <!-- BILL LIST -->
-
-
+    <!-- Bill Cards Grid -->
     <div class="bill-grid">
-
-
         {% for guest in guests %}
+        <div class="bill-card" data-search="{{ guest.session.table.display_name|lower }} guest {{ guest.guest_number }}">
+            <div class="bill-card-header">
+                <div>
+                    <h3><i class="bi bi-table me-2 text-primary"></i> {{ guest.session.table.display_name }}</h3>
+                    <small class="text-muted">{{ guest.session.table.area.name }}</small>
+                </div>
+                <div class="bill-status">
+                    <i class="bi bi-clock me-1"></i> {{ guest.status|default:"Pending Bill" }}
+                </div>
+            </div>
 
+            <div class="bill-info">
+                <div>
+                    <small>Area / Zone</small>
+                    <strong>{{ guest.session.table.area.name }}</strong>
+                </div>
+                <div>
+                    <small>Guest ID</small>
+                    <strong>Guest {{ guest.guest_number }}</strong>
+                </div>
+                <div>
+                    <small>Items Count</small>
+                    <strong>{{ guest.items.count }} items</strong>
+                </div>
+                <div>
+                    <small>Subtotal</small>
+                    <strong class="text-primary">₹{{ guest.subtotal }}</strong>
+                </div>
+            </div>
 
-
-<div class="bill-card">
-
-    <div class="bill-card-header">
-
-        <div>
-
-            <h3>{{ guest.session.table.display_name }}</h3>
-
-            <span>
-                {{ guest.session.table.area.name }}
-            </span>
-
+            <div class="bill-action">
+                <a href="{% url 'billing:billing-screen' guest.id %}">
+                    <i class="bi bi-calculator me-1"></i> Process Checkout
+                </a>
+            </div>
         </div>
-
-        <div class="bill-status">
-            {{ guest.status }}
-        </div>
-
-    </div>
-
-    <div class="bill-info">
-
-        <div>
-
-            <small>Floor</small>
-
-            <strong>
-                {{ guest.session.table.area.name }}
-            </strong>
-
-        </div>
-
-        <div>
-
-            <small>Guest</small>
-
-            <strong>
-                {{ guest.guest_number }}
-            </strong>
-
-        </div>
-
-        <div>
-
-            <small>Items</small>
-
-            <strong>
-                {{ guest.items.count }}
-            </strong>
-
-        </div>
-
-        <div>
-
-            <small>Total</small>
-
-            <strong>
-                ₹ {{ guest.subtotal }}
-            </strong>
-
-        </div>
-
-    </div>
-
-    <div class="bill-action">
-
-        <a href="{% url 'billing:billing-screen' guest.id %}">
-            Open Bill
-        </a>
-
-    </div>
-
-</div>
-
-
-
-
         {% empty %}
-
-
-
         <div class="empty-bills">
-
-
-            <i class="bi bi-receipt"></i>
-
-
-            <h3>
-                No Pending Bills
-            </h3>
-
-
-            <p>
-                All customers have completed payment.
-            </p>
-
-
+            <i class="bi bi-check-circle-fill text-success fs-1 mb-2 d-block"></i>
+            <h3 class="fw-bold">No Pending Bills</h3>
+            <p class="text-secondary mb-0">All active dining tables have cleared their bills.</p>
         </div>
-
-
-
         {% endfor %}
-
-
-
     </div>
 
-
-
 </div>
+{% endblock %}
 
-
-
+{% block extra_js %}
+<script>
+const search = document.getElementById("billSearch");
+search?.addEventListener("keyup", function(){
+    const value = this.value.toLowerCase();
+    document.querySelectorAll(".bill-card").forEach(card => {
+        card.style.display = card.dataset.search.includes(value) ? "flex" : "none";
+    });
+});
+</script>
 {% endblock %}

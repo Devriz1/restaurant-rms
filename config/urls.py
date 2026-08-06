@@ -17,6 +17,8 @@ urlpatterns = [
     path("users/",include("apps.accounts.urls"),),
     path("backup/",include("apps.backup.urls"),),
     path("inventory/",include("apps.inventory.urls"),),
+    path("",include("pwa.urls"),),
+    path("purchase/",include("apps.purchase.urls"),),
 ]
 
 if settings.DEBUG:

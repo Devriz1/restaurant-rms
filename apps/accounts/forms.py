@@ -12,6 +12,10 @@ from .models import User
 # LOGIN
 # ==========================================================
 
+from django import forms
+from django.contrib.auth.forms import AuthenticationForm
+
+
 class LoginForm(AuthenticationForm):
 
     username = forms.CharField(
@@ -19,6 +23,10 @@ class LoginForm(AuthenticationForm):
             attrs={
                 "class": "form-control",
                 "placeholder": "Username",
+                "autocomplete": "off",
+                "autocapitalize": "off",
+                "autocorrect": "off",
+                "spellcheck": "false",
             }
         )
     )
@@ -28,11 +36,10 @@ class LoginForm(AuthenticationForm):
             attrs={
                 "class": "form-control",
                 "placeholder": "Password",
+                "autocomplete": "new-password",
             }
         )
     )
-
-
 # ==========================================================
 # CREATE USER
 # ==========================================================

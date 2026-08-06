@@ -23,8 +23,8 @@ User = get_user_model()
 # ==========================================================
 # USER LIST
 # ==========================================================
-@never_cache
 @login_required
+@permission_required("users.view")
 def user_list(request):
 
     users = User.objects.order_by("username")
@@ -43,6 +43,7 @@ def user_list(request):
 # ==========================================================
 
 @login_required
+@permission_required("users.add")
 def user_add(request):
 
     permissions = Permission.objects.order_by(
@@ -103,6 +104,7 @@ def user_add(request):
 # ==========================================================
 
 @login_required
+@permission_required("users.edit")
 def user_edit(request, pk):
 
     user = get_object_or_404(
@@ -182,6 +184,7 @@ def user_edit(request, pk):
 # ==========================================================
 
 @login_required
+@permission_required("users.delete")
 def user_delete(request, pk):
 
     user = get_object_or_404(
@@ -230,8 +233,8 @@ def user_delete(request, pk):
 # ==========================================================
 
 @login_required
+@permission_required("users.edit")
 def change_user_password(request, pk):
-
     user = get_object_or_404(
         User,
         pk=pk,
@@ -303,7 +306,26 @@ class UserLoginView(LoginView):
 
     redirect_authenticated_user = True
 
+    def get_success_url(self):
 
+        user = self.request.user
+
+        if user.is_superuser:
+            return "/"
+
+        if user.role == User.Roles.WAITER:
+            return "/orders/floor/"
+
+        if user.role == User.Roles.CASHIER:
+            return "/billing/"
+
+        if user.role == User.Roles.MANAGER:
+            return "/"
+
+        if user.role == User.Roles.OWNER:
+            return "/"
+
+        return "/"
 # ==========================================================
 # LOGOUT
 # ==========================================================

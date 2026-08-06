@@ -1,0 +1,431 @@
+{% extends "base.html" %}
+
+{% block title %}
+{% if form.instance.pk %}
+Edit Material
+{% else %}
+Add Material
+{% endif %}
+{% endblock %}
+
+{% block breadcrumb %}
+Inventory / Materials
+{% endblock %}
+
+{% block page_title %}
+{% if form.instance.pk %}
+Edit Material
+{% else %}
+Add Material
+{% endif %}
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- ==========================================
+        PAGE HEADER
+    =========================================== -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2 class="mb-1">
+
+                {% if form.instance.pk %}
+                Edit Material
+                {% else %}
+                Add Material
+                {% endif %}
+
+            </h2>
+
+            <p class="text-muted mb-0">
+
+                Create or update a raw material.
+
+            </p>
+
+        </div>
+
+        <a
+            href="{% url 'inventory:material-list' %}"
+            class="btn btn-outline-secondary">
+
+            <i class="bi bi-arrow-left"></i>
+
+            Back to Materials
+
+        </a>
+
+    </div>
+
+    <!-- ==========================================
+        FORM
+    =========================================== -->
+
+    <form method="post">
+
+        {% csrf_token %}
+
+        <div class="row">
+
+            <!-- LEFT COLUMN -->
+
+            <div class="col-lg-6">
+
+                <div class="card shadow-sm border-0 mb-4">
+
+                    <div class="card-header bg-white">
+
+                        <h5 class="mb-0">
+
+                            Basic Information
+
+                        </h5>
+
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="mb-3">
+
+                            <label class="form-label fw-semibold">
+
+                                Material Name
+
+                            </label>
+
+                            {{ form.name }}
+
+                            {{ form.name.errors }}
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label class="form-label fw-semibold">
+
+                                Category
+
+                            </label>
+
+                            {{ form.category }}
+
+                            {{ form.category.errors }}
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label class="form-label fw-semibold">
+
+                                Supplier
+
+                            </label>
+
+                            {{ form.supplier }}
+
+                            {{ form.supplier.errors }}
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label class="form-label fw-semibold">
+
+                                Unit
+
+                            </label>
+
+                            {{ form.unit }}
+
+                            {{ form.unit.errors }}
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label class="form-label fw-semibold">
+
+                                Barcode
+
+                            </label>
+
+                            {{ form.barcode }}
+
+                            {{ form.barcode.errors }}
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label class="form-label fw-semibold">
+
+                                Storage Location
+
+                            </label>
+
+                            {{ form.storage_location }}
+
+                            {{ form.storage_location.errors }}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+                        <!-- RIGHT COLUMN -->
+
+            <div class="col-lg-6">
+
+                <!-- ==========================================
+                    INVENTORY
+                =========================================== -->
+
+                <div class="card shadow-sm border-0 mb-4">
+
+                    <div class="card-header bg-white">
+
+                        <h5 class="mb-0">
+
+                            Inventory Information
+
+                        </h5>
+
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="row">
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label fw-semibold">
+
+                                    Opening Stock
+
+                                </label>
+
+                                {{ form.opening_stock }}
+
+                                {{ form.opening_stock.errors }}
+
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label fw-semibold">
+
+                                    Current Stock
+
+                                </label>
+
+                                {{ form.current_stock }}
+
+                                {{ form.current_stock.errors }}
+
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label fw-semibold">
+
+                                    Minimum Stock
+
+                                </label>
+
+                                {{ form.minimum_stock }}
+
+                                {{ form.minimum_stock.errors }}
+
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label fw-semibold">
+
+                                    Maximum Stock
+
+                                </label>
+
+                                {{ form.maximum_stock }}
+
+                                {{ form.maximum_stock.errors }}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- ==========================================
+                    PRICING
+                =========================================== -->
+
+                <div class="card shadow-sm border-0 mb-4">
+
+                    <div class="card-header bg-white">
+
+                        <h5 class="mb-0">
+
+                            Pricing
+
+                        </h5>
+
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="row">
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label fw-semibold">
+
+                                    Cost Price
+
+                                </label>
+
+                                {{ form.cost_price }}
+
+                                {{ form.cost_price.errors }}
+
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label fw-semibold">
+
+                                    Last Purchase Price
+
+                                </label>
+
+                                {{ form.last_purchase_price }}
+
+                                {{ form.last_purchase_price.errors }}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- ==========================================
+                    SETTINGS
+                =========================================== -->
+
+                <div class="card shadow-sm border-0 mb-4">
+
+                    <div class="card-header bg-white">
+
+                        <h5 class="mb-0">
+
+                            Settings
+
+                        </h5>
+
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="form-check mb-3">
+
+                            {{ form.expiry_tracking }}
+
+                            <label class="form-check-label ms-2">
+
+                                Enable Expiry Tracking
+
+                            </label>
+
+                        </div>
+
+                        <div class="form-check">
+
+                            {{ form.is_active }}
+
+                            <label class="form-check-label ms-2">
+
+                                Active Material
+
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+                <!-- ==========================================
+            FORM ACTIONS
+        =========================================== -->
+
+        <div class="card shadow-sm border-0">
+
+            <div class="card-body">
+
+                <div class="d-flex justify-content-between">
+
+                    <a
+                        href="{% url 'inventory:material-list' %}"
+                        class="btn btn-outline-secondary">
+
+                        <i class="bi bi-arrow-left"></i>
+
+                        Back
+
+                    </a>
+
+                    <div>
+
+                        <a
+                            href="{% url 'inventory:material-list' %}"
+                            class="btn btn-light border me-2">
+
+                            Cancel
+
+                        </a>
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary">
+
+                            <i class="bi bi-check-circle"></i>
+
+                            {% if form.instance.pk %}
+
+                                Update Material
+
+                            {% else %}
+
+                                Save Material
+
+                            {% endif %}
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

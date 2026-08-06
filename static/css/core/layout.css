@@ -1,369 +1,265 @@
 /* ==========================================================
-   RESTAURANT RMS
-   CORE LAYOUT
-========================================================== */
+   RESTAURANT RMS - CORE LAYOUT
+   Modern Grid & Flex Layout Framework
+   ========================================================== */
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-html,
-body{
-
-    height:100%;
-    width:100%;
-    overflow:hidden;
-
-    font-family:'Inter',sans-serif;
-
-    background:#f5f7fb;
-}
-
-/* ==========================================================
-   VARIABLES (temporary)
-========================================================== */
-
-:root{
-
-    --sidebar-width:280px;
-
-    --navbar-height:70px;
-
-    --footer-height:34px;
-
-    --background:#f5f7fb;
-
-    --card:#ffffff;
-
-    --border:#e5e7eb;
-
-    --primary:#2563eb;
-
-    --text:#1f2937;
-
-    --muted:#6b7280;
-
-    --shadow:
-        0 10px 30px rgba(0,0,0,.05);
-
+html, body {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    font-family: var(--font-sans);
+    background-color: var(--bg-app);
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 /* ==========================================================
-   APPLICATION
-========================================================== */
+   APPLICATION GRID LAYOUT
+   ========================================================== */
 
-.app-layout{
-
-    display:grid;
-
-    grid-template-columns:
-        var(--sidebar-width)
-        1fr;
-
-    height:100vh;
-
+.app-layout {
+    display: grid;
+    grid-template-columns: var(--sidebar-width) 1fr;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    transition: grid-template-columns var(--transition-normal);
 }
 
 /* ==========================================================
-   SIDEBAR
-========================================================== */
+   SIDEBAR WRAPPER
+   ========================================================== */
 
-.sidebar-wrapper{
+.sidebar-wrapper {
+    background-color: var(--sidebar-bg);
+    overflow-y: auto;
+    overflow-x: hidden;
+    border-right: 1px solid var(--sidebar-border);
+    z-index: 1020;
+    transition: width var(--transition-normal), transform var(--transition-normal);
+}
 
-    background:#111827;
+.sidebar-wrapper::-webkit-scrollbar {
+    width: 5px;
+}
 
-    overflow-y:auto;
-
-    overflow-x:hidden;
-
-    border-right:1px solid rgba(255,255,255,.08);
-
+.sidebar-wrapper::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: var(--border-radius-pill);
 }
 
 /* ==========================================================
-   MAIN
-========================================================== */
+   MAIN WRAPPER & NAVIGATION
+   ========================================================== */
 
-.main-wrapper{
+.main-wrapper {
+    display: grid;
+    grid-template-rows: var(--navbar-height) 1fr var(--footer-height);
+    height: 100vh;
+    overflow: hidden;
+    background-color: var(--bg-app);
+}
 
-    display:grid;
-
-    grid-template-rows:
-
-        var(--navbar-height)
-
-        1fr
-
-        var(--footer-height);
-
-    overflow:hidden;
-
+.navbar-wrapper {
+    background-color: var(--bg-glass);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    padding: 0 28px;
+    z-index: 1000;
+    box-shadow: var(--shadow-sm);
 }
 
 /* ==========================================================
-   NAVBAR
-========================================================== */
+   CONTENT WRAPPER
+   ========================================================== */
 
-.navbar-wrapper{
+.content-wrapper {
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 28px;
+    background-color: var(--bg-app);
+}
 
-    background:#fff;
+/* Modern Webkit Scrollbar */
+.content-wrapper::-webkit-scrollbar {
+    width: 8px;
+}
 
-    border-bottom:1px solid var(--border);
+.content-wrapper::-webkit-scrollbar-track {
+    background: transparent;
+}
 
-    display:flex;
+.content-wrapper::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: var(--border-radius-pill);
+    border: 2px solid var(--bg-app);
+}
 
-    align-items:center;
-
-    padding:0 24px;
-
-    z-index:100;
-
+.content-wrapper::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
 }
 
 /* ==========================================================
-   CONTENT
-========================================================== */
+   STATUS BAR / FOOTER
+   ========================================================== */
 
-.content-wrapper{
-
-    overflow:auto;
-
-    padding:24px;
-
-    background:var(--background);
-
+.status-bar {
+    background-color: var(--bg-card);
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.02);
 }
 
-/* Nice scrollbar */
-
-.content-wrapper::-webkit-scrollbar{
-
-    width:10px;
-
+.status-bar .status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
 }
 
-.content-wrapper::-webkit-scrollbar-thumb{
-
-    background:#d1d5db;
-
-    border-radius:20px;
-
-}
-
-.content-wrapper::-webkit-scrollbar-track{
-
-    background:transparent;
-
+.status-bar .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--success);
+    box-shadow: 0 0 8px var(--success);
 }
 
 /* ==========================================================
-   STATUS BAR
-========================================================== */
+   PAGE STRUCTURE & CONTAINERS
+   ========================================================== */
 
-.status-bar{
+.page {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    max-width: 1600px;
+    margin: 0 auto;
+    width: 100%;
+}
 
-    background:#ffffff;
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding-bottom: 8px;
+}
 
-    border-top:1px solid var(--border);
+.page-header h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+    margin: 0;
+}
 
-    display:flex;
-
-    align-items:center;
-
-    justify-content:space-between;
-
-    padding:0 20px;
-
-    font-size:13px;
-
-    color:var(--muted);
-
+.page-header p {
+    margin-top: 4px;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
 }
 
 /* ==========================================================
-   PAGE
-========================================================== */
+   CARD CONTAINER BASES
+   ========================================================== */
 
-.page{
+.card-box {
+    background-color: var(--bg-card);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-color);
+    padding: 24px;
+    transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+}
 
-    display:flex;
-
-    flex-direction:column;
-
-    gap:20px;
-
+.card-box:hover {
+    box-shadow: var(--shadow-lg);
 }
 
 /* ==========================================================
-   PAGE HEADER
-========================================================== */
+   GRID UTILITIES
+   ========================================================== */
 
-.page-header{
-
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
-
+.grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
 }
 
-.page-header h1{
-
-    font-size:30px;
-
-    font-weight:700;
-
-    color:var(--text);
-
+.grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
 }
 
-.page-header p{
-
-    margin-top:4px;
-
-    color:var(--muted);
-
+.grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
 }
 
-/* ==========================================================
-   CARD
-========================================================== */
+@media (max-width: 1200px) {
+    .grid-4 { grid-template-columns: repeat(2, 1fr); }
+    .grid-3 { grid-template-columns: repeat(2, 1fr); }
+}
 
-.card-box{
-
-    background:#fff;
-
-    border-radius:14px;
-
-    box-shadow:var(--shadow);
-
-    border:1px solid var(--border);
-
-    padding:20px;
-
+@media (max-width: 768px) {
+    .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr; }
 }
 
 /* ==========================================================
-   GRID
-========================================================== */
+   FLEX UTILITIES
+   ========================================================== */
 
-.grid-2{
-
-    display:grid;
-
-    grid-template-columns:1fr 1fr;
-
-    gap:20px;
-
-}
-
-.grid-3{
-
-    display:grid;
-
-    grid-template-columns:repeat(3,1fr);
-
-    gap:20px;
-
-}
-
-.grid-4{
-
-    display:grid;
-
-    grid-template-columns:repeat(4,1fr);
-
-    gap:20px;
-
-}
+.flex { display: flex; }
+.flex-between { display: flex; justify-content: space-between; align-items: center; }
+.flex-center { display: flex; justify-content: center; align-items: center; }
+.flex-wrap { flex-wrap: wrap; }
+.gap-10 { gap: 10px; }
+.gap-16 { gap: 16px; }
+.gap-20 { gap: 20px; }
 
 /* ==========================================================
-   FLEX
-========================================================== */
+   TABLE RESPONSIVE CONTAINER
+   ========================================================== */
 
-.flex{
-
-    display:flex;
-
+.table-wrapper {
+    overflow-x: auto;
+    border-radius: var(--border-radius-lg);
+    border: 1px solid var(--border-color);
+    background: var(--bg-card);
+    box-shadow: var(--shadow-sm);
 }
 
-.flex-between{
-
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
-
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
 }
 
-.flex-center{
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
+a {
+    text-decoration: none;
+    color: inherit;
 }
 
-.gap-10{
-
-    gap:10px;
-
-}
-
-.gap-20{
-
-    gap:20px;
-
-}
-
-/* ==========================================================
-   TABLE RESPONSIVE
-========================================================== */
-
-.table-wrapper{
-
-    overflow:auto;
-
-    border-radius:12px;
-
-}
-
-/* ==========================================================
-   IMAGE
-========================================================== */
-
-img{
-
-    max-width:100%;
-
-    display:block;
-
-}
-
-/* ==========================================================
-   LINKS
-========================================================== */
-
-a{
-
-    text-decoration:none;
-
-}
-
-/* ==========================================================
-   INPUT
-========================================================== */
-
-input,
-select,
-textarea{
-
-    outline:none;
-
+input, select, textarea, button {
+    font-family: inherit;
+    outline: none;
 }

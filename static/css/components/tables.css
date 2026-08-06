@@ -1,0 +1,99 @@
+/* ==========================================================
+   RESTAURANT RMS - MODERN DATA TABLES & BADGES
+   ========================================================== */
+
+.table {
+    width: 100%;
+    margin-bottom: 0;
+    color: var(--text-primary);
+    vertical-align: middle;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.table th, .table td {
+    padding: 14px 20px;
+    font-size: 0.8875rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.table th {
+    background-color: #f8fafc;
+    color: var(--text-secondary);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.725rem;
+    letter-spacing: 0.08em;
+    border-bottom: 1.5px solid var(--border-color);
+    white-space: nowrap;
+}
+
+.table tbody tr {
+    transition: background-color var(--transition-fast);
+}
+
+.table tbody tr:hover {
+    background-color: rgba(241, 245, 249, 0.6);
+}
+
+.table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Status Badges */
+.badge-status, .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: var(--border-radius-pill);
+    font-size: 0.775rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+    text-transform: capitalize;
+}
+
+.badge-status::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+}
+
+/* Status Variants */
+.badge-success, .badge-available, .badge-paid, .bg-success {
+    background-color: var(--success-bg);
+    color: #047857;
+    border: 1px solid var(--success-border);
+}
+.badge-success::before, .badge-available::before, .badge-paid::before { background-color: var(--success); }
+
+.badge-warning, .badge-occupied, .badge-pending, .bg-warning {
+    background-color: var(--warning-bg);
+    color: #b45309;
+    border: 1px solid var(--warning-border);
+}
+.badge-warning::before, .badge-occupied::before, .badge-pending::before { background-color: var(--warning); }
+
+.badge-danger, .badge-cancelled, .bg-danger {
+    background-color: var(--danger-bg);
+    color: #b91c1c;
+    border: 1px solid var(--danger-border);
+}
+.badge-danger::before, .badge-cancelled::before { background-color: var(--danger); }
+
+.badge-info, .badge-billed, .bg-info {
+    background-color: var(--info-bg);
+    color: #0369a1;
+    border: 1px solid var(--info-border);
+}
+.badge-info::before, .badge-billed::before { background-color: var(--info); }
+
+.badge-primary, .bg-primary {
+    background-color: var(--primary-light);
+    color: var(--primary);
+    border: 1px solid rgba(79, 70, 229, 0.2);
+}
+.badge-primary::before { background-color: var(--primary); }

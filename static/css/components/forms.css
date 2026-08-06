@@ -1,45 +1,101 @@
 /* ==========================================================
-   TABLE
-========================================================== */
+   RESTAURANT RMS - MODERN FORMS & INPUTS
+   ========================================================== */
 
-.table-rms{
-
-    width:100%;
-
-    border-collapse:collapse;
-
+.form-group, .mb-3 {
+    margin-bottom: 20px;
 }
 
-.table-rms thead{
-
-    background:#f8fafc;
-
+.form-label {
+    display: block;
+    font-size: 0.845rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    letter-spacing: 0.01em;
 }
 
-.table-rms th{
-
-    padding:16px;
-
-    text-align:left;
-
-    font-weight:700;
-
-    color:#374151;
-
-    border-bottom:1px solid #e5e7eb;
-
+.form-control, .form-select {
+    width: 100%;
+    padding: 10px 16px;
+    font-size: 0.9125rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    transition: all var(--transition-fast);
+    box-shadow: var(--shadow-sm);
 }
 
-.table-rms td{
-
-    padding:16px;
-
-    border-bottom:1px solid #eef2f7;
-
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary);
+    background-color: var(--bg-card);
+    box-shadow: 0 0 0 4px var(--primary-light);
+    outline: none;
 }
 
-.table-rms tbody tr:hover{
+.form-control::placeholder {
+    color: var(--text-muted);
+    font-weight: 400;
+}
 
-    background:#f9fafb;
+/* Input Group / Search Bar */
+.input-group {
+    display: flex;
+    align-items: stretch;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+}
 
+.input-group .form-control {
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.input-group .form-control:first-child, .input-group-text:first-child {
+    border-top-left-radius: var(--border-radius);
+    border-bottom-left-radius: var(--border-radius);
+}
+
+.input-group .form-control:last-child, .input-group-text:last-child, .input-group .btn:last-child {
+    border-top-right-radius: var(--border-radius);
+    border-bottom-right-radius: var(--border-radius);
+}
+
+.input-group-text {
+    background-color: #f1f5f9;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+}
+
+/* Custom Switches & Checkboxes */
+.form-check-input {
+    width: 1.25em;
+    height: 1.25em;
+    margin-top: 0.15em;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.form-check-input:checked {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+.form-check-input:focus {
+    box-shadow: 0 0 0 4px var(--primary-light);
+}
+
+.form-switch .form-check-input {
+    width: 2.5em;
+    border-radius: var(--border-radius-pill);
 }

@@ -1,149 +1,195 @@
-.app-navbar{
+/* ==========================================================
+   RESTAURANT RMS - MODERN NAVBAR STYLING
+   ========================================================== */
 
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
-
-    height:100%;
-
+.app-navbar {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
-/* LEFT */
-
-.navbar-left{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:20px;
-
+.navbar-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
 }
 
-.menu-btn{
-
-    width:48px;
-
-    height:48px;
-
-    border:none;
-
-    border-radius:12px;
-
-    background:#f3f4f6;
-
-    font-size:22px;
-
-    transition:.3s;
-
+.menu-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--border-radius);
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    font-size: 1.25rem;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    box-shadow: var(--shadow-sm);
 }
 
-.menu-btn:hover{
-
-    background:#2563eb;
-
-    color:white;
-
+.menu-btn:hover {
+    background-color: #f1f5f9;
+    color: var(--primary);
+    border-color: #cbd5e1;
+    transform: translateY(-1px);
 }
 
-.breadcrumb{
-
-    font-size:13px;
-
-    color:#6b7280;
-
-    margin-bottom:4px;
-
+/* Breadcrumb & Title */
+.breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.775rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 2px;
 }
 
-.breadcrumb span{
-
-    margin:0 8px;
-
+.breadcrumb span {
+    color: #cbd5e1;
 }
 
-.navbar-title{
-
-    margin:0;
-
-    font-size:28px;
-
-    font-weight:700;
-
-    color:#111827;
-
+.navbar-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+    letter-spacing: -0.01em;
 }
 
-/* RIGHT */
-
-.navbar-right{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:16px;
-
+/* Navbar Right Controls */
+.navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
 }
 
-.clock-card{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:8px;
-
-    padding:10px 16px;
-
-    background:white;
-
-    border:1px solid #e5e7eb;
-
-    border-radius:12px;
-
-    font-weight:600;
-
+.clock-card {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: rgba(79, 70, 229, 0.06);
+    border: 1px solid rgba(79, 70, 229, 0.15);
+    color: var(--primary);
+    padding: 8px 16px;
+    border-radius: var(--border-radius-pill);
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    box-shadow: var(--shadow-sm);
 }
 
-.icon-btn{
-
-    width:48px;
-
-    height:48px;
-
-    border:none;
-
-    background:#f3f4f6;
-
-    border-radius:12px;
-
-    transition:.3s;
-
+.clock-card i {
+    font-size: 1rem;
+    color: var(--primary);
+    animation: clockPulse 2s infinite ease-in-out;
 }
 
-.icon-btn:hover{
-
-    background:#2563eb;
-
-    color:white;
-
+@keyframes clockPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.1); }
 }
 
-.profile-btn{
+.icon-btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--border-radius-pill);
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    font-size: 1.15rem;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    box-shadow: var(--shadow-sm);
+}
 
-    border:none;
+.icon-btn:hover {
+    background-color: #f1f5f9;
+    color: var(--primary);
+    border-color: #cbd5e1;
+    transform: translateY(-1px);
+}
 
-    background:#2563eb;
+/* Profile Dropdown Button */
+.profile-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    padding: 6px 16px 6px 8px;
+    border-radius: var(--border-radius-pill);
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    box-shadow: var(--shadow-sm);
+}
 
-    color:white;
+.profile-btn:hover, .profile-btn[aria-expanded="true"] {
+    background-color: #f1f5f9;
+    border-color: #cbd5e1;
+    box-shadow: var(--shadow-md);
+}
 
-    border-radius:12px;
+.profile-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--brand-gradient);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    font-weight: 700;
+}
 
-    padding:11px 18px;
+/* Dropdown Menu Overhaul */
+.dropdown-menu {
+    border-radius: var(--border-radius-lg);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-lg);
+    padding: 8px;
+    margin-top: 8px !important;
+    background-color: var(--bg-card);
+    animation: fadeInDown 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
 
-    font-weight:600;
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 
+.dropdown-item {
+    border-radius: var(--border-radius-sm);
+    padding: 10px 14px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: background-color var(--transition-fast);
+}
+
+.dropdown-item:hover {
+    background-color: #f1f5f9;
+    color: var(--primary);
+}
+
+.dropdown-item.text-danger:hover {
+    background-color: var(--danger-bg);
+    color: var(--danger);
 }

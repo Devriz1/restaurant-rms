@@ -1,7 +1,11 @@
 {% extends "base.html" %}
 
 {% block title %}
+{% if object %}
+Edit Table
+{% else %}
 Add Restaurant Table
+{% endif %}
 {% endblock %}
 
 {% block content %}
@@ -9,7 +13,17 @@ Add Restaurant Table
 <div class="card">
 
     <div class="card-header">
-        <h4>Add Restaurant Table</h4>
+
+        <h4 class="mb-0">
+
+            {% if object %}
+                Edit Table
+            {% else %}
+                Add Restaurant Table
+            {% endif %}
+
+        </h4>
+
     </div>
 
     <div class="card-body">
@@ -18,14 +32,81 @@ Add Restaurant Table
 
             {% csrf_token %}
 
-            {{ form.as_p }}
+            <div class="mb-3">
 
-            <button type="submit" class="btn btn-primary">
+                <label class="form-label">
+                    Dining Area
+                </label>
+
+                {{ form.area }}
+
+            </div>
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Table Number
+                </label>
+
+                {{ form.table_number }}
+
+            </div>
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Display Name
+                </label>
+
+                {{ form.display_name }}
+
+            </div>
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Capacity
+                </label>
+
+                {{ form.capacity }}
+
+            </div>
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Status
+                </label>
+
+                {{ form.status }}
+
+            </div>
+
+            <div class="form-check mb-4">
+
+                {{ form.is_active }}
+
+                <label class="form-check-label">
+
+                    Active
+
+                </label>
+
+            </div>
+
+            <button type="submit" class="btn btn-success">
+
+                <i class="bi bi-check-circle"></i>
+
                 Save
+
             </button>
 
-            <a href="{% url 'tables:table-list' %}" class="btn btn-secondary">
+            <a href="{% url 'tables:table-list' %}"
+               class="btn btn-secondary">
+
                 Cancel
+
             </a>
 
         </form>

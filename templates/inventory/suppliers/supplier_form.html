@@ -1,0 +1,242 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+{% if object %}
+Edit Supplier
+{% else %}
+Add Supplier
+{% endif %}
+{% endblock %}
+
+{% block breadcrumb %}
+Inventory / Suppliers
+{% endblock %}
+
+{% block page_title %}
+{% if object %}
+Edit Supplier
+{% else %}
+Add Supplier
+{% endif %}
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- ==========================================
+        PAGE HEADER
+    =========================================== -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2 class="mb-1">
+
+                {% if object %}
+                Edit Supplier
+                {% else %}
+                Add New Supplier
+                {% endif %}
+
+            </h2>
+
+            <p class="text-muted mb-0">
+
+                Create and manage supplier information.
+
+            </p>
+
+        </div>
+
+        <a href="{% url 'inventory:supplier-list' %}"
+           class="btn btn-outline-secondary">
+
+            <i class="bi bi-arrow-left"></i>
+
+            Back to Suppliers
+
+        </a>
+
+    </div>
+
+    <!-- ==========================================
+        FORM
+    =========================================== -->
+
+    <div class="card shadow-sm border-0">
+
+        <div class="card-body p-4">
+
+            <form method="post">
+
+                {% csrf_token %}
+
+                <div class="row g-4">
+
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold">
+
+                            Supplier Name
+                            <span class="text-danger">*</span>
+
+                        </label>
+
+                        {{ form.name }}
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold">
+
+                            Contact Person
+
+                        </label>
+
+                        {{ form.contact_person }}
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold">
+
+                            Phone Number
+                            <span class="text-danger">*</span>
+
+                        </label>
+
+                        {{ form.phone }}
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold">
+
+                            Email
+
+                        </label>
+
+                        {{ form.email }}
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold">
+
+                            GST Number
+
+                        </label>
+
+                        {{ form.gst_number }}
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold">
+
+                            Pincode
+
+                        </label>
+
+                        {{ form.pincode }}
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold">
+
+                            City
+
+                        </label>
+
+                        {{ form.city }}
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold">
+
+                            State
+
+                        </label>
+
+                        {{ form.state }}
+
+                    </div>
+
+                    <div class="col-12">
+
+                        <label class="form-label fw-semibold">
+
+                            Address
+
+                        </label>
+
+                        {{ form.address }}
+
+                    </div>
+
+                    <div class="col-12">
+
+                        <div class="form-check">
+
+                            {{ form.is_active }}
+
+                            <label class="form-check-label">
+
+                                Active Supplier
+
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <hr class="my-4">
+
+                <div class="d-flex justify-content-end gap-2">
+
+                    <a href="{% url 'inventory:supplier-list' %}"
+                       class="btn btn-light border">
+
+                        Cancel
+
+                    </a>
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary">
+
+                        <i class="bi bi-check-circle"></i>
+
+                        {% if object %}
+                        Update Supplier
+                        {% else %}
+                        Save Supplier
+                        {% endif %}
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

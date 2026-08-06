@@ -1,52 +1,846 @@
 {% extends "base.html" %}
 
-{% block title %}
-{% if object %}
-Edit Menu Item
-{% else %}
-Add Menu Item
-{% endif %}
+{% block title %}{% if object %}Edit — {{ object.name }}{% else %}Add Menu Item{% endif %}{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ============================================================
+   MENU ITEM FORM — Premium Design
+   ============================================================ */
+
+.item-form-page {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+/* Page Header */
+.form-page-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+.form-page-header .header-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: var(--border-radius);
+    background: var(--accent-gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    color: #fff;
+    flex-shrink: 0;
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.3);
+}
+
+.form-page-header h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+    letter-spacing: -0.02em;
+}
+
+.form-page-header p {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin: 3px 0 0 0;
+}
+
+/* Breadcrumb */
+.item-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+}
+.item-breadcrumb a { color: var(--primary); font-weight: 500; }
+.item-breadcrumb a:hover { text-decoration: underline; }
+.item-breadcrumb .sep { color: var(--border-color); }
+
+/* Two-panel layout */
+.item-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 24px;
+    align-items: start;
+}
+
+/* Left panel */
+.form-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+}
+
+.form-panel-header {
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.form-panel-header .panel-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: var(--border-radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+}
+
+.panel-icon.indigo {
+    background: rgba(79, 70, 229, 0.1);
+    color: var(--primary);
+}
+
+.panel-icon.emerald {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--success);
+}
+
+.panel-icon.violet {
+    background: rgba(139, 92, 246, 0.1);
+    color: var(--accent);
+}
+
+.form-panel-header h6 {
+    font-size: 0.925rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.form-panel-header p {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin: 2px 0 0 0;
+}
+
+.form-panel-body {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Field Row — for 2 fields side by side */
+.field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+/* Field group */
+.field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.field-label {
+    font-size: 0.845rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.field-label i {
+    color: var(--primary);
+    font-size: 0.9em;
+}
+
+.field-label .required-star {
+    color: var(--danger);
+    font-size: 0.75rem;
+}
+
+.field-help {
+    font-size: 0.775rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+/* Input with icon prefix */
+.input-icon-wrap {
+    position: relative;
+}
+.input-icon-wrap .field-prefix {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-weight: 600;
+    pointer-events: none;
+    z-index: 2;
+}
+.input-icon-wrap .form-control {
+    padding-left: 32px;
+}
+
+/* Toggle Switch Row */
+.toggle-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.toggle-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: var(--bg-app);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.toggle-card:has(.form-check-input:checked) {
+    border-color: var(--primary);
+    background: var(--primary-light);
+}
+
+.toggle-card label {
+    cursor: pointer;
+}
+
+.toggle-info .toggle-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.toggle-info .toggle-sub {
+    font-size: 0.775rem;
+    color: var(--text-muted);
+    margin: 2px 0 0 0;
+}
+
+/* Form switch override */
+.form-switch .form-check-input {
+    width: 2.6em;
+    height: 1.4em;
+    cursor: pointer;
+    background-color: #cbd5e1;
+    border: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e");
+    transition: background-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.form-switch .form-check-input:checked {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px var(--primary-light);
+}
+
+.form-switch .form-check-input:focus {
+    box-shadow: 0 0 0 4px var(--primary-light);
+}
+
+/* ---- Right Panel: Image Upload ---- */
+.image-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.image-upload-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+}
+
+.image-upload-card .form-panel-header {
+    padding: 16px 20px;
+}
+
+.image-preview-zone {
+    margin: 0 20px 4px;
+    border: 2px dashed var(--border-color);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    background: var(--bg-app);
+    min-height: 190px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color var(--transition-fast), background var(--transition-fast);
+    cursor: pointer;
+    position: relative;
+}
+
+.image-preview-zone:hover {
+    border-color: var(--primary);
+    background: var(--primary-light);
+}
+
+.image-preview-zone.has-image {
+    border-style: solid;
+    border-color: var(--primary);
+}
+
+.image-preview-zone img {
+    width: 100%;
+    height: 190px;
+    object-fit: cover;
+    display: none;
+    border-radius: calc(var(--border-radius) - 2px);
+}
+
+.image-preview-zone img.visible { display: block; }
+
+.image-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-muted);
+    padding: 24px;
+    text-align: center;
+}
+
+.image-placeholder i {
+    font-size: 2.5rem;
+    color: var(--border-color);
+}
+
+.image-placeholder p {
+    font-size: 0.845rem;
+    font-weight: 500;
+    margin: 0;
+}
+
+.image-placeholder span {
+    font-size: 0.75rem;
+}
+
+.image-upload-body {
+    padding: 16px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.image-filename {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    text-align: center;
+    min-height: 18px;
+}
+
+/* Current image badge (edit mode) */
+.current-image-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--success-bg);
+    border: 1px solid var(--success-border);
+    border-radius: var(--border-radius-sm);
+    padding: 8px 12px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--success);
+    margin: 0 20px 0;
+}
+
+/* Error display */
+.field-errors {
+    list-style: none;
+    padding: 0;
+    margin: 4px 0 0;
+}
+.field-errors li {
+    font-size: 0.8rem;
+    color: var(--danger);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.field-errors li::before {
+    content: "\f33a";
+    font-family: "bootstrap-icons";
+    font-size: 0.85rem;
+}
+
+/* Non-field errors */
+.form-alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: var(--danger-bg);
+    border: 1px solid var(--danger-border);
+    border-radius: var(--border-radius);
+    padding: 14px 16px;
+    font-size: 0.875rem;
+    color: var(--danger);
+    margin-bottom: 20px;
+}
+
+/* Action footer */
+.form-action-bar {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.form-action-bar .action-hint {
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.form-action-bar .btn-group-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Veg badge in label */
+.veg-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--success);
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .item-form-grid {
+        grid-template-columns: 1fr;
+    }
+    .image-panel {
+        order: -1;
+    }
+    .field-row,
+    .toggle-row {
+        grid-template-columns: 1fr;
+    }
+    .form-action-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .form-action-bar .btn-group-right {
+        flex-direction: column;
+    }
+}
+</style>
 {% endblock %}
 
 {% block content %}
 
-<div class="card">
+<div class="item-form-page">
 
-    <div class="card-header">
+    <!-- Breadcrumb -->
+    <nav class="item-breadcrumb" aria-label="Breadcrumb">
+        <a href="{% url 'menu:item-list' %}">Menu Items</a>
+        <span class="sep"><i class="bi bi-chevron-right"></i></span>
+        <span>{% if object %}Edit "{{ object.name }}"{% else %}New Item{% endif %}</span>
+    </nav>
 
-        <h4 class="mb-0">
-
-            {% if object %}
-                Edit Menu Item
-            {% else %}
-                Add Menu Item
-            {% endif %}
-
-        </h4>
-
+    <!-- Page Header -->
+    <div class="form-page-header">
+        <div class="header-icon">
+            <i class="bi bi-{% if object %}pencil-square{% else %}plus-circle-fill{% endif %}"></i>
+        </div>
+        <div>
+            <h1>{% if object %}Edit Menu Item{% else %}Add Menu Item{% endif %}</h1>
+            <p>{% if object %}Update details for <strong>{{ object.name }}</strong>{% else %}Fill in the details below to add a new item to your menu{% endif %}</p>
+        </div>
     </div>
 
-    <div class="card-body">
+    <form method="post" enctype="multipart/form-data" id="menuItemForm" novalidate>
+        {% csrf_token %}
 
-        <form method="post" enctype="multipart/form-data">
+        <!-- Non-field errors -->
+        {% if form.non_field_errors %}
+        <div class="form-alert" role="alert">
+            <i class="bi bi-exclamation-circle-fill" style="font-size:1.1rem;flex-shrink:0;margin-top:1px;"></i>
+            <div>
+                {% for error in form.non_field_errors %}
+                    <div>{{ error }}</div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
 
-            {% csrf_token %}
+        <div class="item-form-grid">
 
-            {{ form.as_p }}
+            <!-- ============================
+                 LEFT — Main Details
+                 ============================ -->
+            <div style="display:flex;flex-direction:column;gap:20px;">
 
-            <button type="submit" class="btn btn-success">
-                <i class="bi bi-check-circle"></i>
-                Save
-            </button>
+                <!-- Panel 1: Core Info -->
+                <div class="form-panel">
+                    <div class="form-panel-header">
+                        <div class="panel-icon indigo"><i class="bi bi-tag-fill"></i></div>
+                        <div>
+                            <h6>Item Details</h6>
+                            <p>Name, category and description</p>
+                        </div>
+                    </div>
+                    <div class="form-panel-body">
 
-            <a href="{% url 'menu:item-list' %}" class="btn btn-secondary">
-                Cancel
-            </a>
+                        <!-- Category -->
+                        <div class="field-group">
+                            <label class="field-label" for="{{ form.category.id_for_label }}">
+                                <i class="bi bi-grid-3x3-gap-fill"></i>
+                                Category
+                                <span class="required-star">*</span>
+                            </label>
+                            {{ form.category }}
+                            {% if form.category.errors %}
+                            <ul class="field-errors">
+                                {% for e in form.category.errors %}<li>{{ e }}</li>{% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
 
-        </form>
+                        <!-- Name -->
+                        <div class="field-group">
+                            <label class="field-label" for="{{ form.name.id_for_label }}">
+                                <i class="bi bi-card-text"></i>
+                                Item Name
+                                <span class="required-star">*</span>
+                            </label>
+                            {{ form.name }}
+                            {% if form.name.errors %}
+                            <ul class="field-errors">
+                                {% for e in form.name.errors %}<li>{{ e }}</li>{% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
 
-    </div>
+                        <!-- Description -->
+                        <div class="field-group">
+                            <label class="field-label" for="{{ form.description.id_for_label }}">
+                                <i class="bi bi-chat-text"></i>
+                                Description
+                            </label>
+                            {{ form.description }}
+                            {% if form.description.errors %}
+                            <ul class="field-errors">
+                                {% for e in form.description.errors %}<li>{{ e }}</li>{% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Panel 2: Pricing & Timing -->
+                <div class="form-panel">
+                    <div class="form-panel-header">
+                        <div class="panel-icon emerald"><i class="bi bi-currency-dollar"></i></div>
+                        <div>
+                            <h6>Pricing &amp; Timing</h6>
+                            <p>Set the price and prep time</p>
+                        </div>
+                    </div>
+                    <div class="form-panel-body">
+                        <div class="field-row">
+
+                            <!-- Price -->
+                            <div class="field-group">
+                                <label class="field-label" for="{{ form.price.id_for_label }}">
+                                    <i class="bi bi-cash-stack"></i>
+                                    Price
+                                    <span class="required-star">*</span>
+                                </label>
+                                <div class="input-icon-wrap">
+                                    <span class="field-prefix">₹</span>
+                                    {{ form.price }}
+                                </div>
+                                {% if form.price.errors %}
+                                <ul class="field-errors">
+                                    {% for e in form.price.errors %}<li>{{ e }}</li>{% endfor %}
+                                </ul>
+                                {% endif %}
+                            </div>
+
+                            <!-- Prep Time -->
+                            <div class="field-group">
+                                <label class="field-label" for="{{ form.preparation_time.id_for_label }}">
+                                    <i class="bi bi-stopwatch"></i>
+                                    Prep Time
+                                </label>
+                                <div class="input-icon-wrap">
+                                    <span class="field-prefix" style="font-size:1rem;"><i class="bi bi-clock"></i></span>
+                                    {{ form.preparation_time }}
+                                </div>
+                                <span class="field-help">Minutes until the dish is ready</span>
+                                {% if form.preparation_time.errors %}
+                                <ul class="field-errors">
+                                    {% for e in form.preparation_time.errors %}<li>{{ e }}</li>{% endfor %}
+                                </ul>
+                                {% endif %}
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Panel 3: Availability & Type -->
+                <div class="form-panel">
+                    <div class="form-panel-header">
+                        <div class="panel-icon violet"><i class="bi bi-toggles"></i></div>
+                        <div>
+                            <h6>Status &amp; Dietary</h6>
+                            <p>Control availability and food type</p>
+                        </div>
+                    </div>
+                    <div class="form-panel-body">
+                        <div class="toggle-row">
+
+                            <!-- is_available -->
+                            <label class="toggle-card" for="{{ form.is_available.id_for_label }}">
+                                <div class="toggle-info">
+                                    <p class="toggle-title">
+                                        <i class="bi bi-eye" style="color:var(--primary);margin-right:4px;"></i>
+                                        Available
+                                    </p>
+                                    <p class="toggle-sub">Show on active menu</p>
+                                </div>
+                                <div class="form-switch">
+                                    {{ form.is_available }}
+                                </div>
+                            </label>
+
+                            <!-- is_veg -->
+                            <label class="toggle-card" for="{{ form.is_veg.id_for_label }}">
+                                <div class="toggle-info">
+                                    <p class="toggle-title">
+                                        <span class="veg-dot"></span>
+                                        &nbsp;Vegetarian
+                                    </p>
+                                    <p class="toggle-sub">Mark as veg item</p>
+                                </div>
+                                <div class="form-switch">
+                                    {{ form.is_veg }}
+                                </div>
+                            </label>
+
+                        </div>
+                        {% if form.is_available.errors or form.is_veg.errors %}
+                        <ul class="field-errors">
+                            {% for e in form.is_available.errors %}<li>{{ e }}</li>{% endfor %}
+                            {% for e in form.is_veg.errors %}<li>{{ e }}</li>{% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ============================
+                 RIGHT — Image Upload
+                 ============================ -->
+            <div class="image-panel">
+
+                <div class="image-upload-card">
+                    <div class="form-panel-header">
+                        <div class="panel-icon violet"><i class="bi bi-image"></i></div>
+                        <div>
+                            <h6>Item Photo</h6>
+                            <p>JPG, PNG, WebP up to 5 MB</p>
+                        </div>
+                    </div>
+
+                    {% if object.image %}
+                    <div class="current-image-badge">
+                        <i class="bi bi-check-circle-fill"></i>
+                        Current image saved
+                    </div>
+                    {% endif %}
+
+                    <!-- Preview Zone -->
+                    <div class="image-preview-zone {% if object.image %}has-image{% endif %}"
+                         id="previewZone"
+                         onclick="document.getElementById('id_image').click()">
+                        <img id="imgPreview"
+                             {% if object.image %}src="{{ object.image.url }}" class="visible"{% endif %}
+                             alt="Item preview" />
+                        <div class="image-placeholder" id="imgPlaceholder"
+                             {% if object.image %}style="display:none;"{% endif %}>
+                            <i class="bi bi-cloud-upload"></i>
+                            <p>Click to upload photo</p>
+                            <span>or drag &amp; drop here</span>
+                        </div>
+                    </div>
+
+                    <div class="image-upload-body">
+                        <div class="image-filename" id="imageFilename">
+                            {% if object.image %}{{ object.image.name|slice:"5:" }}{% endif %}
+                        </div>
+                        {{ form.image }}
+                        {% if form.image.errors %}
+                        <ul class="field-errors">
+                            {% for e in form.image.errors %}<li>{{ e }}</li>{% endfor %}
+                        </ul>
+                        {% endif %}
+
+                        {% if object.image %}
+                        <div style="margin-top:4px;">
+                            {{ form.image.field.widget.clear_checkbox_label|default:"" }}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Tips card -->
+                <div class="form-panel" style="border-left:3px solid var(--primary);">
+                    <div class="form-panel-body" style="gap:12px;padding:18px 20px;">
+                        <p style="font-size:0.8rem;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.05em;margin:0;">
+                            <i class="bi bi-lightbulb-fill" style="color:var(--warning);"></i>
+                            Quick Tips
+                        </p>
+                        <ul style="margin:0;padding-left:18px;font-size:0.8125rem;color:var(--text-secondary);display:flex;flex-direction:column;gap:6px;">
+                            <li>Use a square image (1:1) for best display</li>
+                            <li>Write a description to boost customer appeal</li>
+                            <li>Toggle "Available" off to hide without deleting</li>
+                            <li>Prep time helps the kitchen queue orders correctly</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+
+        </div><!-- /item-form-grid -->
+
+        <!-- ============================
+             Action Footer
+             ============================ -->
+        <div class="form-action-bar" style="margin-top:20px;">
+            <p class="action-hint">
+                <i class="bi bi-info-circle"></i>
+                Fields marked <span style="color:var(--danger);font-weight:700;">*</span> are required
+            </p>
+            <div class="btn-group-right">
+                <a href="{% url 'menu:item-list' %}" class="btn btn-secondary">
+                    <i class="bi bi-x-lg"></i>
+                    Cancel
+                </a>
+                <button type="submit" class="btn btn-success" id="submitBtn">
+                    <i class="bi bi-check-circle-fill"></i>
+                    {% if object %}Save Changes{% else %}Add Item{% endif %}
+                </button>
+            </div>
+        </div>
+
+    </form>
 
 </div>
 
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+    "use strict";
+
+    const imageInput  = document.getElementById("id_image");
+    const imgPreview  = document.getElementById("imgPreview");
+    const imgHolder   = document.getElementById("imgPlaceholder");
+    const previewZone = document.getElementById("previewZone");
+    const filenameEl  = document.getElementById("imageFilename");
+    const submitBtn   = document.getElementById("submitBtn");
+
+    /* ---- Image Preview ---- */
+    if (imageInput) {
+        // Drag & drop support
+        previewZone.addEventListener("dragover", (e) => {
+            e.preventDefault();
+            previewZone.style.borderColor = "var(--primary)";
+            previewZone.style.background  = "var(--primary-light)";
+        });
+
+        previewZone.addEventListener("dragleave", () => {
+            previewZone.style.borderColor = "";
+            previewZone.style.background  = "";
+        });
+
+        previewZone.addEventListener("drop", (e) => {
+            e.preventDefault();
+            previewZone.style.borderColor = "";
+            previewZone.style.background  = "";
+            if (e.dataTransfer.files.length) {
+                handleFile(e.dataTransfer.files[0]);
+                // Assign to input via DataTransfer (modern browsers)
+                try {
+                    const dt = new DataTransfer();
+                    dt.items.add(e.dataTransfer.files[0]);
+                    imageInput.files = dt.files;
+                } catch (_) {}
+            }
+        });
+
+        imageInput.addEventListener("change", () => {
+            if (imageInput.files && imageInput.files[0]) {
+                handleFile(imageInput.files[0]);
+            }
+        });
+
+        function handleFile(file) {
+            if (!file.type.startsWith("image/")) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                imgPreview.src = e.target.result;
+                imgPreview.classList.add("visible");
+                imgHolder.style.display = "none";
+                previewZone.classList.add("has-image");
+                filenameEl.textContent = file.name;
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    /* ---- Submit feedback ---- */
+    if (submitBtn) {
+        submitBtn.closest("form").addEventListener("submit", () => {
+            submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Saving…';
+            submitBtn.disabled = true;
+        });
+    }
+
+    /* ---- Toggle card click area ---- */
+    document.querySelectorAll(".toggle-card").forEach((card) => {
+        card.addEventListener("click", (e) => {
+            // Don't double-fire when clicking the toggle itself
+            if (e.target.tagName === "INPUT") return;
+            const chk = card.querySelector("input[type=checkbox]");
+            if (chk) chk.click();
+        });
+    });
+
+})();
+</script>
 {% endblock %}

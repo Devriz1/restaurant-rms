@@ -15,8 +15,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = [
-]
+ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
@@ -40,7 +39,7 @@ INSTALLED_APPS = [
     "widget_tweaks",
     'apps.core',
     'apps.backup',
-
+    'apps.purchase',
 ]
 
 MIDDLEWARE = [
@@ -132,3 +131,43 @@ MEDIA_ROOT = BASE_DIR / "media"
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/accounts/login/"
 LOGIN_URL = "/accounts/login/"
+
+PWA_APP_NAME = "Restaurant RMS"
+
+PWA_APP_DESCRIPTION = "Restaurant Management System"
+
+PWA_APP_THEME_COLOR = "#2563eb"
+
+PWA_APP_BACKGROUND_COLOR = "#ffffff"
+
+PWA_APP_DISPLAY = "standalone"
+
+PWA_APP_SCOPE = "/"
+
+PWA_APP_ORIENTATION = "portrait"
+
+PWA_APP_START_URL = "/orders/floor/"
+
+PWA_APP_STATUS_BAR_COLOR = "default"
+
+PWA_APP_ICONS = [
+    {
+        "src": "/static/icons/icon-192.png",
+        "sizes": "192x192",
+    },
+    {
+        "src": "/static/icons/icon-512.png",
+        "sizes": "512x512",
+    },
+]
+
+PWA_APP_SPLASH_SCREEN = [
+    {
+        "src": "/static/icons/icon-512.png",
+        "media": "(device-width: 320px)",
+    }
+]
+
+PWA_APP_DIR = "ltr"
+
+PWA_APP_LANG = "en-US"

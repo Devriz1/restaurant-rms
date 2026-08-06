@@ -5,14 +5,12 @@
 Payment Report
 {% endblock %}
 
-
 {% block extra_css %}
 
 <link rel="stylesheet" href="{% static 'css/reports.css' %}">
 <link rel="stylesheet" href="{% static 'css/report_customizer.css' %}">
 
 {% endblock %}
-
 
 {% block content %}
 
@@ -24,68 +22,135 @@ Payment Report
 
     <div class="reports-header">
 
-        <div>
+        <div class="reports-title">
 
             <h1>
+
+                <i class="bi bi-credit-card-2-front-fill"></i>
+
                 Payment Report
+
             </h1>
 
             <p>
-                Restaurant payment summary
+
+                Monitor payment collections, payment methods and transaction history.
+
             </p>
 
         </div>
 
     </div>
 
-
     <!-- ===========================================
-         FILTERS
+         REPORT FILTERS
     ============================================ -->
 
     {% include "components/report_filters.html" %}
-
 
     <!-- ===========================================
          SUMMARY CARDS
     ============================================ -->
 
-        <div class="summary-cards">
+    <div class="summary-cards">
 
-    <div class="summary-card">
+        <!-- Total Collection -->
 
-        <small>Total Collection</small>
+        <div class="summary-card">
 
-        <h2>₹ {{ total_amount }}</h2>
+            <div class="summary-icon">
+
+                <i class="bi bi-cash-stack"></i>
+
+            </div>
+
+            <div class="summary-content">
+
+                <small>Total Collection</small>
+
+                <h2>
+
+                    ₹ {{ total_amount }}
+
+                </h2>
+
+            </div>
+
+        </div>
+
+        <!-- Transactions -->
+
+        <div class="summary-card">
+
+            <div class="summary-icon">
+
+                <i class="bi bi-receipt"></i>
+
+            </div>
+
+            <div class="summary-content">
+
+                <small>Total Transactions</small>
+
+                <h2>
+
+                    {{ total_transactions }}
+
+                </h2>
+
+            </div>
+
+        </div>
+
+        <!-- Cash -->
+
+        <div class="summary-card">
+
+            <div class="summary-icon">
+
+                <i class="bi bi-cash"></i>
+
+            </div>
+
+            <div class="summary-content">
+
+                <small>Cash Collection</small>
+
+                <h2>
+
+                    ₹ {{ cash }}
+
+                </h2>
+
+            </div>
+
+        </div>
+
+        <!-- UPI -->
+
+        <div class="summary-card">
+
+            <div class="summary-icon">
+
+                <i class="bi bi-phone"></i>
+
+            </div>
+
+            <div class="summary-content">
+
+                <small>UPI Collection</small>
+
+                <h2>
+
+                    ₹ {{ upi }}
+
+                </h2>
+
+            </div>
+
+        </div>
 
     </div>
-
-    <div class="summary-card">
-
-        <small>Total Transactions</small>
-
-        <h2>{{ total_transactions }}</h2>
-
-    </div>
-
-    <div class="summary-card">
-
-        <small>Cash Collection</small>
-
-        <h2>₹ {{ cash }}</h2>
-
-    </div>
-
-    <div class="summary-card">
-
-        <small>UPI Collection</small>
-
-        <h2>₹ {{ upi }}</h2>
-
-    </div>
-
-</div>
-
 
     <!-- ===========================================
          REPORT ACTIONS
@@ -106,106 +171,283 @@ Payment Report
 
     </div>
 
-
     <!-- ===========================================
          REPORT CUSTOMIZER
     ============================================ -->
 
     {% include "components/report_customizer.html" %}
 
-
     <!-- ===========================================
-         PAYMENT TABLE
+         PAYMENT REPORT TABLE
     ============================================ -->
 
-    <div class="report-table">
+    <div class="report-table-card">
 
-        <table id="paymentReportTable">
+        <!-- Toolbar -->
 
-            <thead>
+        <div class="table-toolbar">
 
-            <tr>
+            <div class="table-toolbar-left">
 
-                <th data-column="bill">Bill No</th>
+                <div class="search-box">
 
-                <th data-column="date">Date</th>
+                    <i class="bi bi-search"></i>
 
-                <th data-column="method">Payment Method</th>
+                    <input
+                        type="text"
+                        id="reportSearch"
+                        placeholder="Search bill number, payment method or cashier...">
 
-                <th data-column="amount">Amount</th>
+                </div>
 
-                <th data-column="reference">Reference</th>
+            </div>
 
-                <th data-column="cashier">Received By</th>
+            <div class="table-toolbar-right">
 
-            </tr>
+                <span class="record-count">
 
-            </thead>
+                    {{ payments|length }}
 
-            <tbody>
+                    Record{{ payments|length|pluralize }}
 
-            {% for payment in payments %}
+                </span>
 
-            <tr>
+            </div>
 
-                <td data-column="bill">
+        </div>
 
-                    {{ payment.bill.bill_number }}
+        <!-- Responsive Table -->
 
-                </td>
+        <div class="table-responsive">
 
-                <td data-column="date">
+            <table
+                id="paymentReportTable"
+                class="report-table">
 
-                    {{ payment.paid_at|date:"d M Y H:i" }}
+                <thead>
 
-                </td>
+                    <tr>
 
-                <td data-column="method">
+                        <th data-column="bill">
 
-                    {{ payment.get_payment_method_display }}
+                            Bill No
 
-                </td>
+                        </th>
 
-                <td data-column="amount">
+                        <th data-column="date">
 
-                    ₹ {{ payment.amount }}
+                            Date
 
-                </td>
+                        </th>
 
-                <td data-column="reference">
+                        <th data-column="method">
 
-                    {{ payment.reference_number|default:"-" }}
+                            Payment Method
 
-                </td>
+                        </th>
 
-                <td data-column="cashier">
+                        <th
+                            class="text-end"
+                            data-column="amount">
 
-                    {{ payment.received_by }}
+                            Amount
 
-                </td>
+                        </th>
 
-            </tr>
+                        <th data-column="reference">
 
-            {% empty %}
+                            Reference
 
-            <tr>
+                        </th>
 
-                <td colspan="6" class="text-center py-5">
+                        <th data-column="cashier">
 
-                    No payment records found.
+                            Received By
 
-                </td>
+                        </th>
 
-            </tr>
+                    </tr>
 
-            {% endfor %}
+                </thead>
 
-            </tbody>
+                <tbody>
+                                    {% for payment in payments %}
 
-        </table>
+                <tr>
+
+                    <!-- ===========================================
+                         BILL NUMBER
+                    ============================================ -->
+
+                    <td data-column="bill">
+
+                        <strong>
+
+                            {{ payment.bill.bill_number }}
+
+                        </strong>
+
+                    </td>
+
+                    <!-- ===========================================
+                         DATE
+                    ============================================ -->
+
+                    <td data-column="date">
+
+                        <div class="date-cell">
+
+                            <strong>
+
+                                {{ payment.paid_at|date:"d M Y" }}
+
+                            </strong>
+
+                            <small>
+
+                                {{ payment.paid_at|date:"h:i A" }}
+
+                            </small>
+
+                        </div>
+
+                    </td>
+
+                    <!-- ===========================================
+                         PAYMENT METHOD
+                    ============================================ -->
+
+                    <td data-column="method">
+
+                        {% if payment.payment_method == "cash" %}
+
+                            <i class="bi bi-cash me-2"></i>
+
+                            Cash
+
+                        {% elif payment.payment_method == "upi" %}
+
+                            <i class="bi bi-phone me-2"></i>
+
+                            UPI
+
+                        {% elif payment.payment_method == "card" %}
+
+                            <i class="bi bi-credit-card me-2"></i>
+
+                            Card
+
+                        {% else %}
+
+                            <i class="bi bi-wallet2 me-2"></i>
+
+                            {{ payment.get_payment_method_display }}
+
+                        {% endif %}
+
+                    </td>
+
+                    <!-- ===========================================
+                         AMOUNT
+                    ============================================ -->
+
+                    <td
+                        class="text-end total-cell"
+                        data-column="amount">
+
+                        <strong>
+
+                            ₹ {{ payment.amount }}
+
+                        </strong>
+
+                    </td>
+
+                    <!-- ===========================================
+                         REFERENCE NUMBER
+                    ============================================ -->
+
+                    <td data-column="reference">
+
+                        {% if payment.reference_number %}
+
+                            {{ payment.reference_number }}
+
+                        {% else %}
+
+                            <span class="text-muted">
+
+                                -
+
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <!-- ===========================================
+                         CASHIER
+                    ============================================ -->
+
+                    <td data-column="cashier">
+
+                        {% if payment.received_by %}
+
+                            {{ payment.received_by }}
+
+                        {% else %}
+
+                            <span class="text-muted">
+
+                                -
+
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td
+                        colspan="6"
+                        class="text-center py-5">
+
+                        <div class="empty-report">
+
+                            <i class="bi bi-wallet2"></i>
+
+                            <h4>
+
+                                No Payment Records
+
+                            </h4>
+
+                            <p>
+
+                                No payment transactions were found for the selected filters.
+
+                            </p>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
 
     </div>
-
 
     <!-- ===========================================
          EXPORT BUTTONS
@@ -216,7 +458,6 @@ Payment Report
 </div>
 
 {% endblock %}
-
 
 {% block extra_js %}
 

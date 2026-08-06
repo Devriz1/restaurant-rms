@@ -4,234 +4,208 @@
 <div class="sidebar">
 
     <!-- ====================================================== -->
-    <!-- LOGO -->
+    <!-- LOGO HEADER -->
     <!-- ====================================================== -->
 
     <div class="sidebar-logo">
-
         <div class="logo-icon">
-            🍽
+            <i class="bi bi-shop-window text-white"></i>
         </div>
 
         <div class="logo-text">
-
             <h3>Restaurant RMS</h3>
-
-            <small>Version 2.0</small>
-
+            <small>v2.0 Enterprise</small>
         </div>
-
     </div>
 
-
     <!-- ====================================================== -->
-    <!-- MAIN -->
+    <!-- NAVIGATION -->
     <!-- ====================================================== -->
 
-    {% if request.user|has_permission:"dashboard.view" %}
+    <div class="sidebar-nav">
 
-    <div class="sidebar-section">
+        <!-- ====================================================== -->
+        <!-- MAIN -->
+        <!-- ====================================================== -->
 
-        <div class="sidebar-title">
-            MAIN
+        {% if request.user|has_permission:"dashboard.view" %}
+        <div class="sidebar-section">
+
+            <div class="sidebar-title">
+                Main
+            </div>
+
+            <a href="{% url 'dashboard:home' %}"
+               class="sidebar-link {% if request.resolver_match.namespace == 'dashboard' %}active{% endif %}">
+                <i class="bi bi-grid-1x2-fill"></i>
+                <span>Dashboard</span>
+            </a>
+
         </div>
-
-        <a href="{% url 'dashboard:home' %}" class="sidebar-link">
-
-            <i class="bi bi-speedometer2"></i>
-
-            <span>Dashboard</span>
-
-        </a>
-
-    </div>
-
-    {% endif %}
+        {% endif %}
 
 
-    <!-- ====================================================== -->
-    <!-- MASTER DATA -->
-    <!-- ====================================================== -->
+        <!-- ====================================================== -->
+        <!-- MASTER DATA -->
+        <!-- ====================================================== -->
 
-    {% if request.user|has_any_permission:"restaurant.view,areas.view,tables.view,categories.view,menu.view" %}
+        {% if request.user|has_any_permission:"restaurant.view,areas.view,tables.view,categories.view,menu.view" %}
+        <div class="sidebar-section">
 
-    <div class="sidebar-section">
+            <div class="sidebar-title">
+                Master Data
+            </div>
 
-        <div class="sidebar-title">
-            MASTER DATA
+            {% if request.user|has_permission:"restaurant.view" %}
+            <a href="{% url 'restaurant:settings' %}"
+               class="sidebar-link {% if request.resolver_match.namespace == 'restaurant' %}active{% endif %}">
+                <i class="bi bi-shop"></i>
+                <span>Restaurant</span>
+            </a>
+            {% endif %}
+
+            {% if request.user|has_permission:"areas.view" %}
+            <a href="{% url 'tables:area-list' %}"
+               class="sidebar-link {% if request.resolver_match.url_name == 'area-list' or request.resolver_match.url_name == 'area-create' or request.resolver_match.url_name == 'area-edit' %}active{% endif %}">
+                <i class="bi bi-border-all"></i>
+                <span>Dining Areas</span>
+            </a>
+            {% endif %}
+
+            {% if request.user|has_permission:"tables.view" %}
+            <a href="{% url 'tables:table-list' %}"
+               class="sidebar-link {% if request.resolver_match.url_name == 'table-list' or request.resolver_match.url_name == 'table-create' or request.resolver_match.url_name == 'table-edit' %}active{% endif %}">
+                <i class="bi bi-table"></i>
+                <span>Tables</span>
+            </a>
+            {% endif %}
+
+            {% if request.user|has_permission:"categories.view" %}
+            <a href="{% url 'menu:category-list' %}"
+               class="sidebar-link {% if request.resolver_match.url_name == 'category-list' or request.resolver_match.url_name == 'category-create' or request.resolver_match.url_name == 'category-edit' %}active{% endif %}">
+                <i class="bi bi-tags-fill"></i>
+                <span>Categories</span>
+            </a>
+            {% endif %}
+
+            {% if request.user|has_permission:"menu.view" %}
+            <a href="{% url 'menu:item-list' %}"
+               class="sidebar-link {% if request.resolver_match.url_name == 'item-list' or request.resolver_match.url_name == 'item-create' or request.resolver_match.url_name == 'item-edit' %}active{% endif %}">
+                <i class="bi bi-cup-hot-fill"></i>
+                <span>Menu Items</span>
+            </a>
+            {% endif %}
+
         </div>
-
-        {% if request.user|has_permission:"restaurant.view" %}
-        <a href="{% url 'restaurant:settings' %}" class="sidebar-link">
-
-            <i class="bi bi-shop"></i>
-
-            <span>Restaurant</span>
-
-        </a>
         {% endif %}
 
-        {% if request.user|has_permission:"areas.view" %}
-        <a href="{% url 'tables:area-list' %}" class="sidebar-link">
 
-            <i class="bi bi-grid"></i>
+        <!-- ====================================================== -->
+        <!-- OPERATIONS -->
+        <!-- ====================================================== -->
 
-            <span>Dining Areas</span>
+        {% if request.user|has_any_permission:"floor.view,session.view,billing.view" %}
+        <div class="sidebar-section">
 
-        </a>
-        {% endif %}
+            <div class="sidebar-title">
+                Operations
+            </div>
 
-        {% if request.user|has_permission:"tables.view" %}
-        <a href="{% url 'tables:table-list' %}" class="sidebar-link">
+            {% if request.user|has_permission:"floor.view" %}
+            <a href="{% url 'orders:floor-view' %}"
+               class="sidebar-link {% if request.resolver_match.url_name == 'floor-view' %}active{% endif %}">
+                <i class="bi bi-grid-3x3-gap-fill"></i>
+                <span>Floor View</span>
+            </a>
+            {% endif %}
 
-            <i class="bi bi-table"></i>
+            {% if request.user|has_permission:"session.view" %}
+            <a href="{% url 'orders:orders-dashboard' %}"
+               class="sidebar-link {% if request.resolver_match.url_name == 'orders-dashboard' %}active{% endif %}">
+                <i class="bi bi-journal-richtext"></i>
+                <span>Orders Management</span>
+            </a>
+            {% endif %}
 
-            <span>Restaurant Tables</span>
+            {% if request.user|has_permission:"billing.view" %}
+            <a href="{% url 'billing:dashboard' %}"
+               class="sidebar-link {% if request.resolver_match.namespace == 'billing' %}active{% endif %}">
+                <i class="bi bi-receipt-cutoff"></i>
+                <span>Billing POS</span>
+            </a>
+            {% endif %}
 
-        </a>
-        {% endif %}
-
-        {% if request.user|has_permission:"categories.view" %}
-        <a href="{% url 'menu:category-list' %}" class="sidebar-link">
-
-            <i class="bi bi-tags"></i>
-
-            <span>Categories</span>
-
-        </a>
-        {% endif %}
-
-        {% if request.user|has_permission:"menu.view" %}
-        <a href="{% url 'menu:item-list' %}" class="sidebar-link">
-
-            <i class="bi bi-cup-hot"></i>
-
-            <span>Menu Items</span>
-
-        </a>
-        {% endif %}
-
-    </div>
-
-    {% endif %}
-
-
-    <!-- ====================================================== -->
-    <!-- OPERATIONS -->
-    <!-- ====================================================== -->
-
-    {% if request.user|has_any_permission:"orders.view,billing.view" %}
-
-    <div class="sidebar-section">
-
-        <div class="sidebar-title">
-            OPERATIONS
         </div>
-
-        {% if request.user|has_permission:"orders.view" %}
-        <a href="{% url 'orders:floor-view' %}" class="sidebar-link">
-
-            <i class="bi bi-grid-3x3-gap"></i>
-
-            <span>Floor View</span>
-
-        </a>
-
-        <a href="{% url 'orders:orders-dashboard' %}" class="sidebar-link">
-
-            <i class="bi bi-journal-check"></i>
-
-            <span>Orders</span>
-
-        </a>
         {% endif %}
 
-        {% if request.user|has_permission:"billing.view" %}
-        <a href="{% url 'billing:dashboard' %}" class="sidebar-link">
 
-            <i class="bi bi-receipt"></i>
+        <!-- ====================================================== -->
+        <!-- REPORTS -->
+        <!-- ====================================================== -->
 
-            <span>Billing</span>
+        {% if request.user|has_permission:"reports.view" %}
+        <div class="sidebar-section">
 
-        </a>
-        {% endif %}
+            <div class="sidebar-title">
+                Reports & Analytics
+            </div>
 
-    </div>
+            <a href="{% url 'reports:dashboard' %}"
+               class="sidebar-link {% if request.resolver_match.namespace == 'reports' %}active{% endif %}">
+                <i class="bi bi-bar-chart-line-fill"></i>
+                <span>Reports</span>
+            </a>
 
-    {% endif %}
-
-
-    <!-- ====================================================== -->
-    <!-- REPORTS -->
-    <!-- ====================================================== -->
-
-    {% if request.user|has_permission:"reports.view" %}
-
-    <div class="sidebar-section">
-
-        <div class="sidebar-title">
-            REPORTS
         </div>
-
-        <a href="{% url 'reports:dashboard' %}" class="sidebar-link">
-
-            <i class="bi bi-bar-chart-line"></i>
-
-            <span>Reports</span>
-
-        </a>
-
-    </div>
-
-    {% endif %}
+        {% endif %}
 
 
-    <!-- ====================================================== -->
-    <!-- SETTINGS -->
-    <!-- ====================================================== -->
+        <!-- ====================================================== -->
+        <!-- SETTINGS -->
+        <!-- ====================================================== -->
 
-    {% if request.user|has_any_permission:"printer.view,users.view,backup.view,restore.view" %}
+        {% if request.user|has_any_permission:"printer.view,users.view,backup.view,restore.view" %}
+        <div class="sidebar-section">
 
-    <div class="sidebar-section">
+            <div class="sidebar-title">
+                Settings
+            </div>
 
-        <div class="sidebar-title">
-            SETTINGS
+            {% if request.user|has_permission:"printer.view" %}
+            <a href="{% url 'settings:printer-settings' %}"
+               class="sidebar-link {% if request.resolver_match.url_name == 'printer-settings' %}active{% endif %}">
+                <i class="bi bi-printer-fill"></i>
+                <span>Printer Setup</span>
+            </a>
+            {% endif %}
+
+            {% if request.user|has_permission:"users.view" %}
+            <a href="{% url 'accounts:user-list' %}"
+               class="sidebar-link {% if request.resolver_match.namespace == 'accounts' %}active{% endif %}">
+                <i class="bi bi-people-fill"></i>
+                <span>Users & Roles</span>
+            </a>
+            {% endif %}
+
+            {% if request.user|has_permission:"backup.view" %}
+            <a href="{% url 'backup:dashboard' %}"
+               class="sidebar-link {% if request.resolver_match.namespace == 'backup' %}active{% endif %}">
+                <i class="bi bi-database-fill-gear"></i>
+                <span>Backup & Restore</span>
+            </a>
+            {% endif %}
+            <a href="{% url 'inventory:dashboard' %}"
+   class="sidebar-link {% if request.resolver_match.namespace == 'inventory' %}active{% endif %}">
+
+    <i class="bi bi-box-seam-fill"></i>
+
+    <span>Inventory</span>
+
+</a>
         </div>
-
-        {% if request.user|has_permission:"printer.view" %}
-        <a href="{% url 'settings:printer-settings' %}" class="sidebar-link">
-
-            <i class="bi bi-printer"></i>
-
-            <span>Printer Settings</span>
-
-        </a>
-        {% endif %}
-
-        {% if request.user|has_permission:"users.view" %}
-        <a href="{% url 'accounts:user-list' %}" class="sidebar-link">
-
-            <i class="bi bi-people"></i>
-
-            <span>Users &amp; Roles</span>
-
-        </a>
-        {% endif %}
-
-        {% if request.user|has_permission:"backup.view" %}
-        <a href="{% url 'backup:dashboard' %}" class="sidebar-link">
-
-            <i class="bi bi-database"></i>
-
-            <span>Backup &amp; Restore</span>
-
-        </a>
         {% endif %}
 
     </div>
-
-    {% endif %}
-
 
     <!-- ====================================================== -->
     <!-- FOOTER -->
@@ -239,18 +213,16 @@
 
     <div class="sidebar-footer">
 
-        <small>
+        <div class="sidebar-user-avatar">
+            {{ request.user.username|slice:":1"|upper }}
+        </div>
 
-            Logged in as
-
-        </small>
-
-        <strong>
-
-            {{ request.user.username }}
-
-        </strong>
-
+        <div class="sidebar-user-info">
+            <small>Signed in as</small>
+            <strong>{{ request.user.username }}</strong>
+        </div>
+        
     </div>
+    
 
 </div>

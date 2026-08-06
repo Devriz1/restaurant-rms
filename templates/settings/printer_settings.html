@@ -1,224 +1,86 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}
-Printer Settings
-{% endblock %}
+{% block title %}Printer Settings | Restaurant RMS{% endblock %}
+{% block breadcrumb %}Settings{% endblock %}
+{% block page_title %}Printer & Thermal Setup{% endblock %}
 
 {% block extra_css %}
-
 <link rel="stylesheet" href="{% static 'css/printer_settings.css' %}">
-
 {% endblock %}
 
-
 {% block content %}
-
 <div class="printer-page">
 
-    <!-- ==========================================
-         HEADER
-    =========================================== -->
-
     <div class="printer-header">
-
         <div>
-
-            <h1>
-
-                <i class="bi bi-printer"></i>
-
-                Printer Settings
-
-            </h1>
-
-            <p>
-
-                Configure printers used by the restaurant
-
-            </p>
-
+            <h2 class="fw-bold text-dark mb-1"><i class="bi bi-printer-fill me-2 text-primary"></i> Thermal Printer Hardware Setup</h2>
+            <p class="text-secondary mb-0">Configure receipt printers, KOT kitchen tickets, and automated print options.</p>
         </div>
-
     </div>
 
-
     <form method="post">
-
         {% csrf_token %}
 
-        <!-- ==========================================
-             PRINTERS
-        =========================================== -->
-
-        <div class="printer-grid">
-
+        <div class="printer-grid mb-4">
             <div class="printer-card">
-
-                <h3>
-
-                    <i class="bi bi-receipt"></i>
-
-                    Billing Printer
-
-                </h3>
-
-                {{ form.billing_printer }}
-
+                <h3><i class="bi bi-receipt text-primary me-2"></i> Billing Printer</h3>
+                <div class="mt-3">{{ form.billing_printer }}</div>
             </div>
 
-
             <div class="printer-card">
-
-                <h3>
-
-                    <i class="bi bi-egg-fried"></i>
-
-                    Kitchen Printer
-
-                </h3>
-
-                {{ form.kitchen_printer }}
-
+                <h3><i class="bi bi-egg-fried text-warning me-2"></i> Kitchen (KOT) Printer</h3>
+                <div class="mt-3">{{ form.kitchen_printer }}</div>
             </div>
 
-
             <div class="printer-card">
-
-                <h3>
-
-                    <i class="bi bi-file-earmark-text"></i>
-
-                    Report Printer
-
-                </h3>
-
-                {{ form.report_printer }}
-
+                <h3><i class="bi bi-file-earmark-text text-info me-2"></i> Report Printer</h3>
+                <div class="mt-3">{{ form.report_printer }}</div>
             </div>
 
-
             <div class="printer-card">
-
-                <h3>
-
-                    <i class="bi bi-printer-fill"></i>
-
-                    Receipt Printer
-
-                </h3>
-
-                {{ form.receipt_printer }}
-
+                <h3><i class="bi bi-printer text-success me-2"></i> Receipt Printer</h3>
+                <div class="mt-3">{{ form.receipt_printer }}</div>
             </div>
-
         </div>
 
-
-
-        <!-- ==========================================
-             PRINT OPTIONS
-        =========================================== -->
-
-        <div class="settings-card mt-4">
-
-            <h3>
-
-                Print Options
-
-            </h3>
-
+        <div class="settings-card mb-4">
+            <h3><i class="bi bi-sliders me-2 text-primary"></i> Print Copies & Formats</h3>
             <div class="settings-grid">
-
                 <div>
-
-                    <label>
-
-                        Bill Copies
-
-                    </label>
-
+                    <label class="form-label">Bill Copies Count</label>
                     {{ form.bill_copies }}
-
                 </div>
-
                 <div>
-
-                    <label>
-
-                        KOT Copies
-
-                    </label>
-
+                    <label class="form-label">KOT Copies Count</label>
                     {{ form.kot_copies }}
-
                 </div>
-
             </div>
-
         </div>
 
-
-
-        <!-- ==========================================
-             AUTO PRINT
-        =========================================== -->
-
-        <div class="settings-card mt-4">
-
-            <h3>
-
-                Automatic Printing
-
-            </h3>
-
+        <div class="settings-card mb-4">
+            <h3><i class="bi bi-lightning-charge me-2 text-warning"></i> Automated Hardware Actions</h3>
             <div class="checkbox-group">
-
-                <label>
-
+                <label class="form-check-label d-flex align-items-center gap-2 cursor-pointer">
                     {{ form.auto_print_bill }}
-
-                    Auto Print Bill
-
+                    <span class="fw-medium text-dark">Auto-print customer bill on order checkout</span>
                 </label>
-
-                <label>
-
+                <label class="form-check-label d-flex align-items-center gap-2 cursor-pointer">
                     {{ form.auto_print_kot }}
-
-                    Auto Print Kitchen Order Ticket
-
+                    <span class="fw-medium text-dark">Auto-print KOT tickets in kitchen upon order save</span>
                 </label>
-
             </div>
-
         </div>
 
-
-
-        <!-- ==========================================
-             ACTION BUTTONS
-        =========================================== -->
-
-        <div class="d-flex gap-2 mt-4">
-
-    <button type="submit" class="btn btn-primary">
-
-        Save Settings
-
-    </button>
-
-    <a href="{% url 'settings:test-printer' %}"
-       class="btn btn-outline-success">
-
-        Print Test Page
-
-    </a>
-
-</div>
-
+        <div class="d-flex gap-3">
+            <button type="submit" class="btn btn-primary rounded-pill px-4 py-2 fw-bold">
+                <i class="bi bi-save me-1"></i> Save Printer Configurations
+            </button>
+            <a href="{% url 'settings:test-printer' %}" class="btn btn-outline-success rounded-pill px-4 py-2 fw-bold">
+                <i class="bi bi-printer me-1"></i> Print Test Page
+            </a>
+        </div>
     </form>
 
 </div>
-
 {% endblock %}

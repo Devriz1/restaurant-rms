@@ -1,9 +1,7 @@
 {% extends "auth_base.html" %}
 {% load widget_tweaks %}
 
-{% block title %}
-Restaurant RMS Login
-{% endblock %}
+{% block title %}Sign In | Restaurant RMS{% endblock %}
 
 {% block content %}
 
@@ -12,67 +10,72 @@ Restaurant RMS Login
     <div class="login-card">
 
         <div class="login-logo">
-
-            🍽
-
+            <i class="bi bi-shop-window"></i>
         </div>
 
-        <h2>
+        <h2>Restaurant RMS</h2>
 
-            Restaurant RMS
+        <p>Enter your credentials to access the system</p>
 
-        </h2>
+        <form
+    method="post"
+    autocomplete="off"
+    spellcheck="false">
 
-        <p>
+    {% csrf_token %}
 
-            Restaurant Management System
+    <div class="mb-3">
 
-        </p>
+        <label class="form-label">
 
-        <form method="post">
+            <i class="bi bi-person me-1 text-primary"></i>
 
-            {% csrf_token %}
+            Username
 
-            <div class="mb-3">
+        </label>
 
-                <label>
+        <input
+            type="text"
+            name="username"
+            class="form-control"
+            autocomplete="off"
+            autocapitalize="off"
+            autocorrect="off"
+            spellcheck="false">
 
-                    Username
+    </div>
 
-                </label>
+    <div class="mb-4">
 
-                {{ form.username|add_class:"form-control" }}
+        <label class="form-label">
 
-            </div>
+            <i class="bi bi-key me-1 text-primary"></i>
 
-            <div class="mb-4">
+            Password
 
-                <label>
+        </label>
 
-                    Password
+        <input
+            type="password"
+            name="password"
+            class="form-control"
+            autocomplete="new-password">
 
-                </label>
+    </div>
 
-                {{ form.password|add_class:"form-control" }}
+    <button
+        type="submit"
+        class="btn btn-primary w-100 shadow-sm">
 
-            </div>
+        <i class="bi bi-box-arrow-in-right me-1"></i>
 
-            <button
-                type="submit"
-                class="btn btn-primary w-100">
+        Sign In to RMS
 
-                <i class="bi bi-box-arrow-in-right"></i>
+    </button>
 
-                Login
-
-            </button>
-
-        </form>
-
+</form>
         <div class="version">
-
-            Version 2.0
-
+            Restaurant RMS &bull; v2.0 Enterprise
         </div>
 
     </div>
