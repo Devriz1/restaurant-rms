@@ -1,0 +1,183 @@
+/* ==========================================================
+   RESTAURANT RMS - LIVE ORDERS & FLOOR VIEW STYLING
+   ========================================================== */
+
+.orders-page {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    animation: fadeIn 0.3s ease-out forwards;
+}
+
+.orders-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 30px;
+    background: var(--brand-gradient);
+    border-radius: var(--border-radius-lg);
+    color: var(--text-white);
+    box-shadow: var(--shadow-lg);
+}
+
+.orders-header h1 {
+    font-size: 1.75rem;
+    font-weight: 800;
+    margin-bottom: 4px;
+}
+
+.orders-header p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.925rem;
+}
+
+/* Orders Statistics */
+.orders-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.orders-search {
+    display: flex;
+    align-items: center;
+}
+
+.orders-search input {
+    width: 100%;
+    max-width: 420px;
+    height: 46px;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+    padding: 0 18px;
+    font-size: 0.925rem;
+    transition: all var(--transition-fast);
+    background-color: var(--bg-card);
+    box-shadow: var(--shadow-sm);
+}
+
+.orders-search input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px var(--primary-light);
+}
+
+/* Orders Cards Grid */
+.orders-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 24px;
+}
+
+.order-card {
+    background-color: var(--bg-card);
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-md);
+    transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+    display: flex;
+    flex-direction: column;
+}
+
+.order-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+.order-card-header {
+    padding: 18px 24px;
+    background: var(--brand-gradient);
+    color: var(--text-white);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.order-card-header h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.order-card-header small {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.8rem;
+}
+
+.order-card-body {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    flex: 1;
+}
+
+.guest-block {
+    padding-bottom: 14px;
+    border-bottom: 1px dashed var(--border-color);
+}
+
+.guest-block:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.guest-block h5 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    color: var(--text-primary);
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+
+.guest-block ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.guest-block li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    margin-bottom: 6px;
+    border-radius: var(--border-radius-sm);
+    background-color: #f8fafc;
+    border: 1px solid var(--border-subtle);
+    font-size: 0.875rem;
+    color: var(--text-primary);
+}
+
+.order-card-footer {
+    padding: 16px 20px;
+    border-top: 1px solid var(--border-color);
+    background-color: #f8fafc;
+}
+
+.empty-orders {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+    background-color: var(--bg-card);
+    border-radius: var(--border-radius-lg);
+    border: 2px dashed var(--border-color);
+}
+
+.empty-orders i {
+    font-size: 3.5rem;
+    color: var(--text-muted);
+}
+
+.empty-orders h3 {
+    margin-top: 16px;
+    font-size: 1.5rem;
+    color: var(--text-primary);
+}
+
+.empty-orders p {
+    color: var(--text-secondary);
+}

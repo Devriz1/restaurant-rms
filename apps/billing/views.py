@@ -7,6 +7,8 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
 from apps.orders.models import GuestOrder
+from apps.settings.printer import PrinterManager
+from apps.settings.receipt_builder import build_receipt
 
 from .forms import BillForm
 from .models import Bill, Payment
@@ -20,15 +22,15 @@ from .models import Bill, Payment
 def dashboard(request):
 
     guests = (
-    GuestOrder.objects
-    .filter(
-        status__in=[
-            "open",
-            "served",
-        ],
-        items__isnull=False,
-    )
-    .distinct()
+        GuestOrder.objects
+        .filter(
+            status__in=[
+                "open",
+                "served",
+            ],
+            items__isnull=False,
+        )
+        .distinct()
         .select_related(
             "session",
             "session__table",
@@ -50,7 +52,6 @@ def dashboard(request):
             "guests": guests,
         },
     )
-
 
 
 # ==========================================================
@@ -75,10 +76,9 @@ def billing_screen(request, guest_id):
         id=guest_id,
     )
 
-
-    # ------------------------------------------
+    # ======================================================
     # CREATE BILL IF NOT EXISTS
-    # ------------------------------------------
+    # ======================================================
 
     bill, created = Bill.objects.get_or_create(
 
@@ -94,80 +94,64 @@ def billing_screen(request, guest_id):
 
     )
 
-
     form = BillForm(
+
         request.POST or None,
+
         instance=bill,
+
     )
 
-
-    # ------------------------------------------
-    # POST ACTIONS
-    # ------------------------------------------
+    # ======================================================
+    # POST
+    # ======================================================
 
     if request.method == "POST":
 
-
-        action = request.POST.get(
-            "action"
-        )
-
+        action = request.POST.get("action")
 
         if form.is_valid():
 
-
-            bill = form.save(
-                commit=False
-            )
-
+            bill = form.save(commit=False)
 
             bill.calculate_totals()
 
             bill.save()
 
-
-
-            # ===============================
-            # UPDATE BILL
-            # ===============================
+            # ==========================================
+            # UPDATE BILL ONLY
+            # ==========================================
 
             if action == "update_bill":
 
-
                 messages.success(
-                    request,
-                    "Bill updated successfully.",
-                )
 
+                    request,
+
+                    "Bill updated successfully."
+
+                )
 
                 return redirect(
+
                     "billing:billing-screen",
+
                     guest.id,
+
                 )
 
-
-
-            # ===============================
+                        # ==========================================
             # COMPLETE PAYMENT
-            # ===============================
+            # ==========================================
 
             if action == "complete_payment":
 
-
-                amount = request.POST.get(
-                    "amount"
-                )
-
+                amount = request.POST.get("amount")
 
                 if not amount:
-
                     amount = bill.grand_total
 
-
-                amount = Decimal(
-                    amount
-                )
-
+                amount = Decimal(amount)
 
                 Payment.objects.create(
 
@@ -189,89 +173,85 @@ def billing_screen(request, guest_id):
 
                 )
 
-
+                # ======================================
+                # MARK BILL AS PAID
+                # ======================================
 
                 bill.status = "paid"
-
                 bill.paid_at = timezone.now()
-
                 bill.save()
 
-
+                # ======================================
+                # MARK GUEST AS PAID
+                # ======================================
 
                 guest.status = "paid"
-
                 guest.save()
 
+                # ======================================
+                # PRINT RECEIPT
+                # ======================================
 
+                try:
 
-                # --------------------------------
-                # CLOSE TABLE SESSION
-                # --------------------------------
+                    receipt = build_receipt(bill)
+                    PrinterManager.print_bill(receipt)
 
-                remaining = (
-                    guest.session
-                    .guest_orders
-                    .exclude(
-                        status="paid"
-                    )
-                    .exists()
-                )
+                except Exception as e:
 
+                    print("=" * 60)
+                    print("Receipt Printing Failed")
+                    print(e)
+                    print("=" * 60)
 
-                if not remaining:
+                # ======================================
+                # CLOSE SESSION IF NO ACTIVE GUESTS
+                # ======================================
 
+                session = guest.session
 
-                    guest.session.status = "closed"
+                active_guests = session.guest_orders.filter(
+                    status__in=[
+                        "open",
+                        "preparing",
+                        "ready",
+                        "served",
+                    ]
+                ).exists()
 
-                    guest.session.closed_at = timezone.now()
+                if not active_guests:
 
-                    guest.session.save()
+                    session.status = "closed"
+                    session.closed_at = timezone.now()
+                    session.save()
 
-
-
-                    table = guest.session.table
-
-
+                    table = session.table
                     table.status = "available"
-
                     table.save()
-
-
 
                 messages.success(
                     request,
-                    "Payment completed successfully.",
+                    "Payment completed successfully."
                 )
-
 
                 return redirect(
                     "billing:dashboard"
                 )
-
-
-
-    # ------------------------------------------
+    # ======================================================
     # DISPLAY
-    # ------------------------------------------
+    # ======================================================
 
     context = {
 
-
         "guest": guest,
-
 
         "bill": bill,
 
-
         "form": form,
-
 
         "items": guest.items.all(),
 
-
     }
-
 
     return render(
 

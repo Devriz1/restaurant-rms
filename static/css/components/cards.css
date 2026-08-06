@@ -1,65 +1,112 @@
 /* ==========================================================
-   RMS CARDS
-========================================================== */
+   RESTAURANT RMS - MODERN CARD COMPONENTS
+   ========================================================== */
 
-.card{
-
-    background:#ffffff;
-
-    border-radius:16px;
-
-    border:1px solid #e5e7eb;
-
-    box-shadow:0 8px 24px rgba(0,0,0,.05);
-
-    transition:.25s;
-
+.card {
+    background-color: var(--bg-card);
+    border-radius: var(--border-radius-lg);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-md);
+    transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+    overflow: hidden;
 }
 
-.card:hover{
-
-    transform:translateY(-2px);
-
-    box-shadow:0 15px 35px rgba(0,0,0,.08);
-
+.card-header {
+    background-color: transparent;
+    border-bottom: 1px solid var(--border-color);
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--text-primary);
 }
 
-.card-header{
-
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
-
-    padding:20px 24px;
-
-    border-bottom:1px solid #eef2f7;
-
+.card-body {
+    padding: 24px;
 }
 
-.card-title{
-
-    margin:0;
-
-    font-size:18px;
-
-    font-weight:700;
-
-    color:#111827;
-
+.card-footer {
+    background-color: rgba(248, 250, 252, 0.5);
+    border-top: 1px solid var(--border-color);
+    padding: 14px 24px;
 }
 
-.card-body{
-
-    padding:24px;
-
+/* Metric / Stat KPI Cards */
+.stat-card {
+    background: var(--bg-card);
+    border-radius: var(--border-radius-lg);
+    border: 1px solid var(--border-color);
+    padding: 22px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    box-shadow: var(--shadow-md);
+    transition: transform var(--transition-normal), box-shadow var(--transition-normal);
 }
 
-.card-footer{
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+}
 
-    padding:18px 24px;
+.stat-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: var(--border-radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
 
-    border-top:1px solid #eef2f7;
+.stat-icon.indigo {
+    background-color: rgba(79, 70, 229, 0.1);
+    color: var(--primary);
+}
 
+.stat-icon.emerald {
+    background-color: rgba(16, 185, 129, 0.1);
+    color: var(--success);
+}
+
+.stat-icon.amber {
+    background-color: rgba(245, 158, 11, 0.1);
+    color: var(--warning);
+}
+
+.stat-icon.rose {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: var(--danger);
+}
+
+.stat-details h6 {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin: 0 0 4px 0;
+}
+
+.stat-details h3 {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin: 0;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+}
+
+.stat-badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: var(--border-radius-pill);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 6px;
 }

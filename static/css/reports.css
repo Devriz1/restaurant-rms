@@ -1,24 +1,112 @@
 /* ==========================================================
-   RMS REPORTS
-   PART 1
-   Layout + Header + Toolbar
+   REPORTS PAGE LAYOUT
 ========================================================== */
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-
 .reports-page{
-
+    display:flex;
+    flex-direction:column;
+    gap:24px;
     width:100%;
-
-    padding:30px;
-
+    animation:fadeIn .35s ease;
 }
+
+/* ==========================================================
+   PAGE HEADER
+========================================================== */
 
 .reports-header{
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+    flex-wrap:wrap;
+
+}
+
+.reports-title h1{
+
+    display:flex;
+    align-items:center;
+    gap:12px;
+
+    margin:0;
+
+    font-size:30px;
+
+    font-weight:700;
+
+    color:#1f2937;
+
+}
+
+.reports-title h1 i{
+
+    color:#2563eb;
+
+    font-size:30px;
+
+}
+
+.reports-title p{
+
+    margin-top:8px;
+
+    color:#6b7280;
+
+    font-size:15px;
+
+}
+
+.reports-header-actions{
+
+    display:flex;
+
+    gap:12px;
+
+}
+
+/* ==========================================================
+   FILTER CARD
+========================================================== */
+
+.report-filter-card{
+
+    background:#fff;
+
+    border-radius:18px;
+
+    padding:22px;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.05);
+
+    border:1px solid #e5e7eb;
+
+}
+
+/* ==========================================================
+   TABLE CARD
+========================================================== */
+
+.report-table-card{
+
+    background:#fff;
+
+    border-radius:18px;
+
+    overflow:hidden;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.05);
+
+    border:1px solid #e5e7eb;
+
+}
+
+/* ==========================================================
+   TOOLBAR
+========================================================== */
+
+.table-toolbar{
 
     display:flex;
 
@@ -26,306 +114,352 @@
 
     align-items:center;
 
-    margin-bottom:30px;
-
-    flex-wrap:wrap;
-
     gap:20px;
 
-}
+    padding:18px 22px;
 
-.reports-header h1{
-
-    font-size:30px;
-
-    font-weight:700;
-
-    color:#222;
+    border-bottom:1px solid #ececec;
 
 }
 
-.reports-header p{
-
-    color:#666;
-
-    margin-top:6px;
-
-}
-
-.report-toolbar{
-
-    background:#fff;
-
-    border-radius:12px;
-
-    padding:20px;
-
-    box-shadow:0 5px 20px rgba(0,0,0,.05);
-
-    margin-bottom:30px;
-
-}
-
-.filter-group{
+.table-toolbar-left{
 
     display:flex;
-
-    gap:15px;
-
-    flex-wrap:wrap;
 
     align-items:center;
 
-}
+    gap:15px;
 
-.report-control{
-
-    min-width:170px;
-
-    height:45px;
-
-    border:1px solid #ddd;
-
-    border-radius:8px;
-
-    padding:0 15px;
-
-    outline:none;
+    flex:1;
 
 }
 
-.report-control:focus{
-
-    border-color:#0d6efd;
-
-}
-
-.report-actions{
+.table-toolbar-right{
 
     display:flex;
 
-    gap:12px;
+    align-items:center;
 
-    flex-wrap:wrap;
-
-    margin-top:20px;
+    gap:15px;
 
 }
+
 /* ==========================================================
-   RMS REPORTS
-   PART 2
-   Summary Cards
+   SEARCH BOX
 ========================================================== */
 
-.summary-cards{
+.search-box{
 
-    display:grid;
+    position:relative;
 
-    grid-template-columns:repeat(4,1fr);
-
-    gap:20px;
-
-    margin-bottom:30px;
+    width:340px;
 
 }
 
-.summary-card{
+.search-box input{
 
-    background:#fff;
+    width:100%;
 
-    border-radius:14px;
+    height:46px;
 
-    padding:22px;
+    border-radius:12px;
 
-    box-shadow:0 5px 18px rgba(0,0,0,.06);
+    border:1px solid #d1d5db;
+
+    padding-left:45px;
+
+    padding-right:15px;
+
+    outline:none;
 
     transition:.25s;
 
-    border-left:5px solid #0d6efd;
+    font-size:15px;
+
+    background:#fafafa;
 
 }
 
-.summary-card:hover{
+.search-box input:focus{
 
-    transform:translateY(-4px);
-
-    box-shadow:0 12px 25px rgba(0,0,0,.10);
-
-}
-
-.summary-card small{
-
-    display:block;
-
-    color:#777;
-
-    font-size:14px;
-
-    margin-bottom:12px;
-
-}
-
-.summary-card h2{
-
-    margin:0;
-
-    font-size:30px;
-
-    font-weight:700;
-
-    color:#222;
-
-}
-
-.summary-card h3{
-
-    margin:0;
-
-    font-size:26px;
-
-    font-weight:700;
-
-    color:#222;
-
-}
-
-
-/* Optional color accents */
-
-.summary-card:nth-child(1){
-
-    border-left-color:#0d6efd;
-
-}
-
-.summary-card:nth-child(2){
-
-    border-left-color:#198754;
-
-}
-
-.summary-card:nth-child(3){
-
-    border-left-color:#fd7e14;
-
-}
-
-.summary-card:nth-child(4){
-
-    border-left-color:#dc3545;
-
-}
-
-.summary-card:nth-child(5){
-
-    border-left-color:#6f42c1;
-
-}
-
-.summary-card:nth-child(6){
-
-    border-left-color:#20c997;
-
-}
-/* ==========================================================
-   RMS REPORTS
-   PART 3
-   Report Tables
-========================================================== */
-
-.report-table{
+    border-color:#2563eb;
 
     background:#fff;
 
-    border-radius:14px;
+    box-shadow:0 0 0 4px rgba(37,99,235,.08);
 
-    overflow:hidden;
+}
 
-    box-shadow:0 5px 18px rgba(0,0,0,.06);
+.search-box i{
 
-    margin-top:25px;
+    position:absolute;
+
+    left:16px;
+
+    top:50%;
+
+    transform:translateY(-50%);
+
+    color:#6b7280;
+
+    font-size:15px;
+
+}
+
+/* ==========================================================
+   RECORD COUNT
+========================================================== */
+
+.record-count{
+
+    background:#eff6ff;
+
+    color:#2563eb;
+
+    padding:8px 16px;
+
+    border-radius:50px;
+
+    font-weight:600;
+
+    font-size:14px;
+
+}
+
+/* ==========================================================
+   TABLE WRAPPER
+========================================================== */
+
+.table-responsive{
 
     overflow-x:auto;
 
 }
 
-.report-table table{
+.report-table{
 
     width:100%;
 
     border-collapse:collapse;
 
-    min-width:1000px;
+    min-width:1200px;
 
 }
+
+/* Remove default spacing */
+
+.report-table th,
+.report-table td{
+
+    white-space:nowrap;
+
+}
+
+/* Smooth scrolling */
+
+.table-responsive::-webkit-scrollbar{
+
+    height:8px;
+
+}
+
+.table-responsive::-webkit-scrollbar-thumb{
+
+    background:#d1d5db;
+
+    border-radius:20px;
+
+}
+
+.table-responsive::-webkit-scrollbar-track{
+
+    background:#f3f4f6;
+
+}
+/* ==========================================================
+   REPORT TABLE
+========================================================== */
 
 .report-table thead{
 
-    background:#f8f9fa;
+    background:#f8fafc;
 
 }
 
-.report-table th{
+.report-table thead th{
 
-    padding:18px;
-
-    text-align:left;
+    padding:18px 22px;
 
     font-size:14px;
 
-    font-weight:600;
+    font-weight:700;
 
-    color:#555;
+    color:#374151;
 
-    border-bottom:1px solid #ececec;
+    border-bottom:2px solid #e5e7eb;
 
-    white-space:nowrap;
+    cursor:pointer;
+
+    user-select:none;
+
+    transition:.25s;
+
+    position:sticky;
+
+    top:0;
+
+    background:#f8fafc;
+
+    z-index:2;
+
+}
+
+.report-table thead th i{
+
+    margin-left:6px;
+
+    color:#9ca3af;
+
+    font-size:13px;
 
 }
 
-.report-table td{
+.report-table thead th:hover{
 
-    padding:16px 18px;
-
-    border-bottom:1px solid #f1f1f1;
-
-    vertical-align:middle;
-
-    color:#333;
-
-    white-space:nowrap;
+    color:#2563eb;
 
 }
+
+
+/* ==========================================================
+   TABLE BODY
+========================================================== */
 
 .report-table tbody tr{
 
-    transition:.2s;
+    transition:.25s;
 
-}
-
-.report-table tbody tr:hover{
-
-    background:#f8fbff;
+    border-bottom:1px solid #f1f5f9;
 
 }
 
 .report-table tbody tr:nth-child(even){
 
-    background:#fcfcfc;
+    background:#fcfcfd;
 
 }
 
-.report-table tbody tr:nth-child(even):hover{
+.report-table tbody tr:hover{
 
-    background:#f8fbff;
+    background:#eef5ff;
+
+}
+
+.report-table tbody td{
+
+    padding:18px 22px;
+
+    vertical-align:middle;
+
+    color:#374151;
+
+    font-size:14px;
 
 }
 
-.report-table tbody tr:last-child td{
 
-    border-bottom:none;
+/* ==========================================================
+   BILL NUMBER
+========================================================== */
+
+.report-table tbody td:first-child{
+
+    font-weight:700;
+
+    color:#2563eb;
 
 }
+
+
+/* ==========================================================
+   DATE CELL
+========================================================== */
+
+.date-cell{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:3px;
+
+}
+
+.date-cell strong{
+
+    color:#111827;
+
+    font-size:14px;
+
+}
+
+.date-cell small{
+
+    color:#9ca3af;
+
+    font-size:12px;
+
+}
+
+
+/* ==========================================================
+   TABLE BADGE
+========================================================== */
+
+.table-badge{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    min-width:65px;
+
+    padding:6px 12px;
+
+    border-radius:999px;
+
+    background:#eff6ff;
+
+    color:#2563eb;
+
+    font-size:13px;
+
+    font-weight:600;
+
+}
+
+
+/* ==========================================================
+   TOTAL COLUMN
+========================================================== */
+
+.total-cell{
+
+    font-size:15px;
+
+    font-weight:700;
+
+    color:#059669;
+
+}
+
+
+/* ==========================================================
+   STATUS BADGES
+========================================================== */
+
 .status-badge{
 
     display:inline-flex;
@@ -334,397 +468,582 @@
 
     justify-content:center;
 
-    padding:6px 12px;
+    padding:6px 14px;
 
-    border-radius:20px;
+    border-radius:999px;
 
     font-size:13px;
 
     font-weight:600;
 
+    letter-spacing:.2px;
+
 }
+
+
+/* Paid */
 
 .status-paid{
 
-    background:#d1fae5;
+    background:#dcfce7;
 
-    color:#198754;
+    color:#166534;
+
+}
+
+
+/* Unpaid */
+
+.status-unpaid{
+
+    background:#fee2e2;
+
+    color:#b91c1c;
 
 }
 
-.status-pending{
 
-    background:#fff3cd;
+/* Partial */
 
-    color:#b8860b;
+.status-partial{
+
+    background:#fef3c7;
+
+    color:#b45309;
 
 }
+
+
+/* Cancelled */
 
 .status-cancelled{
 
-    background:#fde2e2;
+    background:#e5e7eb;
 
-    color:#dc3545;
+    color:#4b5563;
 
 }
-.report-placeholder{
 
-    background:#fff;
 
-    border-radius:14px;
+/* ==========================================================
+   EMPTY STATE
+========================================================== */
 
-    padding:80px 20px;
+.empty-row{
+
+    padding:70px 20px !important;
 
     text-align:center;
 
-    box-shadow:0 5px 18px rgba(0,0,0,.06);
+}
+
+.empty-report{
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:15px;
 
 }
 
-.report-placeholder i{
+.empty-report i{
 
     font-size:70px;
 
-    color:#0d6efd;
-
-    margin-bottom:20px;
+    color:#cbd5e1;
 
 }
 
-.report-placeholder h3{
-
-    margin-bottom:10px;
-
-    font-weight:700;
-
-}
-
-.report-placeholder p{
-
-    color:#777;
-
-}
-.quick-filters{
-
-display:flex;
-
-gap:12px;
-
-flex-wrap:wrap;
-
-margin-bottom:18px;
-
-}
-
-.quick-btn{
-
-padding:10px 18px;
-
-background:#f5f5f5;
-
-border-radius:8px;
-
-text-decoration:none;
-
-color:#444;
-
-font-weight:600;
-
-transition:.25s;
-
-}
-
-.quick-btn:hover{
-
-background:#0d6efd;
-
-color:#fff;
-
-}
-
-.quick-btn.active{
-
-background:#0d6efd;
-
-color:#fff;
-
-}
-
-/* ==========================================================
-   PAYMENT SETTLEMENT
-========================================================== */
-
-/* ==========================================================
-   PAYMENT SETTLEMENT
-========================================================== */
-
-.payment-settlement{
-
-    margin-top:30px;
-
-    background:#fff;
-
-    border:1px solid #e9ecef;
-
-    border-radius:14px;
-
-    overflow:hidden;
-
-    box-shadow:0 4px 12px rgba(0,0,0,.06);
-
-}
-
-.payment-settlement-header{
-
-    padding:18px 22px;
-
-    background:#f8f9fa;
-
-    border-bottom:1px solid #e9ecef;
-
-}
-
-.payment-settlement-header h4{
+.empty-report h4{
 
     margin:0;
 
-    font-size:18px;
-
-    font-weight:600;
-
-    color:#212529;
+    color:#374151;
 
 }
 
-.payment-settlement table{
+.empty-report p{
 
-    width:100% !important;
+    margin:0;
 
-    min-width:0 !important;
-
-    max-width:100% !important;
-
-    table-layout:fixed !important;
-
-    border-collapse:collapse;
+    color:#9ca3af;
 
 }
 
-.payment-settlement tbody tr{
 
-    transition:.25s;
+/* ==========================================================
+   TABLE ANIMATION
+========================================================== */
 
-}
+.report-table tbody tr{
 
-.payment-settlement tbody tr:hover{
-
-    background:#f8f9fa;
-
-}
-
-.payment-settlement td{
-
-    padding:18px 22px;
-
-    border-bottom:1px solid #ececec;
-
-    font-size:15px;
+    animation:fadeRow .25s ease;
 
 }
 
-.payment-settlement td:first-child{
+@keyframes fadeRow{
 
-    font-weight:600;
+    from{
 
-    color:#495057;
+        opacity:0;
 
-}
+        transform:translateY(8px);
 
-.payment-settlement td:last-child{
+    }
 
-    text-align:right;
+    to{
 
-    font-weight:700;
+        opacity:1;
 
-    color:#198754;
+        transform:translateY(0);
 
-}
-
-.payment-settlement tr:last-child td{
-
-    background:#f8f9fa;
-
-    border-bottom:none;
-
-    font-size:17px;
-
-    font-weight:700;
+    }
 
 }
 /* ==========================================================
-   RMS REPORTS
-   PART 4
-   Responsive
+   REPORT ACTION BUTTONS
 ========================================================== */
-
-
-/* 1600px */
-
-@media (max-width:1600px){
-
-.summary-cards{
-
-    grid-template-columns:repeat(4,1fr);
-
-}
-
-}
-
-
-/* 1440px */
-
-@media (max-width:1440px){
-
-.summary-cards{
-
-    grid-template-columns:repeat(2,1fr);
-
-}
-
-}
-
-
-/* 1366px */
-
-@media (max-width:1366px){
-
-.reports-page{
-
-    padding:25px;
-
-}
-
-.report-toolbar{
-
-    padding:18px;
-
-}
-
-}
-
-
-/* 1024px */
-
-@media (max-width:1024px){
-
-.reports-header{
-
-    flex-direction:column;
-
-    align-items:flex-start;
-
-}
-
-.filter-group{
-
-    width:100%;
-
-}
-
-.report-control{
-
-    flex:1;
-
-    min-width:180px;
-
-}
-
-.summary-cards{
-
-    grid-template-columns:repeat(2,1fr);
-
-}
-
-}
-
-
-/* 768px */
-
-@media (max-width:768px){
-
-.reports-page{
-
-    padding:18px;
-
-}
-
-.summary-cards{
-
-    grid-template-columns:1fr;
-
-}
-
-.report-control{
-
-    width:100%;
-
-}
-
-.filter-group{
-
-    flex-direction:column;
-
-    align-items:stretch;
-
-}
 
 .report-actions{
 
-    width:100%;
+    display:flex;
 
-    flex-direction:column;
+    justify-content:flex-end;
+
+    align-items:center;
+
+    gap:12px;
+
+    flex-wrap:wrap;
 
 }
 
 .report-actions .btn{
 
-    width:100%;
+    min-width:160px;
+
+    height:46px;
+
+    border-radius:12px;
+
+    font-weight:600;
+
+    transition:all .25s ease;
 
 }
 
-}
+.report-actions .btn:hover{
 
+    transform:translateY(-2px);
 
-/* 576px */
-
-@media (max-width:576px){
-
-.reports-header h1{
-
-    font-size:24px;
+    box-shadow:0 10px 20px rgba(0,0,0,.12);
 
 }
 
-.summary-card{
+/* ==========================================================
+   EXPORT SECTION
+========================================================== */
 
-    padding:18px;
+.report-export{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    flex-wrap:wrap;
+
+    gap:18px;
+
+    background:#fff;
+
+    border:1px solid #e5e7eb;
+
+    border-radius:18px;
+
+    padding:20px 24px;
+
+    box-shadow:0 8px 24px rgba(0,0,0,.05);
 
 }
 
-.summary-card h2{
+.export-info h4{
 
-    font-size:24px;
+    margin:0;
+
+    font-size:18px;
+
+    color:#111827;
+
+}
+
+.export-info p{
+
+    margin:6px 0 0;
+
+    color:#6b7280;
+
+    font-size:14px;
 
 }
 
-.report-table th,
+.export-buttons{
 
-.report-table td{
+    display:flex;
 
-    padding:12px;
+    gap:12px;
 
-    font-size:13px;
+    flex-wrap:wrap;
 
 }
+
+.export-buttons .btn{
+
+    min-width:150px;
+
+    height:46px;
+
+    border-radius:12px;
+
+    font-weight:600;
+
+}
+
+/* ==========================================================
+   BUTTON HOVER EFFECT
+========================================================== */
+
+.btn{
+
+    transition:.25s;
+
+}
+
+.btn:hover{
+
+    transform:translateY(-2px);
+
+}
+
+/* ==========================================================
+   CARD ANIMATION
+========================================================== */
+
+.report-filter-card,
+.report-table-card,
+.report-export{
+
+    animation:fadeCard .35s ease;
+
+}
+
+@keyframes fadeCard{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(15px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+/* ==========================================================
+   FADE PAGE
+========================================================== */
+
+@keyframes fadeIn{
+
+    from{
+
+        opacity:0;
+
+    }
+
+    to{
+
+        opacity:1;
+
+    }
+
+}
+
+/* ==========================================================
+   LARGE DESKTOP (1920px+)
+========================================================== */
+
+@media (min-width:1900px){
+
+    .reports-page{
+
+        gap:30px;
+
+    }
+
+    .report-table th,
+    .report-table td{
+
+        padding:20px 24px;
+
+    }
+
+}
+
+/* ==========================================================
+   1600px
+========================================================== */
+
+@media (max-width:1600px){
+
+    .search-box{
+
+        width:300px;
+
+    }
+
+}
+
+/* ==========================================================
+   1440px
+========================================================== */
+
+@media (max-width:1440px){
+
+    .reports-header{
+
+        gap:18px;
+
+    }
+
+    .search-box{
+
+        width:260px;
+
+    }
+
+}
+
+/* ==========================================================
+   1366px
+========================================================== */
+
+@media (max-width:1366px){
+
+    .reports-title h1{
+
+        font-size:26px;
+
+    }
+
+    .report-table{
+
+        min-width:1100px;
+
+    }
+
+}
+
+/* ==========================================================
+   TABLET
+========================================================== */
+
+@media (max-width:992px){
+
+    .reports-header{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+    }
+
+    .table-toolbar{
+
+        flex-direction:column;
+
+        align-items:stretch;
+
+    }
+
+    .table-toolbar-left{
+
+        width:100%;
+
+    }
+
+    .table-toolbar-right{
+
+        justify-content:space-between;
+
+    }
+
+    .search-box{
+
+        width:100%;
+
+    }
+
+    .report-export{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+    }
+
+    .export-buttons{
+
+        width:100%;
+
+    }
+
+    .export-buttons .btn{
+
+        flex:1;
+
+    }
+
+}
+
+/* ==========================================================
+   MOBILE
+========================================================== */
+
+@media (max-width:768px){
+
+    .reports-page{
+
+        gap:18px;
+
+    }
+
+    .reports-title h1{
+
+        font-size:22px;
+
+    }
+
+    .reports-title p{
+
+        font-size:14px;
+
+    }
+
+    .report-filter-card{
+
+        padding:16px;
+
+    }
+
+    .report-table-card{
+
+        border-radius:14px;
+
+    }
+
+    .table-toolbar{
+
+        padding:15px;
+
+    }
+
+    .report-table th,
+    .report-table td{
+
+        padding:14px 16px;
+
+        font-size:13px;
+
+    }
+
+    .status-badge{
+
+        font-size:12px;
+
+        padding:5px 10px;
+
+    }
+
+}
+
+/* ==========================================================
+   SMALL MOBILE
+========================================================== */
+
+@media (max-width:480px){
+
+    .reports-title h1{
+
+        font-size:20px;
+
+    }
+
+    .report-actions{
+
+        flex-direction:column;
+
+    }
+
+    .report-actions .btn{
+
+        width:100%;
+
+    }
+
+    .export-buttons{
+
+        flex-direction:column;
+
+    }
+
+    .export-buttons .btn{
+
+        width:100%;
+
+    }
+
+}
+
+/* ==========================================================
+   PRINT
+========================================================== */
+
+@media print{
+
+    .reports-header-actions,
+    .report-actions,
+    .report-export,
+    .search-box{
+
+        display:none !important;
+
+    }
+
+    .report-table{
+
+        min-width:100%;
+
+    }
+
+    body{
+
+        background:white;
+
+    }
 
 }

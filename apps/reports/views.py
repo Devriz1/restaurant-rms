@@ -6,11 +6,12 @@ from django.shortcuts import render
 from apps.billing.models import DailyClosing
 from apps.billing.models import Bill, Payment
 from apps.orders.models import KitchenOrderTicket, OrderItem
-
+from apps.accounts.decorators import permission_required
 from .filters import apply_report_filters
 
 
 @login_required
+@permission_required("reports.view")
 def dashboard(request):
 
     return render(

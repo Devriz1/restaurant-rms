@@ -34,21 +34,22 @@ class RestaurantTable(models.Model):
     area = models.ForeignKey(
         DiningArea,
         on_delete=models.CASCADE,
-        related_name="tables"
+        related_name="tables",
     )
+
     table_number = models.CharField(max_length=20)
 
     display_name = models.CharField(
-         max_length=100,
-     blank=True
-)
+        max_length=100,
+        blank=True,
+    )
 
     capacity = models.PositiveSmallIntegerField(default=2)
 
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
-        default="available"
+        default="available",
     )
 
     is_active = models.BooleanField(default=True)
@@ -60,22 +61,31 @@ class RestaurantTable(models.Model):
     class Meta:
         ordering = ["area", "table_number"]
         unique_together = ["area", "table_number"]
-    
+
     def __str__(self):
         return self.display_name or self.table_number
-    
+
     @property
     def is_occupied(self):
-        return self.sessions.filter(status="open").exists()
 
+        return self.sessions.filter(
+            status="open",
+            guest_orders__status__in=[
+                "open",
+                "preparing",
+                "ready",
+                "served",
+            ],
+            guest_orders__items__isnull=False,
+        ).distinct().exists()
 
     @property
     def current_status(self):
 
-     if self.status != "available":
-        return self.status
+        if self.status != "available":
+            return self.status
 
-     if self.is_occupied:
-        return "occupied"
+        if self.is_occupied:
+            return "occupied"
 
-     return "available"
+        return "available"

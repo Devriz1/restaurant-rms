@@ -1,449 +1,141 @@
 /* ==========================================================
-   RESTAURANT RMS
-   BILLING DASHBOARD
-========================================================== */
+   RESTAURANT RMS - BILLING DASHBOARD STYLING
+   ========================================================== */
 
+.billing-dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    animation: fadeIn 0.3s ease-out forwards;
+}
 
-.billing-dashboard{
+.billing-dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+}
 
-    display:flex;
+.billing-dashboard-header h1 {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin: 0;
+}
 
-    flex-direction:column;
+.billing-dashboard-header p {
+    margin: 4px 0 0;
+    color: var(--text-secondary);
+}
 
-    gap:25px;
+.bill-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+}
+
+.bill-card {
+    background-color: var(--bg-card);
+    border-radius: var(--border-radius-lg);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+    display: flex;
+    flex-direction: column;
+}
+
+.bill-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+.bill-card-header {
+    padding: 18px 20px;
+    background: #f8fafc;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.bill-card-header h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.bill-status {
+    padding: 4px 10px;
+    border-radius: var(--border-radius-pill);
+    font-size: 0.75rem;
+    font-weight: 600;
+    background-color: var(--warning-bg);
+    color: var(--warning);
+    border: 1px solid var(--warning-border);
+}
+
+.bill-info {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    background-color: var(--bg-card);
+}
+
+.bill-info small {
+    display: block;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 
 }
 
-
-
-/* ==========================================================
-   HEADER
-========================================================== */
-
-
-.billing-dashboard-header{
-
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
-
+.bill-info strong {
+    display: block;
+    font-size: 1.05rem;
+    color: var(--text-primary);
+    font-weight: 700;
 }
 
-
-.billing-dashboard-header h1{
-
-    margin:0;
-
-    font-size:32px;
-
-    font-weight:700;
-
-    color:#111827;
-
+.bill-action {
+    padding: 14px 20px;
+    border-top: 1px solid var(--border-color);
+    background-color: #f8fafc;
 }
 
-
-.billing-dashboard-header p{
-
-    margin-top:6px;
-
-    color:#6b7280;
-
+.bill-action a {
+    display: block;
+    width: 100%;
+    text-align: center;
+    background: var(--brand-gradient);
+    color: var(--text-white);
+    padding: 10px;
+    border-radius: var(--border-radius-pill);
+    font-weight: 600;
+    text-decoration: none;
+    transition: all var(--transition-fast);
+    box-shadow: var(--shadow-sm);
 }
 
-
-
-
-
-/* ==========================================================
-   SEARCH
-========================================================== */
-
-
-.billing-search input{
-
-    width:300px;
-
-    padding:12px 18px;
-
-    border-radius:12px;
-
-    border:1px solid #d1d5db;
-
-    outline:none;
-
-    font-size:15px;
-
+.bill-action a:hover {
+    box-shadow: var(--shadow-glow);
+    transform: translateY(-1px);
 }
 
-
-.billing-search input:focus{
-
-    border-color:#2563eb;
-
+.empty-bills {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+    background-color: var(--bg-card);
+    border-radius: var(--border-radius-lg);
+    border: 2px dashed var(--border-color);
 }
 
-
-
-
-
-/* ==========================================================
-   BILL GRID
-========================================================== */
-
-
-.bill-grid{
-
-    display:grid;
-
-    grid-template-columns:repeat(3,1fr);
-
-    gap:22px;
-
-}
-
-
-
-
-
-/* ==========================================================
-   BILL CARD
-========================================================== */
-
-
-.bill-card{
-
-    background:#ffffff;
-
-    border:1px solid #e5e7eb;
-
-    border-radius:18px;
-
-    padding:22px;
-
-    box-shadow:0 8px 25px rgba(0,0,0,.05);
-
-    transition:.3s;
-
-}
-
-
-.bill-card:hover{
-
-    transform:translateY(-5px);
-
-    box-shadow:0 15px 35px rgba(0,0,0,.10);
-
-}
-
-
-
-
-
-/* ==========================================================
-   CARD HEADER
-========================================================== */
-
-
-.bill-card-header{
-
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:start;
-
-    padding-bottom:15px;
-
-    border-bottom:1px solid #f1f5f9;
-
-}
-
-
-.bill-card-header h3{
-
-    margin:0;
-
-    font-size:22px;
-
-    font-weight:700;
-
-}
-
-
-
-.bill-card-header span{
-
-    color:#6b7280;
-
-    font-size:14px;
-
-}
-
-
-
-
-
-.bill-status{
-
-    background:#fef3c7;
-
-    color:#92400e;
-
-    padding:6px 12px;
-
-    border-radius:20px;
-
-    font-size:12px;
-
-    font-weight:600;
-
-    text-transform:uppercase;
-
-}
-
-
-
-
-
-/* ==========================================================
-   BILL INFO
-========================================================== */
-
-
-.bill-info{
-
-    display:grid;
-
-    grid-template-columns:1fr 1fr;
-
-    gap:15px;
-
-    margin:20px 0;
-
-}
-
-
-.bill-info div{
-
-    background:#f8fafc;
-
-    padding:15px;
-
-    border-radius:12px;
-
-}
-
-
-.bill-info small{
-
-    display:block;
-
-    color:#6b7280;
-
-    margin-bottom:5px;
-
-}
-
-
-
-.bill-info strong{
-
-    font-size:20px;
-
-    color:#111827;
-
-}
-
-
-
-
-
-/* ==========================================================
-   ACTION
-========================================================== */
-
-
-.bill-action a{
-
-    display:block;
-
-    text-align:center;
-
-    background:#2563eb;
-
-    color:white;
-
-    text-decoration:none;
-
-    padding:13px;
-
-    border-radius:12px;
-
-    font-weight:600;
-
-    transition:.3s;
-
-}
-
-
-
-.bill-action a:hover{
-
-    background:#1d4ed8;
-
-}
-
-
-
-
-
-/* ==========================================================
-   EMPTY STATE
-========================================================== */
-
-
-.empty-bills{
-
-    grid-column:1/-1;
-
-    text-align:center;
-
-    padding:80px 20px;
-
-    background:#ffffff;
-
-    border-radius:18px;
-
-    border:1px solid #e5e7eb;
-
-}
-
-
-.empty-bills i{
-
-    font-size:60px;
-
-    color:#9ca3af;
-
-}
-
-
-.empty-bills h3{
-
-    margin-top:15px;
-
-}
-
-
-
-
-
-/* ==========================================================
-   RESPONSIVE
-========================================================== */
-
-
-/* 1600 */
-
-@media(max-width:1600px){
-
-
-    .bill-grid{
-
-        grid-template-columns:repeat(3,1fr);
-
-    }
-
-
-}
-
-
-
-/* 1440 */
-
-@media(max-width:1440px){
-
-
-    .bill-grid{
-
-        grid-template-columns:repeat(2,1fr);
-
-    }
-
-
-}
-
-
-
-
-
-/* 1024 */
-
-@media(max-width:1024px){
-
-
-    .billing-dashboard-header{
-
-        flex-direction:column;
-
-        align-items:flex-start;
-
-        gap:15px;
-
-    }
-
-
-    .billing-search input{
-
-        width:100%;
-
-    }
-
-
-}
-
-
-
-
-
-/* 768 */
-
-@media(max-width:768px){
-
-
-    .bill-grid{
-
-        grid-template-columns:1fr;
-
-    }
-
-
-}
-
-
-
-
-
-/* 576 */
-
-@media(max-width:576px){
-
-
-    .billing-dashboard-header h1{
-
-        font-size:26px;
-
-    }
-
-
-    .bill-card{
-
-        padding:18px;
-
-    }
-
-
+.empty-bills i {
+    font-size: 3.5rem;
+    color: var(--text-muted);
 }

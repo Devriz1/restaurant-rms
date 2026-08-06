@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}
+Restore Backup
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+<div class="card border-warning shadow">
+
+<div class="card-body text-center">
+
+<h2 class="text-warning">
+
+<i class="bi bi-exclamation-triangle-fill"></i>
+
+Restore Database
+
+</h2>
+
+<hr>
+
+<p>
+
+You are about to restore
+
+</p>
+
+<h5>
+
+{{ filename }}
+
+</h5>
+
+<p class="text-danger">
+
+This will replace the current database.
+
+</p>
+
+<p>
+
+A safety backup will be created automatically before restoring.
+
+</p>
+
+<form method="post">
+
+{% csrf_token %}
+
+<button
+class="btn btn-warning btn-lg">
+
+<i class="bi bi-arrow-counterclockwise"></i>
+
+Restore Backup
+
+</button>
+
+<a
+href="{% url 'backup:dashboard' %}"
+class="btn btn-secondary btn-lg">
+
+Cancel
+
+</a>
+
+</form>
+
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}

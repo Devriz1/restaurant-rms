@@ -2,20 +2,1108 @@
 
 {% block title %}Restaurant Settings{% endblock %}
 
+{% block extra_css %}
+<style>
+/* ============================================================
+   RESTAURANT SETTINGS — Premium Design
+   ============================================================ */
+
+.settings-page {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+/* ---- Page Header ---- */
+.settings-hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+}
+
+.settings-hero-left {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.settings-hero-icon {
+    width: 58px;
+    height: 58px;
+    border-radius: var(--border-radius-lg);
+    background: var(--accent-gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    color: #fff;
+    flex-shrink: 0;
+    box-shadow: 0 8px 24px rgba(99, 102, 241, 0.3);
+}
+
+.settings-hero h1 {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin: 0;
+    letter-spacing: -0.02em;
+}
+
+.settings-hero p {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin: 4px 0 0;
+}
+
+/* ---- Section Tabs (sticky) ---- */
+.settings-tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    padding: 6px;
+    margin-bottom: 28px;
+    box-shadow: var(--shadow-sm);
+    overflow-x: auto;
+    scrollbar-width: none;
+    position: sticky;
+    top: 8px;
+    z-index: 10;
+}
+.settings-tabs::-webkit-scrollbar { display: none; }
+
+.settings-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 16px;
+    border-radius: var(--border-radius);
+    font-size: 0.845rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all var(--transition-fast);
+    text-decoration: none;
+    border: none;
+    background: transparent;
+    user-select: none;
+}
+
+.settings-tab:hover {
+    background: var(--bg-app);
+    color: var(--primary);
+}
+
+.settings-tab.active {
+    background: var(--primary-light);
+    color: var(--primary);
+}
+
+.settings-tab i { font-size: 1rem; }
+
+/* ---- Main grid ---- */
+.settings-layout {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 24px;
+    align-items: start;
+}
+
+/* ---- Section card ---- */
+.settings-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    margin-bottom: 20px;
+    scroll-margin-top: 80px;
+}
+
+.section-header {
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.section-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: var(--border-radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.05rem;
+    flex-shrink: 0;
+}
+.section-icon.indigo  { background: rgba(79,70,229,.1);  color: var(--primary); }
+.section-icon.teal    { background: rgba(6,182,212,.1);   color: var(--info); }
+.section-icon.emerald { background: rgba(16,185,129,.1);  color: var(--success); }
+.section-icon.violet  { background: rgba(139,92,246,.1);  color: var(--accent); }
+.section-icon.amber   { background: rgba(245,158,11,.1);  color: var(--warning); }
+.section-icon.rose    { background: rgba(239,68,68,.1);   color: var(--danger); }
+
+.section-header h5 {
+    font-size: 0.975rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+}
+.section-header p {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin: 2px 0 0;
+}
+
+.section-body {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* ---- Field groups ---- */
+.field-group { display: flex; flex-direction: column; gap: 6px; }
+
+.field-label {
+    font-size: 0.845rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.field-label i { color: var(--primary); font-size: 0.9em; }
+.field-label .req { color: var(--danger); font-size: 0.75rem; }
+
+.field-help {
+    font-size: 0.775rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+    display: flex;
+    align-items: flex-start;
+    gap: 4px;
+}
+.field-help i { margin-top: 1px; flex-shrink: 0; }
+
+/* Field rows */
+.field-row-2 { display: grid; grid-template-columns: 1fr 1fr;     gap: 16px; }
+.field-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+.field-row-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 14px; }
+
+/* Input with prefix icon */
+.input-icon-wrap { position: relative; }
+.input-icon-wrap .field-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    pointer-events: none;
+    z-index: 2;
+}
+.input-icon-wrap .form-control,
+.input-icon-wrap .form-select { padding-left: 36px; }
+
+/* Time range display */
+.time-range {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.time-range .time-sep {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+/* Errors */
+.field-errors { list-style: none; padding: 0; margin: 4px 0 0; }
+.field-errors li {
+    font-size: 0.8rem;
+    color: var(--danger);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.field-errors li::before {
+    content: "\f33a";
+    font-family: "bootstrap-icons";
+}
+
+/* Non-field errors */
+.form-alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: var(--danger-bg);
+    border: 1px solid var(--danger-border);
+    border-radius: var(--border-radius);
+    padding: 14px 16px;
+    font-size: 0.875rem;
+    color: var(--danger);
+    margin-bottom: 24px;
+}
+
+/* ---- Right sidebar: Logo + info card ---- */
+.sidebar-col {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    position: sticky;
+    top: 80px;
+}
+
+/* Logo card */
+.logo-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+}
+
+.logo-card-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-card-header h6 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+}
+.logo-card-header p {
+    font-size: 0.76rem;
+    color: var(--text-muted);
+    margin: 2px 0 0;
+}
+
+.logo-preview-zone {
+    margin: 16px 20px 0;
+    width: calc(100% - 40px);
+    aspect-ratio: 1 / 1;
+    max-height: 220px;
+    border: 2px dashed var(--border-color);
+    border-radius: var(--border-radius);
+    background: var(--bg-app);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: border-color var(--transition-fast), background var(--transition-fast);
+    overflow: hidden;
+    position: relative;
+}
+.logo-preview-zone:hover {
+    border-color: var(--primary);
+    background: var(--primary-light);
+}
+.logo-preview-zone.has-logo {
+    border-style: solid;
+    border-color: var(--primary);
+}
+
+.logo-preview-zone img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 12px;
+    display: none;
+}
+.logo-preview-zone img.visible { display: block; }
+
+.logo-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-muted);
+    text-align: center;
+    padding: 20px;
+}
+.logo-placeholder i { font-size: 2.4rem; color: var(--border-color); }
+.logo-placeholder p { font-size: 0.83rem; font-weight: 500; margin: 0; }
+.logo-placeholder span { font-size: 0.74rem; }
+
+.logo-card-body {
+    padding: 14px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.logo-filename {
+    font-size: 0.77rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    text-align: center;
+    min-height: 16px;
+}
+
+/* Info / tips card */
+.info-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-left: 3px solid var(--primary);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    padding: 18px 20px;
+}
+.info-card h6 {
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    margin: 0 0 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.info-card ul {
+    margin: 0;
+    padding-left: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+}
+
+/* Last saved badge */
+.saved-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--success-bg);
+    border: 1px solid var(--success-border);
+    border-radius: var(--border-radius-pill);
+    padding: 5px 12px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--success);
+}
+
+/* Receipt preview */
+.receipt-preview {
+    background: var(--bg-app);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 16px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    min-height: 80px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    transition: all var(--transition-fast);
+}
+.receipt-preview .receipt-divider {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    margin: 6px 0;
+}
+
+/* Action footer */
+.form-action-bar {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    padding: 20px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 8px;
+}
+.action-hint {
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+}
+.btn-group-right { display: flex; align-items: center; gap: 12px; }
+
+/* Success message */
+.settings-success {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--success-bg);
+    border: 1px solid var(--success-border);
+    border-radius: var(--border-radius);
+    padding: 14px 18px;
+    font-size: 0.875rem;
+    color: var(--success);
+    margin-bottom: 24px;
+    animation: slideDown 0.3s ease;
+}
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 900px) {
+    .settings-layout { grid-template-columns: 1fr; }
+    .sidebar-col { position: static; order: -1; }
+    .logo-preview-zone { max-height: 160px; }
+    .field-row-3 { grid-template-columns: 1fr 1fr; }
+    .field-row-4 { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 600px) {
+    .field-row-2, .field-row-3, .field-row-4 { grid-template-columns: 1fr; }
+    .form-action-bar { flex-direction: column; align-items: stretch; }
+    .btn-group-right { flex-direction: column; }
+    .settings-tabs { top: 0; }
+}
+</style>
+{% endblock %}
+
 {% block content %}
 
-<h3 class="mb-4">Restaurant Settings</h3>
+<div class="settings-page">
 
-<form method="post" enctype="multipart/form-data">
+    <!-- ========== Page Header ========== -->
+    <div class="settings-hero">
+        <div class="settings-hero-left">
+            <div class="settings-hero-icon">
+                <i class="bi bi-gear-wide-connected"></i>
+            </div>
+            <div>
+                <h1>Restaurant Settings</h1>
+                <p>Manage your restaurant's identity, location, financials, and receipt configuration</p>
+            </div>
+        </div>
+        {% if object and object.updated_at %}
+        <div class="saved-badge">
+            <i class="bi bi-check-circle-fill"></i>
+            Last saved {{ object.updated_at|date:"d M Y, H:i" }}
+        </div>
+        {% endif %}
+    </div>
 
-    {% csrf_token %}
+    <!-- ========== Section Tabs ========== -->
+    <div class="settings-tabs" role="tablist">
+        <a class="settings-tab active" href="#identity" id="tab-identity">
+            <i class="bi bi-shop"></i> Identity
+        </a>
+        <a class="settings-tab" href="#location" id="tab-location">
+            <i class="bi bi-geo-alt-fill"></i> Location
+        </a>
+        <a class="settings-tab" href="#financials" id="tab-financials">
+            <i class="bi bi-currency-rupee"></i> Financials
+        </a>
+        <a class="settings-tab" href="#hours" id="tab-hours">
+            <i class="bi bi-clock-fill"></i> Hours
+        </a>
+        <a class="settings-tab" href="#receipt" id="tab-receipt">
+            <i class="bi bi-receipt"></i> Receipt
+        </a>
+    </div>
 
-    {{ form.as_p }}
+    <form method="post" enctype="multipart/form-data" id="settingsForm" novalidate>
+        {% csrf_token %}
 
-    <button class="btn btn-primary">
-        Save
-    </button>
+        {% if form.non_field_errors %}
+        <div class="form-alert" role="alert">
+            <i class="bi bi-exclamation-circle-fill" style="font-size:1.1rem;flex-shrink:0;margin-top:1px;"></i>
+            <div>{% for e in form.non_field_errors %}<div>{{ e }}</div>{% endfor %}</div>
+        </div>
+        {% endif %}
 
-</form>
+        <div class="settings-layout">
 
+            <!-- ===========================
+                 LEFT — All Sections
+                 =========================== -->
+            <div>
+
+                <!-- ===== 1. Identity ===== -->
+                <div class="settings-section" id="identity">
+                    <div class="section-header">
+                        <div class="section-icon indigo"><i class="bi bi-shop"></i></div>
+                        <div>
+                            <h5>Identity</h5>
+                            <p>Your restaurant's name and contact details</p>
+                        </div>
+                    </div>
+                    <div class="section-body">
+
+                        <!-- Name -->
+                        <div class="field-group">
+                            <label class="field-label" for="{{ form.name.id_for_label }}">
+                                <i class="bi bi-building"></i> Restaurant Name
+                                <span class="req">*</span>
+                            </label>
+                            {{ form.name }}
+                            {% if form.name.errors %}
+                            <ul class="field-errors">{% for e in form.name.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                            {% endif %}
+                        </div>
+
+                        <div class="field-row-2">
+                            <!-- Phone -->
+                            <div class="field-group">
+                                <label class="field-label" for="{{ form.phone.id_for_label }}">
+                                    <i class="bi bi-telephone-fill"></i> Phone
+                                </label>
+                                <div class="input-icon-wrap">
+                                    <i class="bi bi-telephone field-icon"></i>
+                                    {{ form.phone }}
+                                </div>
+                                {% if form.phone.errors %}
+                                <ul class="field-errors">{% for e in form.phone.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                                {% endif %}
+                            </div>
+
+                            <!-- Email -->
+                            <div class="field-group">
+                                <label class="field-label" for="{{ form.email.id_for_label }}">
+                                    <i class="bi bi-envelope-fill"></i> Email
+                                </label>
+                                <div class="input-icon-wrap">
+                                    <i class="bi bi-envelope field-icon"></i>
+                                    {{ form.email }}
+                                </div>
+                                {% if form.email.errors %}
+                                <ul class="field-errors">{% for e in form.email.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- ===== 2. Location ===== -->
+                <div class="settings-section" id="location">
+                    <div class="section-header">
+                        <div class="section-icon teal"><i class="bi bi-geo-alt-fill"></i></div>
+                        <div>
+                            <h5>Location</h5>
+                            <p>Address details printed on receipts and used in reports</p>
+                        </div>
+                    </div>
+                    <div class="section-body">
+
+                        <!-- Address -->
+                        <div class="field-group">
+                            <label class="field-label" for="{{ form.address.id_for_label }}">
+                                <i class="bi bi-house-fill"></i> Street Address
+                            </label>
+                            {{ form.address }}
+                            {% if form.address.errors %}
+                            <ul class="field-errors">{% for e in form.address.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                            {% endif %}
+                        </div>
+
+                        <div class="field-row-2">
+                            <!-- City -->
+                            <div class="field-group">
+                                <label class="field-label" for="{{ form.city.id_for_label }}">
+                                    <i class="bi bi-buildings"></i> City
+                                </label>
+                                {{ form.city }}
+                                {% if form.city.errors %}
+                                <ul class="field-errors">{% for e in form.city.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                                {% endif %}
+                            </div>
+
+                            <!-- State -->
+                            <div class="field-group">
+                                <label class="field-label" for="{{ form.state.id_for_label }}">
+                                    <i class="bi bi-map"></i> State
+                                </label>
+                                {{ form.state }}
+                                {% if form.state.errors %}
+                                <ul class="field-errors">{% for e in form.state.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="field-row-2">
+                            <!-- Country -->
+                            <div class="field-group">
+                                <label class="field-label" for="{{ form.country.id_for_label }}">
+                                    <i class="bi bi-globe-asia-australia"></i> Country
+                                </label>
+                                {{ form.country }}
+                                {% if form.country.errors %}
+                                <ul class="field-errors">{% for e in form.country.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                                {% endif %}
+                            </div>
+
+                            <!-- Pincode -->
+                            <div class="field-group">
+                                <label class="field-label" for="{{ form.pincode.id_for_label }}">
+                                    <i class="bi bi-mailbox2"></i> Pincode / ZIP
+                                </label>
+                                {{ form.pincode }}
+                                {% if form.pincode.errors %}
+                                <ul class="field-errors">{% for e in form.pincode.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- ===== 3. Financials ===== -->
+                <div class="settings-section" id="financials">
+                    <div class="section-header">
+                        <div class="section-icon emerald"><i class="bi bi-currency-rupee"></i></div>
+                        <div>
+                            <h5>Financials &amp; Tax</h5>
+                            <p>Currency, GST number, and timezone used in billing</p>
+                        </div>
+                    </div>
+                    <div class="section-body">
+
+                        <!-- GST -->
+                        <div class="field-group">
+                            <label class="field-label" for="{{ form.gst_number.id_for_label }}">
+                                <i class="bi bi-receipt-cutoff"></i> GST Number
+                            </label>
+                            <div class="input-icon-wrap">
+                                <i class="bi bi-shield-check field-icon"></i>
+                                {{ form.gst_number }}
+                            </div>
+                            <p class="field-help">
+                                <i class="bi bi-info-circle"></i>
+                                15-character GSTIN — printed on all tax invoices
+                            </p>
+                            {% if form.gst_number.errors %}
+                            <ul class="field-errors">{% for e in form.gst_number.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                            {% endif %}
+                        </div>
+
+                        <div class="field-row-3">
+                            <!-- Currency -->
+                            <div class="field-group">
+                                <label class="field-label" for="{{ form.currency.id_for_label }}">
+                                    <i class="bi bi-cash-coin"></i> Currency Code
+                                </label>
+                                {{ form.currency }}
+                                <span class="field-help">ISO code e.g. INR, USD</span>
+                                {% if form.currency.errors %}
+                                <ul class="field-errors">{% for e in form.currency.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                                {% endif %}
+                            </div>
+
+                            <!-- Symbol -->
+                            <div class="field-group">
+                                <label class="field-label" for="{{ form.currency_symbol.id_for_label }}">
+                                    <i class="bi bi-currency-dollar"></i> Symbol
+                                </label>
+                                {{ form.currency_symbol }}
+                                <span class="field-help">e.g. ₹ $ €</span>
+                                {% if form.currency_symbol.errors %}
+                                <ul class="field-errors">{% for e in form.currency_symbol.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                                {% endif %}
+                            </div>
+
+                            <!-- Timezone -->
+                            <div class="field-group">
+                                <label class="field-label" for="{{ form.timezone.id_for_label }}">
+                                    <i class="bi bi-clock-history"></i> Timezone
+                                </label>
+                                {{ form.timezone }}
+                                <span class="field-help">e.g. Asia/Kolkata</span>
+                                {% if form.timezone.errors %}
+                                <ul class="field-errors">{% for e in form.timezone.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- ===== 4. Operating Hours ===== -->
+                <div class="settings-section" id="hours">
+                    <div class="section-header">
+                        <div class="section-icon amber"><i class="bi bi-clock-fill"></i></div>
+                        <div>
+                            <h5>Operating Hours</h5>
+                            <p>When your restaurant opens and closes each day</p>
+                        </div>
+                    </div>
+                    <div class="section-body">
+
+                        <div class="field-row-2">
+                            <!-- Opening -->
+                            <div class="field-group">
+                                <label class="field-label" for="{{ form.opening_time.id_for_label }}">
+                                    <i class="bi bi-sunrise-fill"></i> Opening Time
+                                </label>
+                                <div class="input-icon-wrap">
+                                    <i class="bi bi-clock field-icon"></i>
+                                    {{ form.opening_time }}
+                                </div>
+                                {% if form.opening_time.errors %}
+                                <ul class="field-errors">{% for e in form.opening_time.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                                {% endif %}
+                            </div>
+
+                            <!-- Closing -->
+                            <div class="field-group">
+                                <label class="field-label" for="{{ form.closing_time.id_for_label }}">
+                                    <i class="bi bi-moon-fill"></i> Closing Time
+                                </label>
+                                <div class="input-icon-wrap">
+                                    <i class="bi bi-clock field-icon"></i>
+                                    {{ form.closing_time }}
+                                </div>
+                                {% if form.closing_time.errors %}
+                                <ul class="field-errors">{% for e in form.closing_time.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Hours summary pill -->
+                        <div id="hoursSummary" style="display:none;">
+                            <div style="display:inline-flex;align-items:center;gap:8px;background:var(--success-bg);border:1px solid var(--success-border);border-radius:var(--border-radius-pill);padding:6px 14px;font-size:0.82rem;font-weight:600;color:var(--success);">
+                                <i class="bi bi-clock-fill"></i>
+                                <span id="hoursSummaryText"></span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- ===== 5. Receipt Customisation ===== -->
+                <div class="settings-section" id="receipt">
+                    <div class="section-header">
+                        <div class="section-icon violet"><i class="bi bi-receipt"></i></div>
+                        <div>
+                            <h5>Receipt Customisation</h5>
+                            <p>Custom text printed at the top and bottom of every bill</p>
+                        </div>
+                    </div>
+                    <div class="section-body">
+
+                        <!-- Header -->
+                        <div class="field-group">
+                            <label class="field-label" for="{{ form.receipt_header.id_for_label }}">
+                                <i class="bi bi-text-paragraph"></i> Receipt Header
+                            </label>
+                            {{ form.receipt_header }}
+                            <p class="field-help">
+                                <i class="bi bi-info-circle"></i>
+                                Appears above the order details — welcome message, tagline, etc.
+                            </p>
+                            {% if form.receipt_header.errors %}
+                            <ul class="field-errors">{% for e in form.receipt_header.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                            {% endif %}
+                        </div>
+
+                        <!-- Footer -->
+                        <div class="field-group">
+                            <label class="field-label" for="{{ form.receipt_footer.id_for_label }}">
+                                <i class="bi bi-text-paragraph"></i> Receipt Footer
+                            </label>
+                            {{ form.receipt_footer }}
+                            <p class="field-help">
+                                <i class="bi bi-info-circle"></i>
+                                Appears below the totals — thank you note, social handles, policy
+                            </p>
+                            {% if form.receipt_footer.errors %}
+                            <ul class="field-errors">{% for e in form.receipt_footer.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                            {% endif %}
+                        </div>
+
+                        <!-- Receipt Live Preview -->
+                        <div class="field-group">
+                            <label class="field-label">
+                                <i class="bi bi-eye"></i> Live Receipt Preview
+                            </label>
+                            <div class="receipt-preview" id="receiptPreview">
+                                <span id="previewHeader" style="display:block;text-align:center;font-weight:bold;"></span>
+                                <div class="receipt-divider">- - - - - - - - - - - - - -</div>
+                                <span style="color:#94a3b8;font-size:0.72rem;">Item         Qty    Price</span><br>
+                                <span style="color:#94a3b8;font-size:0.72rem;">Sample Dish   1    ₹250.00</span><br>
+                                <div class="receipt-divider">- - - - - - - - - - - - - -</div>
+                                <span style="color:#94a3b8;font-size:0.72rem;">Total:              ₹250.00</span>
+                                <div class="receipt-divider">- - - - - - - - - - - - - -</div>
+                                <span id="previewFooter" style="display:block;text-align:center;"></span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ===========================
+                 RIGHT — Logo + Info
+                 =========================== -->
+            <div class="sidebar-col">
+
+                <!-- Logo Upload Card -->
+                <div class="logo-card">
+                    <div class="logo-card-header">
+                        <div class="section-icon rose"><i class="bi bi-image-fill"></i></div>
+                        <div>
+                            <h6>Restaurant Logo</h6>
+                            <p>PNG, JPG, WebP recommended</p>
+                        </div>
+                    </div>
+
+                    <!-- Preview zone -->
+                    <div class="logo-preview-zone {% if object.logo %}has-logo{% endif %}"
+                         id="logoPreviewZone"
+                         onclick="document.getElementById('id_logo').click()"
+                         title="Click to upload logo"
+                         role="button"
+                         tabindex="0">
+                        <img id="logoImgPreview"
+                             {% if object.logo %}src="{{ object.logo.url }}" class="visible"{% endif %}
+                             alt="Restaurant logo preview" />
+                        <div class="logo-placeholder" id="logoPlaceholder"
+                             {% if object.logo %}style="display:none;"{% endif %}>
+                            <i class="bi bi-cloud-upload"></i>
+                            <p>Click to upload logo</p>
+                            <span>Drag &amp; drop supported</span>
+                        </div>
+                    </div>
+
+                    <div class="logo-card-body">
+                        <div class="logo-filename" id="logoFilename">
+                            {% if object.logo %}{{ object.logo.name|slice:"18:" }}{% endif %}
+                        </div>
+                        {{ form.logo }}
+                        {% if form.logo.errors %}
+                        <ul class="field-errors">{% for e in form.logo.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Info card -->
+                <div class="info-card">
+                    <h6><i class="bi bi-lightbulb-fill" style="color:var(--warning);"></i> Tips</h6>
+                    <ul>
+                        <li>Use a transparent-background PNG for your logo</li>
+                        <li>GST number is printed on every tax invoice</li>
+                        <li>Currency symbol is shown across all POS screens</li>
+                        <li>Receipt text supports plain text — keep it concise</li>
+                        <li>Operating hours are informational and may be used in future reports</li>
+                    </ul>
+                </div>
+
+            </div>
+
+        </div><!-- /settings-layout -->
+
+        <!-- ========== Action Footer ========== -->
+        <div class="form-action-bar">
+            <p class="action-hint">
+                <i class="bi bi-info-circle"></i>
+                Changes apply immediately across all screens after saving
+            </p>
+            <div class="btn-group-right">
+                <button type="reset" class="btn btn-secondary" id="resetBtn">
+                    <i class="bi bi-arrow-counterclockwise"></i> Reset
+                </button>
+                <button type="submit" class="btn btn-success btn-lg" id="submitBtn">
+                    <i class="bi bi-check-circle-fill"></i> Save Settings
+                </button>
+            </div>
+        </div>
+
+    </form>
+
+</div>
+
+<!-- Timezone datalist -->
+<datalist id="timezone-list">
+    <option value="Asia/Kolkata">
+    <option value="Asia/Mumbai">
+    <option value="Asia/Dubai">
+    <option value="Asia/Singapore">
+    <option value="Asia/Tokyo">
+    <option value="Europe/London">
+    <option value="Europe/Paris">
+    <option value="America/New_York">
+    <option value="America/Chicago">
+    <option value="America/Los_Angeles">
+    <option value="Australia/Sydney">
+    <option value="UTC">
+</datalist>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+    "use strict";
+
+    /* ---------- Utility ---------- */
+    const $ = (id) => document.getElementById(id);
+
+    /* ---------- Logo Preview ---------- */
+    const logoInput   = $("id_logo");
+    const logoImg     = $("logoImgPreview");
+    const logoHolder  = $("logoPlaceholder");
+    const logoZone    = $("logoPreviewZone");
+    const logoFilename = $("logoFilename");
+
+    function loadLogoFile(file) {
+        if (!file || !file.type.startsWith("image/")) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            logoImg.src = e.target.result;
+            logoImg.classList.add("visible");
+            logoHolder.style.display = "none";
+            logoZone.classList.add("has-logo");
+            logoFilename.textContent = file.name;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    if (logoInput) {
+        logoInput.addEventListener("change", () => {
+            if (logoInput.files && logoInput.files[0]) loadLogoFile(logoInput.files[0]);
+        });
+    }
+
+    if (logoZone) {
+        logoZone.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") logoInput.click();
+        });
+        logoZone.addEventListener("dragover", (e) => {
+            e.preventDefault();
+            logoZone.style.borderColor = "var(--primary)";
+            logoZone.style.background  = "var(--primary-light)";
+        });
+        logoZone.addEventListener("dragleave", () => {
+            logoZone.style.borderColor = "";
+            logoZone.style.background  = "";
+        });
+        logoZone.addEventListener("drop", (e) => {
+            e.preventDefault();
+            logoZone.style.borderColor = "";
+            logoZone.style.background  = "";
+            const file = e.dataTransfer.files[0];
+            if (file) {
+                loadLogoFile(file);
+                try {
+                    const dt = new DataTransfer();
+                    dt.items.add(file);
+                    logoInput.files = dt.files;
+                } catch (_) {}
+            }
+        });
+    }
+
+    /* ---------- Receipt Live Preview ---------- */
+    const headerInput  = $("id_receipt_header");
+    const footerInput  = $("id_receipt_footer");
+    const prevHeader   = $("previewHeader");
+    const prevFooter   = $("previewFooter");
+
+    function updateReceiptPreview() {
+        if (prevHeader) prevHeader.textContent = headerInput ? headerInput.value : "";
+        if (prevFooter) prevFooter.textContent = footerInput ? footerInput.value : "";
+    }
+
+    if (headerInput) headerInput.addEventListener("input", updateReceiptPreview);
+    if (footerInput) footerInput.addEventListener("input", updateReceiptPreview);
+    updateReceiptPreview();
+
+    /* ---------- Hours Summary ---------- */
+    const openInput  = $("id_opening_time");
+    const closeInput = $("id_closing_time");
+    const summary    = $("hoursSummary");
+    const summaryTxt = $("hoursSummaryText");
+
+    function updateHours() {
+        if (!openInput || !closeInput || !summary || !summaryTxt) return;
+        const o = openInput.value;
+        const c = closeInput.value;
+        if (o && c) {
+            const fmt = (t) => {
+                const [h, m] = t.split(":").map(Number);
+                const ampm = h >= 12 ? "PM" : "AM";
+                return ((h % 12) || 12) + ":" + String(m).padStart(2, "0") + " " + ampm;
+            };
+            summaryTxt.textContent = "Open " + fmt(o) + " – " + fmt(c);
+            summary.style.display = "block";
+        } else {
+            summary.style.display = "none";
+        }
+    }
+
+    if (openInput)  openInput.addEventListener("change", updateHours);
+    if (closeInput) closeInput.addEventListener("change", updateHours);
+    updateHours();
+
+    /* ---------- Sticky Tab Highlighting ---------- */
+    const tabs     = document.querySelectorAll(".settings-tab");
+    const sections = document.querySelectorAll(".settings-section");
+
+    // Smooth scroll on tab click
+    tabs.forEach((tab) => {
+        tab.addEventListener("click", (e) => {
+            e.preventDefault();
+            const target = document.querySelector(tab.getAttribute("href"));
+            if (target) {
+                target.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+            tabs.forEach(t => t.classList.remove("active"));
+            tab.classList.add("active");
+        });
+    });
+
+    // IntersectionObserver for scroll spy
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                const id = entry.target.id;
+                tabs.forEach((t) => {
+                    t.classList.toggle("active", t.getAttribute("href") === "#" + id);
+                });
+            }
+        });
+    }, { rootMargin: "-20% 0px -70% 0px", threshold: 0 });
+
+    sections.forEach((s) => observer.observe(s));
+
+    /* ---------- Submit Feedback ---------- */
+    const submitBtn = $("submitBtn");
+    if (submitBtn) {
+        submitBtn.closest("form").addEventListener("submit", () => {
+            submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Saving…';
+            submitBtn.disabled = true;
+        });
+    }
+
+    /* ---------- Reset confirmation ---------- */
+    const resetBtn = $("resetBtn");
+    if (resetBtn) {
+        resetBtn.addEventListener("click", (e) => {
+            if (!confirm("Reset all unsaved changes?")) e.preventDefault();
+        });
+    }
+
+})();
+</script>
 {% endblock %}

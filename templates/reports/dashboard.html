@@ -1,137 +1,88 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}
-Reports
-{% endblock %}
-
+{% block title %}Reports & Analytics | Restaurant RMS{% endblock %}
+{% block breadcrumb %}Reports{% endblock %}
+{% block page_title %}Analytics Dashboard{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/reports.css' %}">
 {% endblock %}
 
-
-
 {% block content %}
+<div class="reports-page">
 
-<div class="reports-dashboard">
-
-
-    <div class="page-title">
-
-        <h1>
-            Reports
-        </h1>
-
-        <p>
-            Restaurant analytics and business reports
-        </p>
-
+    <!-- Header -->
+    <div class="reports-header">
+        <div>
+            <h1><i class="bi bi-bar-chart-line-fill me-2 text-primary"></i> Analytics & Reports Dashboard</h1>
+            <p>Access sales summaries, payment breakdown, waiter statistics, menu item sales, and daily settlement.</p>
+        </div>
     </div>
 
+    <!-- Quick Info Banner -->
+    <div class="report-toolbar border-0 shadow-sm">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <h5 class="fw-bold text-dark mb-1">Business Intelligence</h5>
+                <p class="text-secondary mb-0">Select a report tile below to view detailed breakdown, filter date ranges, and export CSV/PDF reports.</p>
+            </div>
+            <i class="bi bi-graph-up-arrow fs-1 text-primary"></i>
+        </div>
+    </div>
 
-
+    <!-- Report Tiles Grid -->
     <div class="report-grid">
 
-
         <!-- Sales Report -->
-
         <a href="{% url 'reports:sales' %}" class="report-card">
-
             <i class="bi bi-cash-stack"></i>
-
-            <h3>
-                Sales Report
-            </h3>
-
-            <p>
-                Daily, weekly and monthly sales
-            </p>
-
+            <h3>Sales Analysis</h3>
+            <p>Track daily, weekly, monthly sales totals, order counts, and revenue trends.</p>
+            <span class="btn btn-sm btn-primary rounded-pill w-100 mt-auto">Open Sales Report</span>
         </a>
 
-
-
-
-        <!-- Payment Report -->
-
+        <!-- Payment Method Report -->
         <a href="{% url 'reports:payments' %}" class="report-card">
-
-            <i class="bi bi-credit-card"></i>
-
-            <h3>
-                Payment Report
-            </h3>
-
-            <p>
-                Cash, UPI and Card analysis
-            </p>
-
+            <i class="bi bi-credit-card-2-front-fill"></i>
+            <h3>Payment Channels</h3>
+            <p>Breakdown of Cash, UPI QR code, and Debit/Credit Card transaction totals.</p>
+            <span class="btn btn-sm btn-primary rounded-pill w-100 mt-auto">Open Payment Report</span>
         </a>
 
-
-
-
-        <!-- Item Report -->
-
+        <!-- Item Performance -->
         <a href="{% url 'reports:items' %}" class="report-card">
-
-            <i class="bi bi-cup-hot"></i>
-
-            <h3>
-                Item Report
-            </h3>
-
-            <p>
-                Top selling menu items
-            </p>
-
+            <i class="bi bi-cup-hot-fill"></i>
+            <h3>Item Performance</h3>
+            <p>Top selling menu items, category breakdowns, and individual item revenue.</p>
+            <span class="btn btn-sm btn-primary rounded-pill w-100 mt-auto">Open Item Report</span>
         </a>
 
-
-
-
-        <!-- Waiter Report -->
-
+        <!-- Waiters Report -->
         <a href="{% url 'reports:waiters' %}" class="report-card">
-
-            <i class="bi bi-person-badge"></i>
-
-            <h3>
-                Waiter Report
-            </h3>
-
-            <p>
-                Waiter performance and orders
-            </p>
-
+            <i class="bi bi-person-badge-fill"></i>
+            <h3>Staff Performance</h3>
+            <p>Staff order counts, table turnover, and waiter sales performance metrics.</p>
+            <span class="btn btn-sm btn-primary rounded-pill w-100 mt-auto">Open Waiter Report</span>
         </a>
-
-
-
 
         <!-- Daily Closing -->
-
         <a href="{% url 'reports:daily-closing' %}" class="report-card">
-
-            <i class="bi bi-calendar-check"></i>
-
-            <h3>
-                Daily Closing
-            </h3>
-
-            <p>
-                End of day sales settlement
-            </p>
-
+            <i class="bi bi-calendar-check-fill"></i>
+            <h3>Daily Closing</h3>
+            <p>End-of-day register closing, cash drawer audit, and day settlement breakdown.</p>
+            <span class="btn btn-sm btn-primary rounded-pill w-100 mt-auto">Open Daily Closing</span>
         </a>
 
-
+        <!-- Disabled / Future modules -->
+        <div class="report-card disabled">
+            <i class="bi bi-box-seam-fill text-muted"></i>
+            <h3 class="text-muted">Inventory Report</h3>
+            <p class="text-muted">Stock consumption & raw materials report (Coming Soon).</p>
+            <span class="btn btn-sm btn-light rounded-pill w-100 mt-auto disabled">Coming Soon</span>
+        </div>
 
     </div>
 
-
 </div>
-
-
 {% endblock %}

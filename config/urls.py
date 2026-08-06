@@ -13,6 +13,12 @@ urlpatterns = [
     path("orders/", include("apps.orders.urls")),
     path("billing/",include("apps.billing.urls"),),
     path("reports/",include("apps.reports.urls"),),
+    path("settings/",include("apps.settings.urls"),),
+    path("users/",include("apps.accounts.urls"),),
+    path("backup/",include("apps.backup.urls"),),
+    path("inventory/",include("apps.inventory.urls"),),
+    path("",include("pwa.urls"),),
+    path("purchase/",include("apps.purchase.urls"),),
 ]
 
 if settings.DEBUG:

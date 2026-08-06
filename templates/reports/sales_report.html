@@ -5,6 +5,13 @@
 Sales Report
 {% endblock %}
 
+{% block breadcrumb %}
+Reports
+{% endblock %}
+
+{% block page_title %}
+Sales Report
+{% endblock %}
 
 {% block extra_css %}
 
@@ -13,193 +20,344 @@ Sales Report
 
 {% endblock %}
 
-
 {% block content %}
 
 <div class="reports-page">
 
-    <!-- ===========================================
-         PAGE HEADER
-    ============================================ -->
+    <!-- ===================================================== -->
+    <!-- PAGE HEADER -->
+    <!-- ===================================================== -->
 
     <div class="reports-header">
 
-        <div>
+        <div class="reports-title">
 
             <h1>
+                <i class="bi bi-bar-chart-line-fill"></i>
                 Sales Report
             </h1>
 
             <p>
-                Restaurant sales summary
+                View, analyze and export restaurant sales transactions.
             </p>
+
+        </div>
+
+        <div class="reports-header-actions">
+
+            <button
+                type="button"
+                id="openCustomizer"
+                class="btn btn-outline-primary">
+
+                <i class="bi bi-layout-three-columns"></i>
+
+                Customize
+
+            </button>
 
         </div>
 
     </div>
 
 
-    <!-- ===========================================
-         FILTERS
-    ============================================ -->
+    <!-- ===================================================== -->
+    <!-- FILTER PANEL -->
+    <!-- ===================================================== -->
 
-    {% include "components/report_filters.html" %}
+    <div class="report-filter-card">
 
-
-    <!-- ===========================================
-         SUMMARY CARDS
-    ============================================ -->
-
-    {% include "components/report_summary_cards.html" %}
-
-
-    <!-- ===========================================
-         REPORT ACTIONS
-    ============================================ -->
-
-    <div class="report-actions">
-
-        <button
-            type="button"
-            id="openCustomizer"
-            class="btn btn-outline-primary">
-
-            <i class="bi bi-layout-three-columns"></i>
-
-            Customize Report
-
-        </button>
+        {% include "components/report_filters.html" %}
 
     </div>
 
 
-    <!-- ===========================================
-         REPORT CUSTOMIZER
-    ============================================ -->
+    <!-- ===================================================== -->
+    <!-- SUMMARY -->
+    <!-- ===================================================== -->
+
+    {% include "components/report_summary_cards.html" %}
+
+
+    <!-- ===================================================== -->
+    <!-- CUSTOMIZER -->
+    <!-- ===================================================== -->
 
     {% include "components/report_customizer.html" %}
 
 
-    <!-- ===========================================
-         SALES TABLE
-    ============================================ -->
+    <!-- ===================================================== -->
+    <!-- TABLE CARD -->
+    <!-- ===================================================== -->
 
-<div class="report-table">
+    <div class="report-table-card">
 
-    <table id="salesReportTable">
+        <!-- Toolbar -->
 
-        <thead>
-<tr>
+        <div class="table-toolbar">
 
-<th data-column="bill" data-sort="bill">Bill No <i class="bi bi-arrow-down-up"></i></th>
+            <div class="table-toolbar-left">
 
-<th data-column="date" data-sort="date">Date <i class="bi bi-arrow-down-up"></i></th>
+                <div class="search-box">
 
-<th data-column="floor" data-sort="floor">Floor <i class="bi bi-arrow-down-up"></i></th>
+                    <i class="bi bi-search"></i>
 
-<th data-column="table" data-sort="table">Table <i class="bi bi-arrow-down-up"></i></th>
+                    <input
+                        type="text"
+                        id="reportSearch"
+                        placeholder="Search bill, table, guest or cashier...">
 
-<th data-column="guest" data-sort="guest">Guest <i class="bi bi-arrow-down-up"></i></th>
+                </div>
 
-<th data-column="total" data-sort="total">Total <i class="bi bi-arrow-down-up"></i></th>
+            </div>
 
-<th data-column="cashier" data-sort="cashier">Cashier <i class="bi bi-arrow-down-up"></i></th>
+            <div class="table-toolbar-right">
 
-<th data-column="status" data-sort="status">Status <i class="bi bi-arrow-down-up"></i></th>
+                <span class="record-count">
 
-</tr>
-</thead>
-        <tbody>
+                    {{ bills|length }}
 
-            {% for bill in bills %}
+                    Record{{ bills|length|pluralize }}
 
-            <tr>
+                </span>
 
-                <td data-column="bill">
+            </div>
 
-                    {{ bill.bill_number }}
-
-                </td>
-
-                <td data-column="date">
-
-                    {{ bill.created_at|date:"d M Y H:i" }}
-
-                </td>
-
-                <td data-column="floor">
-
-                    {{ bill.session.table.area.name }}
-
-                </td>
-
-                <td data-column="table">
-
-                    {{ bill.session.table.display_name }}
-
-                </td>
-
-                <td data-column="guest">
-
-                    Guest {{ bill.guest_order.guest_number }}
-
-                </td>
-
-                <td data-column="total">
-
-                    ₹ {{ bill.grand_total }}
-
-                </td>
-
-                <td data-column="cashier">
-
-                    {{ bill.created_by }}
-
-                </td>
-
-                <td data-column="status">
-
-                    <span class="status-badge status-paid">
-
-                        {{ bill.status|title }}
-
-                    </span>
-
-                </td>
-
-            </tr>
-
-            {% empty %}
-
-            <tr>
-
-                <td colspan="8" class="text-center py-5">
-
-                    No sales found.
-
-                </td>
-
-            </tr>
-
-            {% endfor %}
-
-        </tbody>
-
-    </table>
-
-</div>
+        </div>
 
 
-    <!-- ===========================================
-         EXPORT BUTTONS
-    ============================================ -->
+        <!-- Responsive Table -->
+
+        <div class="table-responsive">
+
+            <table
+                class="report-table"
+                id="salesReportTable">
+
+                <thead>
+
+                    <tr>
+
+                        <th data-column="bill" data-sort="bill">
+                            Bill No
+                            <i class="bi bi-arrow-down-up"></i>
+                        </th>
+
+                        <th data-column="date" data-sort="date">
+                            Date
+                            <i class="bi bi-arrow-down-up"></i>
+                        </th>
+
+                        <th data-column="floor" data-sort="floor">
+                            Floor
+                            <i class="bi bi-arrow-down-up"></i>
+                        </th>
+
+                        <th data-column="table" data-sort="table">
+                            Table
+                            <i class="bi bi-arrow-down-up"></i>
+                        </th>
+
+                        <th data-column="guest" data-sort="guest">
+                            Guest
+                            <i class="bi bi-arrow-down-up"></i>
+                        </th>
+
+                        <th
+                            class="text-end"
+                            data-column="total"
+                            data-sort="total">
+
+                            Total
+
+                            <i class="bi bi-arrow-down-up"></i>
+
+                        </th>
+
+                        <th data-column="cashier" data-sort="cashier">
+                            Cashier
+                            <i class="bi bi-arrow-down-up"></i>
+                        </th>
+
+                        <th data-column="status" data-sort="status">
+                            Status
+                            <i class="bi bi-arrow-down-up"></i>
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% for bill in bills %}
+
+                    <tr>
+
+                        <!-- Bill -->
+
+                        <td data-column="bill">
+
+                            <strong>
+
+                                {{ bill.bill_number }}
+
+                            </strong>
+
+                        </td>
+
+                        <!-- Date -->
+
+                        <td data-column="date">
+
+                            <div class="date-cell">
+
+                                <strong>
+
+                                    {{ bill.created_at|date:"d M Y" }}
+
+                                </strong>
+
+                                <small>
+
+                                    {{ bill.created_at|date:"h:i A" }}
+
+                                </small>
+
+                            </div>
+
+                        </td>
+
+                        <!-- Floor -->
+
+                        <td data-column="floor">
+
+                            {{ bill.session.table.area.name }}
+
+                        </td>
+
+                        <!-- Table -->
+
+                        <td data-column="table">
+
+                            <span class="table-badge">
+
+                                {{ bill.session.table.display_name }}
+
+                            </span>
+
+                        </td>
+
+                        <!-- Guest -->
+
+                        <td data-column="guest">
+
+                            G-{{ bill.guest_order.guest_number }}
+
+                        </td>
+
+                        <!-- Total -->
+
+                        <td
+                            class="text-end total-cell"
+                            data-column="total">
+
+                            ₹{{ bill.grand_total }}
+
+                        </td>
+
+                        <!-- Cashier -->
+
+                        <td data-column="cashier">
+
+                            {{ bill.created_by }}
+
+                        </td>
+
+                        <!-- Status -->
+
+                        <td data-column="status">
+
+                            {% if bill.status == "paid" %}
+
+                                <span class="status-badge status-paid">
+
+                                    Paid
+
+                                </span>
+
+                            {% elif bill.status == "unpaid" %}
+
+                                <span class="status-badge status-unpaid">
+
+                                    Unpaid
+
+                                </span>
+
+                            {% else %}
+
+                                <span class="status-badge status-partial">
+
+                                    {{ bill.status|title }}
+
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                {% empty %}
+
+                    <tr>
+
+                        <td
+                            colspan="8"
+                            class="empty-row">
+
+                            <div class="empty-report">
+
+                                <i class="bi bi-receipt"></i>
+
+                                <h4>
+
+                                    No Sales Found
+
+                                </h4>
+
+                                <p>
+
+                                    There are no sales available for the selected period.
+
+                                </p>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <!-- ===================================================== -->
+    <!-- EXPORT -->
+    <!-- ===================================================== -->
 
     {% include "components/report_export_buttons.html" %}
 
 </div>
 
 {% endblock %}
-
 
 {% block extra_js %}
 
@@ -210,4 +368,5 @@ Sales Report
 <script src="{% static 'js/report_sort.js' %}"></script>
 
 <script src="{% static 'js/report_search.js' %}"></script>
+
 {% endblock %}

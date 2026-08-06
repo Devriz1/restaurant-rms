@@ -1,28 +1,85 @@
-{% extends "base.html" %}
+{% extends "auth_base.html" %}
+{% load widget_tweaks %}
+
+{% block title %}Sign In | Restaurant RMS{% endblock %}
 
 {% block content %}
-<div class="container mt-5" style="max-width:400px">
 
-<h3>Login</h3>
+<div class="login-page">
 
-<form method="post">
+    <div class="login-card">
+
+        <div class="login-logo">
+            <i class="bi bi-shop-window"></i>
+        </div>
+
+        <h2>Restaurant RMS</h2>
+
+        <p>Enter your credentials to access the system</p>
+
+        <form
+    method="post"
+    autocomplete="off"
+    spellcheck="false">
+
     {% csrf_token %}
 
-    {{ form.username.label_tag }}
-    {{ form.username }}
+    <div class="mb-3">
 
-    <br>
+        <label class="form-label">
 
-    {{ form.password.label_tag }}
-    {{ form.password }}
+            <i class="bi bi-person me-1 text-primary"></i>
 
-    <br>
+            Username
 
-    <button class="btn btn-primary w-100">
-        Login
+        </label>
+
+        <input
+            type="text"
+            name="username"
+            class="form-control"
+            autocomplete="off"
+            autocapitalize="off"
+            autocorrect="off"
+            spellcheck="false">
+
+    </div>
+
+    <div class="mb-4">
+
+        <label class="form-label">
+
+            <i class="bi bi-key me-1 text-primary"></i>
+
+            Password
+
+        </label>
+
+        <input
+            type="password"
+            name="password"
+            class="form-control"
+            autocomplete="new-password">
+
+    </div>
+
+    <button
+        type="submit"
+        class="btn btn-primary w-100 shadow-sm">
+
+        <i class="bi bi-box-arrow-in-right me-1"></i>
+
+        Sign In to RMS
+
     </button>
 
 </form>
+        <div class="version">
+            Restaurant RMS &bull; v2.0 Enterprise
+        </div>
+
+    </div>
 
 </div>
+
 {% endblock %}

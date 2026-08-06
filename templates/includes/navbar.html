@@ -1,13 +1,12 @@
 {% load static %}
+{% load permissions %}
 
 <nav class="app-navbar">
 
     <div class="navbar-left">
 
-        <button class="menu-btn" id="menuToggle">
-
+        <button class="menu-btn" id="menuToggle" title="Toggle Sidebar">
             <i class="bi bi-list"></i>
-
         </button>
 
         <div>
@@ -38,15 +37,15 @@
 
     <div class="navbar-right">
 
-        <div class="clock-card">
+        <div class="clock-card" title="Current Local Time">
 
-            <i class="bi bi-clock"></i>
+            <i class="bi bi-clock-history"></i>
 
-            <span id="clock"></span>
+            <span id="clock">--:--:--</span>
 
         </div>
 
-        <button class="icon-btn">
+        <button class="icon-btn" title="Notifications">
 
             <i class="bi bi-bell"></i>
 
@@ -56,38 +55,59 @@
 
             <button
                 class="profile-btn dropdown-toggle"
-                data-bs-toggle="dropdown">
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false">
 
-                <i class="bi bi-person-circle"></i>
+                <div class="profile-avatar">
+                    {{ request.user.username|slice:":1"|upper }}
+                </div>
 
-                {{ request.user.username }}
+                <span>{{ request.user.username }}</span>
 
             </button>
 
             <ul class="dropdown-menu dropdown-menu-end">
 
+                {% if request.user|has_permission:"users.view" %}
                 <li>
 
-                    <a class="dropdown-item" href="#">
+                    <a class="dropdown-item"
+                       href="{% url 'accounts:user-list' %}">
 
-                        Profile
+                        <i class="bi bi-person-gear"></i>
+                        Account & Profile
 
                     </a>
 
                 </li>
+                {% endif %}
 
+                {% if request.user|has_permission:"restaurant.view" %}
                 <li>
 
-                    <hr class="dropdown-divider">
+                    <a class="dropdown-item"
+                       href="{% url 'restaurant:settings' %}">
 
+                        <i class="bi bi-sliders"></i>
+                        Restaurant Settings
+
+                    </a>
+
+                </li>
+                {% endif %}
+
+                <li>
+                    <hr class="dropdown-divider">
                 </li>
 
                 <li>
 
                     <a class="dropdown-item text-danger"
-                       href="{% url 'logout' %}">
+                       href="{% url 'accounts:logout' %}">
 
-                        Logout
+                        <i class="bi bi-box-arrow-right"></i>
+                        Logout System
 
                     </a>
 
@@ -103,24 +123,43 @@
 
 <script>
 
-function updateClock(){
+function updateClock() {
 
-    const now=new Date();
+    const now = new Date();
 
-    document.getElementById("clock").innerHTML=
-    now.toLocaleTimeString();
+    const clockEl = document.getElementById("clock");
+
+    if (clockEl) {
+
+        clockEl.innerHTML = now.toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit"
+        });
+
+    }
 
 }
 
 updateClock();
 
-setInterval(updateClock,1000);
+setInterval(updateClock, 1000);
 
-document.getElementById("menuToggle").onclick=function(){
+const menuToggle = document.getElementById("menuToggle");
 
-    document
-    .querySelector(".sidebar-wrapper")
-    .classList.toggle("active");
+if (menuToggle) {
+
+    menuToggle.onclick = function () {
+
+        const sidebarWrapper = document.querySelector(".sidebar-wrapper");
+
+        if (sidebarWrapper) {
+
+            sidebarWrapper.classList.toggle("active");
+
+        }
+
+    };
 
 }
 

@@ -1,0 +1,245 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+{% block breadcrumb %}Purchase{% endblock %}
+
+{% block content %}
+<div class="container-fluid pb-4">
+    <form method="post" id="purchaseForm">
+        {% csrf_token %}
+        {{ formset.management_form }}
+
+        <div class="row g-4">
+            <!-- ==========================================================
+                 LEFT SIDE: FORM METADATA & LINE ITEMS
+            ========================================================== -->
+            <div class="col-lg-8 col-xl-9">
+                
+                <!-- Purchase Header Information Card -->
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-header bg-white py-3 border-bottom">
+                        <h5 class="mb-0 text-dark fw-bold">
+                            <i class="bi bi-receipt me-2 text-primary"></i>Purchase Details
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-6 col-lg-4">
+                                <label class="form-label small font-monospace text-uppercase fw-semibold text-secondary">Supplier</label>
+                                {{ form.supplier }}
+                            </div>
+                            <div class="col-md-6 col-lg-4">
+                                <label class="form-label small font-monospace text-uppercase fw-semibold text-secondary">Invoice Number</label>
+                                {{ form.invoice_number }}
+                            </div>
+                            <div class="col-md-4 col-lg-4">
+                                <label class="form-label small font-monospace text-uppercase fw-semibold text-secondary">Purchase Date</label>
+                                {{ form.purchase_date }}
+                            </div>
+                            <div class="col-md-4 col-lg-4">
+                                <label class="form-label small font-monospace text-uppercase fw-semibold text-secondary">Payment Mode</label>
+                                {{ form.payment_mode }}
+                            </div>
+                            <div class="col-md-4 col-lg-4">
+                                <label class="form-label small font-monospace text-uppercase fw-semibold text-secondary">Discount (Global)</label>
+                                {{ form.discount }}
+                            </div>
+                            <div class="col-md-4 col-lg-4">
+                                <label class="form-label small font-monospace text-uppercase fw-semibold text-secondary">Other Charges</label>
+                                {{ form.other_charges }}
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small font-monospace text-uppercase fw-semibold text-secondary">Remarks / Notes</label>
+                                {{ form.remarks }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Purchase Line Items Card -->
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 text-dark fw-bold">
+                            <i class="bi bi-box-seam me-2 text-primary"></i>Line Items
+                        </h5>
+                        <button type="button" class="btn btn-primary btn-sm rounded-pill px-3" id="add-row">
+                            <i class="bi bi-plus-lg me-1"></i> Add Item
+                        </button>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0" id="purchase-items-table">
+                                <thead class="table-light">
+                                    <tr class="text-uppercase small font-monospace text-secondary">
+                                        <th style="min-width: 220px;">Material / Product</th>
+                                        <th style="width: 110px;">Qty</th>
+                                        <th style="width: 140px;">Unit Price</th>
+                                        <th style="width: 110px;">GST %</th>
+                                        <th style="width: 150px;" class="text-end">Line Total</th>
+                                        <th style="width: 60px;" class="text-center">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="item-table">
+                                    {% for item_form in formset %}
+                                        <tr class="purchase-row">
+                                            {{ item_form.id }}
+                                            <td>{{ item_form.material }}</td>
+                                            <td>{{ item_form.quantity }}</td>
+                                            <td>{{ item_form.unit_price }}</td>
+                                            <td>{{ item_form.gst_percentage }}</td>
+                                            <td>
+                                                <input type="text" class="form-control text-end bg-light line-total" readonly value="0.00">
+                                            </td>
+                                            <td class="text-center">
+                                                {% if formset.can_delete %}
+                                                    <div class="d-none">
+                                                        {{ item_form.DELETE }}
+                                                    </div>
+                                                {% endif %}
+                                                <button type="button" 
+                                                        class="btn btn-outline-danger btn-sm border-0 remove-row" 
+                                                        title="Remove Item"
+                                                        onclick="
+                                                            var row = this.closest('.purchase-row');
+                                                            var chk = row.querySelector('input[type=checkbox][name$=-DELETE]');
+                                                            if (chk) { chk.checked = true; row.style.display = 'none'; } 
+                                                            else { row.remove(); }
+                                                            if (typeof calculatePurchase === 'function') { calculatePurchase(); }
+                                                        ">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    {% empty %}
+                                        <tr class="purchase-row">
+                                            <td>{{ formset.empty_form.material }}</td>
+                                            <td>{{ formset.empty_form.quantity }}</td>
+                                            <td>{{ formset.empty_form.unit_price }}</td>
+                                            <td>{{ formset.empty_form.gst_percentage }}</td>
+                                            <td>
+                                                <input type="text" class="form-control text-end bg-light line-total" readonly value="0.00">
+                                            </td>
+                                            <td class="text-center">
+                                                <button type="button" 
+                                                        class="btn btn-outline-danger btn-sm border-0 remove-row" 
+                                                        title="Remove Item"
+                                                        onclick="
+                                                            var row = this.closest('.purchase-row');
+                                                            var chk = row.querySelector('input[type=checkbox][name$=-DELETE]');
+                                                            if (chk) { chk.checked = true; row.style.display = 'none'; } 
+                                                            else { row.remove(); }
+                                                            if (typeof calculatePurchase === 'function') { calculatePurchase(); }
+                                                        ">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ==========================================================
+                 RIGHT SIDE: STICKY BILL SUMMARY & ACTIONS
+            ========================================================== -->
+            <div class="col-lg-4 col-xl-3">
+                <div class="card shadow-sm border-0 sticky-top" style="top: 1.5rem; z-index: 10;">
+                    <div class="card-header bg-dark text-white py-3">
+                        <h5 class="mb-0 fw-bold">
+                            <i class="bi bi-calculator me-2"></i>Bill Summary
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-borderless mb-0 fs-6">
+                            <tbody>
+                                <tr>
+                                    <td class="text-secondary ps-0">Subtotal</td>
+                                    <td class="text-end pe-0 font-monospace fw-semibold" id="subtotal">₹ 0.00</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-secondary ps-0">GST Amount</td>
+                                    <td class="text-end pe-0 font-monospace fw-semibold text-primary" id="gst-total">₹ 0.00</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-secondary ps-0">Discount</td>
+                                    <td class="text-end pe-0 font-monospace fw-semibold text-danger" id="discount-total">₹ 0.00</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-secondary ps-0">Other Charges</td>
+                                    <td class="text-end pe-0 font-monospace fw-semibold" id="other-total">₹ 0.00</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <hr class="my-3">
+
+                        <div class="bg-light p-3 rounded text-center mb-3">
+                            <div class="small text-uppercase font-monospace text-secondary fw-semibold">Grand Total</div>
+                            <div class="h2 text-success font-monospace mb-0 fw-bold" id="grand-total">₹ 0.00</div>
+                        </div>
+
+                        <!-- Submit / Back Action Group -->
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg fw-bold">
+                                <i class="bi bi-check-circle me-1"></i> Save Purchase
+                            </button>
+                            <a href="{% url 'purchase:purchase-list' %}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-1"></i> Back
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- ==========================================================
+     HIDDEN EMPTY FORM TEMPLATE FOR DYNAMIC ROWS
+========================================================== -->
+<div id="empty-form" style="display:none;">
+    <table>
+        <tbody>
+            <tr class="purchase-row">
+                {{ formset.empty_form.id }}
+                <td>{{ formset.empty_form.material }}</td>
+                <td>{{ formset.empty_form.quantity }}</td>
+                <td>{{ formset.empty_form.unit_price }}</td>
+                <td>{{ formset.empty_form.gst_percentage }}</td>
+                <td>
+                    <input type="text" class="form-control text-end bg-light line-total" value="0.00" readonly>
+                </td>
+                <td class="text-center">
+                    {% if formset.can_delete %}
+                        <div class="d-none">
+                            {{ formset.empty_form.DELETE }}
+                        </div>
+                    {% endif %}
+                    <button type="button" 
+                            class="btn btn-outline-danger btn-sm border-0 remove-row" 
+                            title="Remove Item"
+                            onclick="
+                                var row = this.closest('.purchase-row');
+                                var chk = row.querySelector('input[type=checkbox][name$=-DELETE]');
+                                if (chk) { chk.checked = true; row.style.display = 'none'; } 
+                                else { row.remove(); }
+                                if (typeof calculatePurchase === 'function') { calculatePurchase(); }
+                            ">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/purchase.js' %}"></script>
+{% endblock %}

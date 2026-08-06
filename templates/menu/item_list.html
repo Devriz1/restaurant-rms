@@ -1,107 +1,288 @@
 {% extends "base.html" %}
+{% load permissions %}
 
-{% block title %}Menu Items{% endblock %}
+{% block title %}Menu Items | Restaurant RMS{% endblock %}
+{% block breadcrumb %}Master Data{% endblock %}
+{% block page_title %}Menu Catalog{% endblock %}
 
 {% block content %}
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
 
-    <h2>Menu Items</h2>
+    <div>
+        <h2 class="fw-bold text-dark mb-1">
+            Menu Items Catalog
+        </h2>
 
-    <a href="{% url 'menu:item-add' %}" class="btn btn-primary">
-        <i class="bi bi-plus-circle"></i>
-        Add Menu Item
-    </a>
+        <p class="text-secondary mb-0">
+            Manage food & beverage offerings, pricing, preparation time and availability.
+        </p>
+    </div>
+
+    <div class="d-flex gap-2 flex-wrap">
+
+        {% if request.user|has_permission:"menu.add" %}
+        <a href="{% url 'menu:item-add' %}"
+           class="btn btn-primary rounded-pill px-4">
+
+            <i class="bi bi-plus-lg me-1"></i>
+
+            Add Menu Item
+
+        </a>
+        {% endif %}
+
+        {% if request.user|has_permission:"menu.add" %}
+        <a href="{% url 'menu:item-import' %}"
+           class="btn btn-success rounded-pill px-4">
+
+            <i class="bi bi-upload me-1"></i>
+
+            Import CSV / Excel
+
+        </a>
+        {% endif %}
+
+        {% if request.user|has_permission:"menu.view" %}
+        <a href="{% url 'menu:item-export' %}"
+           class="btn btn-outline-success rounded-pill px-4">
+
+            <i class="bi bi-download me-1"></i>
+
+            Export
+
+        </a>
+        {% endif %}
+
+    </div>
 
 </div>
 
-<div class="card">
+<div class="card border-0 shadow-sm rounded-4">
 
-    <div class="card-body">
+    <div class="card-body border-bottom">
+
+        <div class="row">
+
+            <div class="col-lg-4">
+
+                <input
+                    type="text"
+                    id="menuSearch"
+                    class="form-control"
+                    placeholder="Search menu items...">
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="card-body p-0">
 
         {% if items %}
 
-        <table class="table table-hover">
+        <div class="table-responsive">
 
-            <thead>
+            <table class="table table-hover align-middle mb-0">
 
-                <tr>
-                    <th>Name</th>
-                    <th>Category</th>
-                    <th>Price</th>
-                    <th>Prep Time</th>
-                    <th>Type</th>
-                    <th>Status</th>
-                    <th width="120">Actions</th>
-                </tr>
+                <thead>
 
-            </thead>
+                    <tr>
 
-            <tbody>
+                        <th>Item Name</th>
 
-            {% for item in items %}
+                        <th>Category</th>
 
-                <tr>
+                        <th>Price</th>
 
-                    <td>{{ item.name }}</td>
+                        <th>Prep Time</th>
 
-                    <td>{{ item.category }}</td>
+                        <th>Dietary</th>
 
-                    <td>₹ {{ item.price }}</td>
+                        <th>Status</th>
 
-                    <td>{{ item.preparation_time }} mins</td>
+                        <th class="text-end" width="140">
 
-                    <td>
-                        {% if item.is_veg %}
-                            <span class="badge bg-success">Veg</span>
-                        {% else %}
-                            <span class="badge bg-danger">Non Veg</span>
-                        {% endif %}
-                    </td>
+                            Actions
 
-                    <td>
-                        {% if item.is_available %}
-                            <span class="badge bg-success">Available</span>
-                        {% else %}
-                            <span class="badge bg-secondary">Unavailable</span>
-                        {% endif %}
-                    </td>
+                        </th>
 
-                    <td>
+                    </tr>
 
-                        <a href="{% url 'menu:item-edit' item.pk %}"
-                           class="btn btn-sm btn-warning">
+                </thead>
 
-                            <i class="bi bi-pencil"></i>
+               <tbody id="menuTableBody">
 
-                        </a>
+                {% for item in items %}
 
-                        <a href="{% url 'menu:item-delete' item.pk %}"
-                           class="btn btn-sm btn-danger">
+                    <tr class="menu-row">
 
-                            <i class="bi bi-trash"></i>
+                        <td>
 
-                        </a>
+                            <div class="d-flex align-items-center gap-2">
 
-                    </td>
+                                <div class="bg-light rounded-3 p-2">
 
-                </tr>
+                                    <i class="bi bi-cup-hot-fill text-primary"></i>
 
-            {% endfor %}
+                                </div>
 
-            </tbody>
+                                <div>
 
-        </table>
+                                    <strong>{{ item.name }}</strong>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+                        <td>
+
+                            <span class="badge bg-light text-dark border">
+
+                                {{ item.category }}
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <strong class="text-primary">
+
+                                ₹{{ item.price }}
+
+                            </strong>
+
+                        </td>
+
+                        <td>
+
+                            {{ item.preparation_time }} mins
+
+                        </td>
+
+                        <td>
+
+                            {% if item.is_veg %}
+
+                                <span class="badge bg-success">
+
+                                    Veg
+
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-danger">
+
+                                    Non Veg
+
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            {% if item.is_available %}
+
+                                <span class="badge bg-success">
+
+                                    Available
+
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-warning text-dark">
+
+                                    Unavailable
+
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td class="text-end">
+
+                            {% if request.user|has_permission:"menu.edit" %}
+                            <a href="{% url 'menu:item-edit' item.pk %}"
+                               class="btn btn-sm btn-outline-primary"
+                               title="Edit">
+
+                                <i class="bi bi-pencil"></i>
+
+                            </a>
+                            {% endif %}
+
+                            {% if request.user|has_permission:"menu.delete" %}
+                            <a href="{% url 'menu:item-delete' item.pk %}"
+                               class="btn btn-sm btn-outline-danger"
+                               title="Delete">
+
+                                <i class="bi bi-trash"></i>
+
+                            </a>
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
 
         {% else %}
 
         <div class="text-center py-5">
 
-            <h5>No menu items found.</h5>
+            <i class="bi bi-cup-hot-fill display-3 text-secondary"></i>
+
+            <h4 class="mt-3">
+
+                No Menu Items Found
+
+            </h4>
 
             <p class="text-muted">
-                Click <strong>Add Menu Item</strong> to create your first menu item.
+
+                Start building your restaurant menu by adding your first item or importing an Excel file.
+
             </p>
+
+            <div class="d-flex justify-content-center gap-2">
+
+                {% if request.user|has_permission:"menu.add" %}
+                <a href="{% url 'menu:item-add' %}"
+                   class="btn btn-primary">
+
+                    <i class="bi bi-plus-circle"></i>
+
+                    Add Menu Item
+
+                </a>
+
+                <a href="{% url 'menu:item-import' %}"
+                   class="btn btn-success">
+
+                    <i class="bi bi-upload"></i>
+
+                    Import CSV / Excel
+
+                </a>
+                {% endif %}
+
+            </div>
 
         </div>
 
@@ -110,5 +291,36 @@
     </div>
 
 </div>
+<script>
 
+document.addEventListener("DOMContentLoaded", function () {
+
+    const searchInput = document.getElementById("menuSearch");
+
+    if (!searchInput) return;
+
+    const rows = document.querySelectorAll(".menu-row");
+
+    searchInput.addEventListener("keyup", function () {
+
+        const searchValue = this.value.toLowerCase().trim();
+
+        rows.forEach(function (row) {
+
+            // First column = Item Name
+            const itemName = row.cells[0].innerText.toLowerCase();
+
+            if (itemName.includes(searchValue)) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+
+        });
+
+    });
+
+});
+
+</script>
 {% endblock %}

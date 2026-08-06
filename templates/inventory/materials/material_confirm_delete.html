@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+
+{% block title %}
+Delete Material
+{% endblock %}
+
+{% block breadcrumb %}
+Inventory / Materials
+{% endblock %}
+
+{% block page_title %}
+Delete Material
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-6">
+
+            <div class="card shadow border-0">
+
+                <div class="card-header bg-danger text-white">
+
+                    <h4 class="mb-0">
+
+                        <i class="bi bi-trash"></i>
+
+                        Delete Material
+
+                    </h4>
+
+                </div>
+
+                <div class="card-body">
+
+                    <div class="alert alert-warning">
+
+                        <strong>Warning!</strong>
+
+                        This action cannot be undone.
+
+                    </div>
+
+                    <table class="table">
+
+                        <tr>
+
+                            <th width="180">
+
+                                Code
+
+                            </th>
+
+                            <td>
+
+                                {{ object.code }}
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>
+
+                                Material
+
+                            </th>
+
+                            <td>
+
+                                {{ object.name }}
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>
+
+                                Category
+
+                            </th>
+
+                            <td>
+
+                                {{ object.category }}
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>
+
+                                Current Stock
+
+                            </th>
+
+                            <td>
+
+                                {{ object.current_stock }}
+
+                                {{ object.unit.symbol }}
+
+                            </td>
+
+                        </tr>
+
+                    </table>
+
+                    <form method="post">
+
+                        {% csrf_token %}
+
+                        <div class="d-flex justify-content-between">
+
+                            <a
+                                href="{% url 'inventory:material-list' %}"
+                                class="btn btn-secondary">
+
+                                <i class="bi bi-arrow-left"></i>
+
+                                Cancel
+
+                            </a>
+
+                            <button
+                                type="submit"
+                                class="btn btn-danger">
+
+                                <i class="bi bi-trash"></i>
+
+                                Delete Material
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

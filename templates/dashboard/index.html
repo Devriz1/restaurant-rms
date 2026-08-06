@@ -1,7 +1,10 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Dashboard{% endblock %}
+{% block title %}Dashboard | Restaurant RMS{% endblock %}
+
+{% block breadcrumb %}Overview{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
@@ -11,329 +14,161 @@
 
 <div class="dashboard-page">
 
-    <!-- ========================================= -->
-    <!-- PAGE HEADER -->
-    <!-- ========================================= -->
-
+    <!-- Header Summary -->
     <div class="dashboard-header">
-
         <div>
-
-            <h1>Dashboard</h1>
-
-            <p>
-
-                Welcome back,
-                {{ request.user.username }}
-
-            </p>
-
+            <h1>Executive Overview</h1>
+            <p>Welcome back, <strong>{{ request.user.username }}</strong>! Here is today's restaurant status.</p>
         </div>
-
         <div class="dashboard-date">
-
-            Restaurant Overview
-
+            <span>Live Overview</span>
         </div>
-
     </div>
 
-    <!-- ========================================= -->
-    <!-- KPI -->
-    <!-- ========================================= -->
-
+    <!-- KPI Metric Cards -->
     <div class="dashboard-cards">
 
         <div class="dashboard-card">
-
             <div class="card-icon blue">
-
                 <i class="bi bi-cash-stack"></i>
-
             </div>
-
             <div>
-
-                <h5>Today's Sales</h5>
-
+                <h5>Today's Revenue</h5>
                 <h2>₹0.00</h2>
-
             </div>
-
         </div>
 
         <div class="dashboard-card">
-
             <div class="card-icon green">
-
-                <i class="bi bi-grid"></i>
-
+                <i class="bi bi-grid-fill"></i>
             </div>
-
             <div>
-
-                <h5>Open Tables</h5>
-
-                <h2>
-
-                    {{ occupied_tables }}
-
-                </h2>
-
+                <h5>Occupied Tables</h5>
+                <h2>{{ occupied_tables }}</h2>
             </div>
-
         </div>
 
         <div class="dashboard-card">
-
             <div class="card-icon orange">
-
-                <i class="bi bi-people"></i>
-
+                <i class="bi bi-people-fill"></i>
             </div>
-
             <div>
-
                 <h5>Active Guests</h5>
-
-                <h2>
-
-                    {{ active_guests }}
-
-                </h2>
-
+                <h2>{{ active_guests }}</h2>
             </div>
-
         </div>
 
         <div class="dashboard-card">
-
             <div class="card-icon red">
-
                 <i class="bi bi-receipt"></i>
-
             </div>
-
             <div>
-
                 <h5>Pending Bills</h5>
-
-                <h2>
-
-                    {{ pending_bills }}
-
-                </h2>
-
+                <h2>{{ pending_bills }}</h2>
             </div>
-
         </div>
 
     </div>
 
-    <!-- ========================================= -->
-    <!-- SECOND ROW -->
-    <!-- ========================================= -->
-
+    <!-- Restaurant Capacity & Quick Actions -->
     <div class="dashboard-grid">
 
-        <!-- Restaurant Status -->
-
+        <!-- Table Status Summary -->
         <div class="panel">
-
             <div class="panel-header">
-
-                Restaurant Status
-
+                <span><i class="bi bi-shop me-2 text-primary"></i> Table Occupancy</span>
+                <span class="badge bg-primary rounded-pill">{{ total_tables }} Total Tables</span>
             </div>
-
             <div class="panel-body">
-
                 <div class="status-item">
-
-                    <span>
-
-                        Total Tables
-
-                    </span>
-
-                    <strong>
-
-                        {{ total_tables }}
-
-                    </strong>
-
+                    <span>Total Registered Tables</span>
+                    <strong>{{ total_tables }}</strong>
                 </div>
-
                 <div class="status-item">
-
-                    <span>
-
-                        Occupied
-
-                    </span>
-
-                    <strong class="text-danger">
-
-                        {{ occupied_tables }}
-
-                    </strong>
-
+                    <span>Occupied / Dining</span>
+                    <strong class="text-danger">{{ occupied_tables }}</strong>
                 </div>
-
                 <div class="status-item">
-
-                    <span>
-
-                        Available
-
-                    </span>
-
-                    <strong class="text-success">
-
-                        {{ available_tables }}
-
-                    </strong>
-
+                    <span>Available Tables</span>
+                    <strong class="text-success">{{ available_tables }}</strong>
                 </div>
-
             </div>
-
         </div>
 
-        <!-- Quick Actions -->
-
+        <!-- Quick Operations -->
         <div class="panel">
-
             <div class="panel-header">
-
-                Quick Actions
-
+                <span><i class="bi bi-lightning-charge-fill me-2 text-warning"></i> Quick Operations</span>
             </div>
-
             <div class="panel-body actions">
-
                 <a href="{% url 'orders:floor-view' %}" class="action-btn">
-
-                    <i class="bi bi-grid-3x3-gap"></i>
-
-                    Floor View
-
+                    <i class="bi bi-grid-3x3-gap-fill"></i>
+                    <span>Floor View</span>
                 </a>
-
                 <a href="{% url 'billing:dashboard' %}" class="action-btn">
-
-                    <i class="bi bi-receipt"></i>
-
-                    Billing
-
+                    <i class="bi bi-receipt-cutoff"></i>
+                    <span>POS Billing</span>
                 </a>
-
                 <a href="{% url 'menu:item-list' %}" class="action-btn">
-
-                    <i class="bi bi-cup-hot"></i>
-
-                    Menu
-
+                    <i class="bi bi-cup-hot-fill"></i>
+                    <span>Menu Catalog</span>
                 </a>
-
                 <a href="{% url 'tables:table-list' %}" class="action-btn">
-
                     <i class="bi bi-table"></i>
-
-                    Tables
-
+                    <span>Tables Setup</span>
                 </a>
-
             </div>
-
         </div>
 
     </div>
 
-    <!-- ========================================= -->
-    <!-- RECENT ORDERS -->
-    <!-- ========================================= -->
-
-    <div class="panel mt-4">
-
+    <!-- Recent Orders Table -->
+    <div class="panel">
         <div class="panel-header">
-
-            Recent Orders
-
+            <span><i class="bi bi-clock-history me-2 text-primary"></i> Recent Table Sessions</span>
+            <a href="{% url 'orders:orders-dashboard' %}" class="btn btn-sm btn-outline-primary rounded-pill">View All Orders</a>
         </div>
-
-        <div class="panel-body">
-
+        <div class="table-wrapper border-0">
             <table class="dashboard-table">
-
                 <thead>
-
                     <tr>
-
-                        <th>Order</th>
-
+                        <th>Order Ref</th>
                         <th>Table</th>
-
-                        <th>Guest</th>
-
-                        <th>Status</th>
-
+                        <th>Guest Count</th>
+                        <th>Current Status</th>
                     </tr>
-
                 </thead>
-
                 <tbody>
-
                 {% for order in recent_orders %}
-
                     <tr>
-
                         <td>
-
-                            {{ order.order_number }}
-
+                            <span class="fw-bold text-primary">#{{ order.order_number }}</span>
                         </td>
-
                         <td>
-
+                            <i class="bi bi-geo-alt me-1 text-muted"></i>
                             {{ order.session.table.display_name }}
-
                         </td>
-
                         <td>
-
+                            <i class="bi bi-person me-1 text-muted"></i>
                             Guest {{ order.guest_number }}
-
                         </td>
-
                         <td>
-
-                            {{ order.status }}
-
+                            <span class="badge-status badge-{% if order.status == 'COMPLETED' or order.status == 'SERVED' %}success{% elif order.status == 'PREPARING' %}warning{% else %}info{% endif %}">
+                                {{ order.status }}
+                            </span>
                         </td>
-
                     </tr>
-
                 {% empty %}
-
                     <tr>
-
-                        <td colspan="4">
-
-                            No Orders Found
-
+                        <td colspan="4" class="text-center py-4 text-muted">
+                            <i class="bi bi-inbox fs-3 d-block mb-2"></i>
+                            No active or recent orders found.
                         </td>
-
                     </tr>
-
                 {% endfor %}
-
                 </tbody>
-
             </table>
-
         </div>
-
     </div>
 
 </div>

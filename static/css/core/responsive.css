@@ -1,212 +1,100 @@
 /* ==========================================================
-   RESTAURANT RMS
-   RESPONSIVE ENGINE
-========================================================== */
+   RESTAURANT RMS - RESPONSIVE ENGINE
+   ========================================================== */
 
-
-/* ==========================================================
-   1920px and Above
-========================================================== */
-
-@media (min-width:1920px){
-
-    :root{
-
-        --sidebar-width:300px;
-        --navbar-height:74px;
-
+@media (min-width: 1920px) {
+    :root {
+        --sidebar-width: 290px;
+        --navbar-height: 76px;
     }
 
-    .content-wrapper{
-
-        padding:32px;
-
+    .content-wrapper {
+        padding: 32px 36px;
     }
 
-    .page-header h1{
-
-        font-size:34px;
-
+    .page-header h1 {
+        font-size: 2rem;
     }
-
 }
 
-
-/* ==========================================================
-   1600px
-========================================================== */
-
-@media (max-width:1919px){
-
-    :root{
-
-        --sidebar-width:280px;
-
+@media (max-width: 1439px) {
+    :root {
+        --sidebar-width: 250px;
     }
 
+    .content-wrapper {
+        padding: 24px;
+    }
+
+    .page-header h1 {
+        font-size: 1.5rem;
+    }
 }
 
-
-/* ==========================================================
-   1440px
-========================================================== */
-
-@media (max-width:1599px){
-
-    .content-wrapper{
-
-        padding:24px;
-
+@media (max-width: 1023px) {
+    .grid-4 {
+        grid-template-columns: repeat(2, 1fr);
     }
 
+    .grid-3 {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
-
-/* ==========================================================
-   1366px
-========================================================== */
-
-@media (max-width:1439px){
-
-    :root{
-
-        --sidebar-width:250px;
-
+@media (max-width: 767px) {
+    .app-layout {
+        grid-template-columns: 1fr;
     }
 
-    .content-wrapper{
-
-        padding:20px;
-
+    .sidebar-wrapper {
+        position: fixed;
+        left: -280px;
+        top: 0;
+        width: 280px;
+        height: 100vh;
+        z-index: 1050;
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+        transition: transform var(--transition-normal), left var(--transition-normal);
     }
 
-    .page-header h1{
-
-        font-size:28px;
-
+    .sidebar-wrapper.active {
+        left: 0;
     }
 
+    .main-wrapper {
+        width: 100vw;
+    }
+
+    .grid-4, .grid-3, .grid-2 {
+        grid-template-columns: 1fr;
+    }
+
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    
+    .clock-card {
+        display: none !important;
+    }
 }
 
-
-/* ==========================================================
-   1024px
-========================================================== */
-
-@media (max-width:1023px){
-
-    :root{
-
-        --sidebar-width:72px;
-
+@media (max-width: 575px) {
+    .content-wrapper {
+        padding: 16px;
     }
 
-    .grid-4{
-
-        grid-template-columns:repeat(2,1fr);
-
+    .navbar-wrapper {
+        padding: 0 16px;
     }
 
-    .grid-3{
-
-        grid-template-columns:repeat(2,1fr);
-
+    .status-bar {
+        font-size: 0.75rem;
+        padding: 0 12px;
     }
 
-}
-
-
-/* ==========================================================
-   768px
-========================================================== */
-
-@media (max-width:767px){
-
-    .app-layout{
-
-        grid-template-columns:1fr;
-
+    .page-header h1 {
+        font-size: 1.35rem;
     }
-
-    .sidebar-wrapper{
-
-        position:fixed;
-
-        left:-280px;
-
-        top:0;
-
-        width:280px;
-
-        height:100vh;
-
-        z-index:999;
-
-        transition:.30s;
-
-    }
-
-    .sidebar-wrapper.active{
-
-        left:0;
-
-    }
-
-    .main-wrapper{
-
-        width:100%;
-
-    }
-
-    .grid-4,
-    .grid-3,
-    .grid-2{
-
-        grid-template-columns:1fr;
-
-    }
-
-    .page-header{
-
-        flex-direction:column;
-
-        align-items:flex-start;
-
-        gap:12px;
-
-    }
-
-}
-
-
-/* ==========================================================
-   576px
-========================================================== */
-
-@media (max-width:575px){
-
-    .content-wrapper{
-
-        padding:14px;
-
-    }
-
-    .navbar-wrapper{
-
-        padding:0 12px;
-
-    }
-
-    .status-bar{
-
-        display:none;
-
-    }
-
-    .page-header h1{
-
-        font-size:24px;
-
-    }
-
 }

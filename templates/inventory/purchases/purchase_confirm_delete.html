@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+
+{% block title %}
+Delete Purchase
+{% endblock %}
+
+{% block breadcrumb %}
+Inventory / Purchases
+{% endblock %}
+
+{% block page_title %}
+Delete Purchase
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-6">
+
+            <div class="card shadow border-0">
+
+                <div class="card-header bg-danger text-white">
+
+                    <h4 class="mb-0">
+
+                        <i class="bi bi-trash"></i>
+
+                        Delete Purchase
+
+                    </h4>
+
+                </div>
+
+                <div class="card-body">
+
+                    <div class="alert alert-warning">
+
+                        <strong>Warning!</strong>
+
+                        This action cannot be undone.
+
+                    </div>
+
+                    <table class="table">
+
+                        <tr>
+
+                            <th width="180">
+
+                                Purchase No
+
+                            </th>
+
+                            <td>
+
+                                {{ object.purchase_number }}
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>
+
+                                Supplier
+
+                            </th>
+
+                            <td>
+
+                                {{ object.supplier.name }}
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>
+
+                                Invoice
+
+                            </th>
+
+                            <td>
+
+                                {{ object.invoice_number|default:"-" }}
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>
+
+                                Date
+
+                            </th>
+
+                            <td>
+
+                                {{ object.purchase_date }}
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>
+
+                                Payment Mode
+
+                            </th>
+
+                            <td>
+
+                                {{ object.get_payment_mode_display }}
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>
+
+                                Grand Total
+
+                            </th>
+
+                            <td>
+
+                                ₹{{ object.grand_total }}
+
+                            </td>
+
+                        </tr>
+
+                    </table>
+
+                    <form method="post">
+
+                        {% csrf_token %}
+
+                        <div class="d-flex justify-content-between">
+
+                            <a
+                                href="{% url 'purchase:purchase-list' %}"
+                                class="btn btn-secondary">
+
+                                <i class="bi bi-arrow-left"></i>
+
+                                Cancel
+
+                            </a>
+
+                            <button
+                                type="submit"
+                                class="btn btn-danger">
+
+                                <i class="bi bi-trash"></i>
+
+                                Delete Purchase
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

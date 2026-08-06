@@ -1,110 +1,81 @@
 {% extends "base.html" %}
 
-{% block title %}Menu Categories{% endblock %}
+{% block title %}Menu Categories | Restaurant RMS{% endblock %}
+{% block breadcrumb %}Master Data{% endblock %}
+{% block page_title %}Categories Management{% endblock %}
 
 {% block content %}
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-
-    <h2>Menu Categories</h2>
-
-    <a href="{% url 'menu:category-add' %}" class="btn btn-primary">
-        <i class="bi bi-plus-circle"></i>
-        Add Category
-    </a>
-
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+    <div>
+        <h2 class="fw-bold text-dark mb-1">Menu Categories</h2>
+        <p class="text-secondary mb-0">Organize food & beverage categories, display order, and active statuses.</p>
+    </div>
+    <div>
+        <a href="{% url 'menu:category-add' %}" class="btn btn-primary rounded-pill px-4">
+            <i class="bi bi-plus-lg me-1"></i> Add Category
+        </a>
+    </div>
 </div>
 
-<div class="card">
-
-    <div class="card-body">
-
+<div class="card border-0 shadow-md rounded-4 overflow-hidden">
+    <div class="card-body p-0">
         {% if categories %}
-
-        <table class="table table-hover">
-
-            <thead>
-
-                <tr>
-                    <th>Name</th>
-                    <th>Description</th>
-                    <th>Display Order</th>
-                    <th>Status</th>
-                    <th width="120">Actions</th>
-                </tr>
-
-            </thead>
-
-            <tbody>
-
-            {% for category in categories %}
-
-                <tr>
-
-                    <td>{{ category.name }}</td>
-
-                    <td>{{ category.description|default:"-" }}</td>
-
-                    <td>{{ category.display_order }}</td>
-
-                    <td>
-
-                        {% if category.is_active %}
-                            <span class="badge bg-success">
-                                Active
-                            </span>
-                        {% else %}
-                            <span class="badge bg-danger">
-                                Inactive
-                            </span>
-                        {% endif %}
-
-                    </td>
-
-                    <td>
-
-                        <a href="{% url 'menu:category-edit' category.pk %}"
-                           class="btn btn-sm btn-warning">
-
-                            <i class="bi bi-pencil"></i>
-
-                        </a>
-
-                        <a href="{% url 'menu:category-delete' category.pk %}"
-                           class="btn btn-sm btn-danger">
-
-                            <i class="bi bi-trash"></i>
-
-                        </a>
-
-                    </td>
-
-                </tr>
-
-            {% endfor %}
-
-            </tbody>
-
-        </table>
-
-        {% else %}
-
-        <div class="text-center py-5">
-
-            <h5>No menu categories found.</h5>
-
-            <p class="text-muted">
-
-                Click <strong>Add Category</strong> to create your first menu category.
-
-            </p>
-
+        <div class="table-wrapper border-0 rounded-0">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Category Name</th>
+                        <th>Description</th>
+                        <th>Display Order</th>
+                        <th>Status</th>
+                        <th width="120" class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for category in categories %}
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="bg-light p-2 rounded-3 text-primary fs-5">
+                                    <i class="bi bi-tags-fill"></i>
+                                </div>
+                                <span class="fw-bold text-dark">{{ category.name }}</span>
+                            </div>
+                        </td>
+                        <td><span class="text-secondary">{{ category.description|default:"-" }}</span></td>
+                        <td><span class="badge bg-light text-dark border px-3 py-1">Order #{{ category.display_order }}</span></td>
+                        <td>
+                            {% if category.is_active %}
+                                <span class="badge-status badge-success">Active</span>
+                            {% else %}
+                                <span class="badge-status badge-danger">Inactive</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end">
+                            <a href="{% url 'menu:category-edit' category.pk %}" class="btn btn-sm btn-light text-primary rounded-circle" title="Edit">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a href="{% url 'menu:category-delete' category.pk %}" class="btn btn-sm btn-light text-danger rounded-circle" title="Delete">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
         </div>
-
+        {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-tags fs-1 text-muted mb-2 d-block"></i>
+            <h5 class="fw-bold text-dark">No Menu Categories Found</h5>
+            <p class="text-secondary mb-3">Click below to create your first menu category.</p>
+            <a href="{% url 'menu:category-add' %}" class="btn btn-primary rounded-pill px-4">
+                <i class="bi bi-plus-lg me-1"></i> Add Category
+            </a>
+        </div>
         {% endif %}
-
     </div>
-
 </div>
 
 {% endblock %}

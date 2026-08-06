@@ -5,10 +5,10 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
 from django.views.decorators.http import require_POST
-
+from django.db.models import Count
 from apps.menu.models import MenuCategory, MenuItem
 from apps.tables.models import DiningArea, RestaurantTable
-
+from django.db.models import Prefetch
 from .models import (
     GuestOrder,
     KitchenOrderTicket,
@@ -59,7 +59,6 @@ def open_table(request, table_id):
         session_id=session.id,
     )
 
-
 @login_required
 def session_detail(request, session_id):
 
@@ -68,16 +67,22 @@ def session_detail(request, session_id):
         pk=session_id,
     )
 
+    guests = (
+        session.guest_orders
+        .annotate(item_count=Count("items"))
+        .prefetch_related("items")
+        .order_by("guest_number")
+    )
+
     return render(
         request,
         "orders/table_session.html",
         {
             "session": session,
             "table": session.table,
+            "guests": guests,
         },
     )
-
-
 @login_required
 def add_guest(request, session_id):
 
@@ -93,15 +98,16 @@ def add_guest(request, session_id):
         pk=session_id,
     )
 
-    last_guest = session.guest_orders.order_by(
-        "-guest_number"
-    ).first()
+    last_guest = (
+    session.guest_orders
+    .order_by("-guest_number")
+    .first()
+)
 
-    next_guest = (
-        1
-        if last_guest is None
-        else last_guest.guest_number + 1
-    )
+    next_guest = 1
+
+    if last_guest:
+        next_guest = last_guest.guest_number + 1
 
     GuestOrder.objects.create(
         session=session,
@@ -142,9 +148,11 @@ def guest_order(request, guest_id):
         )
     )
 
-    order_items = guest.items.select_related(
-     "menu_item",
-      )
+    order_items = (
+    guest.items
+    .select_related("menu_item")
+    .order_by("created_at")
+)
 
     pending_total = sum(
     item.line_total
@@ -223,11 +231,14 @@ def add_item(request):
 )
 
     return JsonResponse(
-        {
-            "success": True,
-            "html": html,
-        }
-    )
+    {
+        "success": True,
+        "html": html,
+        "guest_id": guest.id,
+        "guest_items": guest.items.count(),
+        "guest_total": str(guest.subtotal),
+    }
+)
 
 
 @require_POST
@@ -365,3 +376,111 @@ def kot_print(request, kot_id):
             "table": kot.guest_order.session.table,
         },
     )
+
+@login_required
+def orders_dashboard(request):
+
+    sessions = (
+        TableSession.objects
+        .filter(status="open")
+        .select_related("table")
+        .prefetch_related(
+            Prefetch(
+                "guest_orders",
+                queryset=GuestOrder.objects.prefetch_related(
+                    "items__menu_item"
+                ),
+            )
+        )
+        .order_by("table__display_name")
+    )
+
+    active_tables = sessions.count()
+
+    total_guests = 0
+
+    total_items = 0
+
+    for session in sessions:
+
+        guest_count = session.guest_orders.count()
+
+        session.total_guests = guest_count
+
+        total_guests += guest_count
+
+        item_count = 0
+
+        last_updated = None
+
+        for guest in session.guest_orders.all():
+
+            for item in guest.items.all():
+
+                item_count += item.quantity
+
+                if (
+                    last_updated is None
+                    or item.created_at > last_updated
+                ):
+                    last_updated = item.created_at
+
+        session.total_items = item_count
+
+        session.last_updated = last_updated
+
+        total_items += item_count
+
+    context = {
+
+        "sessions": sessions,
+
+        "active_tables": active_tables,
+
+        "total_guests": total_guests,
+
+        "total_items": total_items,
+
+    }
+
+    return render(
+
+        request,
+
+        "orders/orders_dashboard.html",
+
+        context,
+
+    )
+
+@login_required
+def back_to_floor(request, session_id):
+
+    session = get_object_or_404(
+        TableSession,
+        pk=session_id,
+    )
+
+    # Delete only guests with no items and no bill
+    for guest in session.guest_orders.all():
+
+        # Has any order items?
+        if guest.items.exists():
+            continue
+
+        # Has a bill? Skip it.
+        try:
+            guest.bill
+            continue
+        except Exception:
+            pass
+
+        guest.delete()
+
+    # Close session if no guests remain
+    if not session.guest_orders.exists():
+
+        session.status = "closed"
+        session.save()
+
+    return redirect("orders:floor-view")
