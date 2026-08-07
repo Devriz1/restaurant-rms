@@ -6,14 +6,16 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, DeleteView
-
+from apps.stock.services import add_stock
 from .models import Purchase
 from .forms import PurchaseForm, PurchaseItemFormSet
-
+from django.db.models import Sum
 
 # ==========================================================
 # PURCHASE LIST
 # ==========================================================
+
+
 
 class PurchaseListView(LoginRequiredMixin, ListView):
 
@@ -31,8 +33,13 @@ class PurchaseListView(LoginRequiredMixin, ListView):
 
         context["total_purchases"] = Purchase.objects.count()
 
-        return context
+        context["total_amount"] = (
+            Purchase.objects.aggregate(
+                total=Sum("grand_total")
+            )["total"] or 0
+        )
 
+        return context
 
 # ==========================================================
 # PURCHASE CREATE
@@ -55,14 +62,27 @@ def purchase_create(request):
 
             subtotal = Decimal("0.00")
 
-            for item in items:
+        for item in items:
 
-                item.purchase = purchase
+            item.purchase = purchase
 
-                item.save()
+            item.save()
 
-                subtotal += item.line_total
+            add_stock(
 
+                material=item.material,
+
+                quantity=item.quantity,
+
+                movement_type="PURCHASE",
+
+                reference=purchase.purchase_number,
+
+                remarks="Purchase Entry",
+
+            )
+
+            subtotal += item.line_total
             purchase.subtotal = subtotal
 
             purchase.grand_total = (

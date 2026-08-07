@@ -40,60 +40,73 @@
     border-bottom: none;
 }
 
-/* Status Badges */
+/* ==========================================
+   FORCE HIGH CONTRAST BADGES (Fix Invisible Text)
+   ========================================== */
+
+/* 1. Base badge rule - forces container setup */
 .badge-status, .badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 5px 12px;
-    border-radius: var(--border-radius-pill);
-    font-size: 0.775rem;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-    line-height: 1.2;
-    text-transform: capitalize;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    padding: 5px 12px !important;
+    border-radius: 9999px !important;
+    font-size: 0.775rem !important;
+    font-weight: 600 !important;
+    line-height: 1.2 !important;
 }
 
-.badge-status::before {
-    content: '';
-    display: inline-block;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
+/* Force ANY element inside the badge (spans, links, icons) to use the badge's text color */
+.badge-status *, .badge * {
+    color: inherit !important;
 }
 
-/* Status Variants */
+/* 2. SUCCESS (Light green background, dark green text) */
 .badge-success, .badge-available, .badge-paid, .bg-success {
-    background-color: var(--success-bg);
-    color: #047857;
-    border: 1px solid var(--success-border);
+    background-color: #ecfdf5 !important;
+    color: #047857 !important;
+    border: 1px solid #a7f3d0 !important;
 }
-.badge-success::before, .badge-available::before, .badge-paid::before { background-color: var(--success); }
+.badge-success::before, .badge-available::before, .badge-paid::before, .bg-success::before {
+    background-color: #10b981 !important;
+}
 
+/* 3. WARNING (Light yellow background, dark amber text) */
 .badge-warning, .badge-occupied, .badge-pending, .bg-warning {
-    background-color: var(--warning-bg);
-    color: #b45309;
-    border: 1px solid var(--warning-border);
+    background-color: #fffbeb !important;
+    color: #b45309 !important;
+    border: 1px solid #fde68a !important;
 }
-.badge-warning::before, .badge-occupied::before, .badge-pending::before { background-color: var(--warning); }
+.badge-warning::before, .badge-occupied::before, .badge-pending::before, .bg-warning::before {
+    background-color: #f59e0b !important;
+}
 
+/* 4. DANGER (Light red background, dark red text) */
 .badge-danger, .badge-cancelled, .bg-danger {
-    background-color: var(--danger-bg);
-    color: #b91c1c;
-    border: 1px solid var(--danger-border);
+    background-color: #fef2f2 !important;
+    color: #b91c1c !important;
+    border: 1px solid #fecaca !important;
 }
-.badge-danger::before, .badge-cancelled::before { background-color: var(--danger); }
+.badge-danger::before, .badge-cancelled::before, .bg-danger::before {
+    background-color: #ef4444 !important;
+}
 
+/* 5. INFO (Light blue background, dark blue text) */
 .badge-info, .badge-billed, .bg-info {
-    background-color: var(--info-bg);
-    color: #0369a1;
-    border: 1px solid var(--info-border);
+    background-color: #f0f9ff !important;
+    color: #0369a1 !important;
+    border: 1px solid #bae6fd !important;
 }
-.badge-info::before, .badge-billed::before { background-color: var(--info); }
+.badge-info::before, .badge-billed::before, .bg-info::before {
+    background-color: #0ea5e9 !important;
+}
 
+/* 6. PRIMARY (Light indigo background, dark indigo text) */
 .badge-primary, .bg-primary {
-    background-color: var(--primary-light);
-    color: var(--primary);
-    border: 1px solid rgba(79, 70, 229, 0.2);
+    background-color: #eef2ff !important;
+    color: #4338ca !important;
+    border: 1px solid #c7d2fe !important;
 }
-.badge-primary::before { background-color: var(--primary); }
+.badge-primary::before, .bg-primary::before {
+    background-color: #6366f1 !important;
+}

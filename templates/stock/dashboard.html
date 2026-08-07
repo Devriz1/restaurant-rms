@@ -1,0 +1,461 @@
+{% extends "base.html" %}
+
+{% block title %}
+Stock Dashboard
+{% endblock %}
+
+{% block page_title %}
+Stock Dashboard
+{% endblock %}
+
+{% block breadcrumb %}
+Stock
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- ========================================== -->
+    <!-- HEADER -->
+    <!-- ========================================== -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h3 class="mb-1">
+
+                Stock Dashboard
+
+            </h3>
+
+            <p class="text-muted mb-0">
+
+                Monitor inventory, stock movements and material availability.
+
+            </p>
+
+        </div>
+
+        <div class="d-flex gap-2">
+
+            <a href="#" class="btn btn-outline-primary">
+
+                <i class="bi bi-journal-text me-1"></i>
+
+                Stock Ledger
+
+            </a>
+
+            <a href="#" class="btn btn-primary">
+
+                <i class="bi bi-sliders me-1"></i>
+
+                Stock Adjustment
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================== -->
+    <!-- SUMMARY CARDS -->
+    <!-- ========================================== -->
+
+    <div class="row g-3 mb-4">
+
+        <div class="col-xl-2 col-lg-4 col-md-6">
+
+            <div class="card shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <small class="text-muted">
+
+                        Total Materials
+
+                    </small>
+
+                    <h2 class="mt-2">
+
+                        {{ total_materials }}
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-xl-2 col-lg-4 col-md-6">
+
+            <div class="card shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <small class="text-muted">
+
+                        Inventory Value
+
+                    </small>
+
+                    <h2 class="mt-2">
+
+                        ₹{{ inventory_value|default:"0.00" }}
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-xl-2 col-lg-4 col-md-6">
+
+            <div class="card shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <small class="text-muted">
+
+                        Low Stock
+
+                    </small>
+
+                    <h2 class="mt-2 text-warning">
+
+                        {{ low_stock }}
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-xl-2 col-lg-4 col-md-6">
+
+            <div class="card shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <small class="text-muted">
+
+                        Out Of Stock
+
+                    </small>
+
+                    <h2 class="mt-2 text-danger">
+
+                        {{ out_of_stock|default:"0" }}
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-xl-2 col-lg-4 col-md-6">
+
+            <div class="card shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <small class="text-muted">
+
+                        Today's Purchases
+
+                    </small>
+
+                    <h2 class="mt-2">
+
+                        {{ today_purchase|default:"0" }}
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-xl-2 col-lg-4 col-md-6">
+
+            <div class="card shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <small class="text-muted">
+
+                        Stock Movements
+
+                    </small>
+
+                    <h2 class="mt-2">
+
+                        {{ ledger_count }}
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================== -->
+    <!-- QUICK ACTIONS -->
+    <!-- ========================================== -->
+
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-header">
+
+            <strong>
+
+                Quick Actions
+
+            </strong>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="d-flex flex-wrap gap-2">
+
+                <a href="{% url 'stock:current-stock' %}" class="btn btn-outline-success">
+    Current Stock
+</a>
+
+                <a href="#" class="btn btn-outline-primary">
+
+                    Stock Ledger
+
+                </a>
+
+                <a href="#" class="btn btn-outline-warning">
+
+                    Stock Adjustment
+
+                </a>
+
+                <a href="#" class="btn btn-outline-danger">
+
+                    Low Stock
+
+                </a>
+
+                <a href="#" class="btn btn-outline-dark">
+
+                    Reports
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TWO COLUMN LAYOUT -->
+    <!-- ========================================== -->
+
+    <div class="row">
+
+        <!-- Recent Movements -->
+
+        <div class="col-lg-8 mb-4">
+
+            <div class="card shadow-sm">
+
+                <div class="card-header">
+
+                    <strong>
+
+                        Recent Stock Movements
+
+                    </strong>
+
+                </div>
+
+                <div class="table-responsive">
+
+                    <table class="table table-hover mb-0">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Date</th>
+
+                                <th>Material</th>
+
+                                <th>Movement</th>
+
+                                <th>Qty</th>
+
+                                <th>Reference</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            {% for entry in recent_movements %}
+
+                            <tr>
+
+                                <td>
+
+                                    {{ entry.created_at|date:"d M Y" }}
+
+                                </td>
+
+                                <td>
+
+                                    {{ entry.material.name }}
+
+                                </td>
+
+                                <td>
+
+                                    {{ entry.get_movement_type_display }}
+
+                                </td>
+
+                                <td>
+
+                                    {% if entry.quantity_in > 0 %}
+
+                                        <span class="text-success">
+
+                                            +{{ entry.quantity_in }}
+
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="text-danger">
+
+                                            -{{ entry.quantity_out }}
+
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+                                <td>
+
+                                    {{ entry.reference_number }}
+
+                                </td>
+
+                            </tr>
+
+                            {% empty %}
+
+                            <tr>
+
+                                <td colspan="5" class="text-center">
+
+                                    No Stock Movement
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Low Stock -->
+
+        <div class="col-lg-4">
+
+            <div class="card shadow-sm">
+
+                <div class="card-header">
+
+                    <strong>
+
+                        Low Stock Alert
+
+                    </strong>
+
+                </div>
+
+                <div class="card-body">
+
+                    {% for material in low_stock_materials %}
+
+                    <div class="d-flex justify-content-between border-bottom py-2">
+
+                        <div>
+
+                            <strong>
+
+                                {{ material.name }}
+
+                            </strong>
+
+                            <br>
+
+                            <small class="text-muted">
+
+                                {{ material.current_stock }}
+
+                                {{ material.unit.symbol }}
+
+                            </small>
+
+                        </div>
+
+                        <span class="badge bg-warning text-dark">
+
+                            LOW
+
+                        </span>
+
+                    </div>
+
+                    {% empty %}
+
+                    <p class="text-muted mb-0">
+
+                        No Low Stock Items
+
+                    </p>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

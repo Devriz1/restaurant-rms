@@ -1,0 +1,592 @@
+{% extends "base.html" %}
+
+{% block title %}
+Stock Ledger
+{% endblock %}
+
+{% block page_title %}
+Stock Ledger
+{% endblock %}
+
+{% block breadcrumb %}
+Stock / Ledger
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- ========================================== -->
+    <!-- HEADER -->
+    <!-- ========================================== -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h3 class="mb-1">
+
+                Stock Ledger
+
+            </h3>
+
+            <p class="text-muted mb-0">
+
+                Complete history of all stock movements.
+
+            </p>
+
+        </div>
+
+        <div>
+
+            <a href="#" class="btn btn-outline-success">
+
+                <i class="bi bi-file-earmark-excel me-1"></i>
+
+                Export Excel
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================== -->
+    <!-- SUMMARY CARDS -->
+    <!-- ========================================== -->
+
+    <div class="row g-3 mb-4">
+
+        <div class="col-lg-3">
+
+            <div class="card shadow-sm">
+
+                <div class="card-body">
+
+                    <small class="text-muted">
+
+                        Total Entries
+
+                    </small>
+
+                    <h2>
+
+                        {{ total_entries }}
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3">
+
+            <div class="card shadow-sm">
+
+                <div class="card-body">
+
+                    <small class="text-muted">
+
+                        Total Stock In
+
+                    </small>
+
+                    <h2 class="text-success">
+
+                        {{ total_in }}
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3">
+
+            <div class="card shadow-sm">
+
+                <div class="card-body">
+
+                    <small class="text-muted">
+
+                        Total Stock Out
+
+                    </small>
+
+                    <h2 class="text-danger">
+
+                        {{ total_out }}
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3">
+
+            <div class="card shadow-sm">
+
+                <div class="card-body">
+
+                    <small class="text-muted">
+
+                        Net Movement
+
+                    </small>
+
+                    <h2>
+
+                        {{ net_stock }}
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================== -->
+    <!-- SEARCH -->
+    <!-- ========================================== -->
+
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-body">
+
+            <form method="get">
+
+                <div class="row g-2">
+
+                    <div class="col-lg-3">
+
+                        <input
+                            type="text"
+                            name="q"
+                            class="form-control"
+                            value="{{ request.GET.q }}"
+                            placeholder="Search Material">
+
+                    </div>
+
+                    <div class="col-lg-2">
+
+                        <select
+                            name="material"
+                            class="form-select">
+
+                            <option value="">
+
+                                All Materials
+
+                            </option>
+
+                            {% for material in materials %}
+
+                            <option
+                                value="{{ material.id }}">
+
+                                {{ material.name }}
+
+                            </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-lg-2">
+
+                        <select
+                            name="movement"
+                            class="form-select">
+
+                            <option value="">
+
+                                All Movements
+
+                            </option>
+
+                            {% for value,label in movement_types %}
+
+                            <option value="{{ value }}">
+
+                                {{ label }}
+
+                            </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-lg-2">
+
+                        <input
+                            type="date"
+                            name="from"
+                            class="form-control">
+
+                    </div>
+
+                    <div class="col-lg-2">
+
+                        <input
+                            type="date"
+                            name="to"
+                            class="form-control">
+
+                    </div>
+
+                    <div class="col-lg-1 d-grid">
+
+                        <button
+                            class="btn btn-primary">
+
+                            <i class="bi bi-search"></i>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+    <!-- ========================================== -->
+<!-- STOCK LEDGER TABLE -->
+<!-- ========================================== -->
+
+<div class="card shadow-sm">
+
+    <div class="card-header d-flex justify-content-between align-items-center">
+
+        <h5 class="mb-0">
+
+            Stock Movement History
+
+        </h5>
+
+        <span class="badge bg-primary">
+
+            {{ entries|length }} Entries
+
+        </span>
+
+    </div>
+
+    <div class="table-responsive">
+
+        <table class="table table-hover align-middle mb-0">
+
+            <thead class="table-light">
+
+                <tr>
+
+                    <th width="12%">
+
+                        Date
+
+                    </th>
+
+                    <th width="18%">
+
+                        Material
+
+                    </th>
+
+                    <th width="12%">
+
+                        Movement
+
+                    </th>
+
+                    <th width="12%">
+
+                        Reference
+
+                    </th>
+
+                    <th width="10%" class="text-end">
+
+                        Qty In
+
+                    </th>
+
+                    <th width="10%" class="text-end">
+
+                        Qty Out
+
+                    </th>
+
+                    <th width="10%" class="text-end">
+
+                        Balance
+
+                    </th>
+
+                    <th width="16%">
+
+                        Remarks
+
+                    </th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for entry in entries %}
+
+                <tr>
+
+                    <td>
+
+                        {{ entry.created_at|date:"d M Y" }}
+
+                        <br>
+
+                        <small class="text-muted">
+
+                            {{ entry.created_at|time:"H:i" }}
+
+                        </small>
+
+                    </td>
+
+                    <td>
+
+                        <strong>
+
+                            {{ entry.material.name }}
+
+                        </strong>
+
+                        <br>
+
+                        <small class="text-muted">
+
+                            {{ entry.material.code }}
+
+                        </small>
+
+                    </td>
+
+                    <td>
+
+                        {% if entry.movement_type == "PURCHASE" %}
+
+                            <span class="badge bg-success">
+
+                                Purchase
+
+                            </span>
+
+                        {% elif entry.movement_type == "SALE" %}
+
+                            <span class="badge bg-danger">
+
+                                Sale
+
+                            </span>
+
+                        {% elif entry.movement_type == "OPENING" %}
+
+                            <span class="badge bg-primary">
+
+                                Opening
+
+                            </span>
+
+                        {% elif entry.movement_type == "ADJUSTMENT" %}
+
+                            <span class="badge bg-warning text-dark">
+
+                                Adjustment
+
+                            </span>
+
+                        {% elif entry.movement_type == "RETURN" %}
+
+                            <span class="badge bg-info">
+
+                                Return
+
+                            </span>
+
+                        {% elif entry.movement_type == "WASTE" %}
+
+                            <span class="badge bg-dark">
+
+                                Waste
+
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge bg-secondary">
+
+                                {{ entry.get_movement_type_display }}
+
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+
+                        {{ entry.reference_number|default:"-" }}
+
+                    </td>
+
+                    <td class="text-end text-success fw-bold">
+
+                        {% if entry.quantity_in > 0 %}
+
+                            +{{ entry.quantity_in }}
+
+                        {% else %}
+
+                            -
+
+                        {% endif %}
+
+                    </td>
+
+                    <td class="text-end text-danger fw-bold">
+
+                        {% if entry.quantity_out > 0 %}
+
+                            -{{ entry.quantity_out }}
+
+                        {% else %}
+
+                            -
+
+                        {% endif %}
+
+                    </td>
+
+                    <td class="text-end fw-bold">
+
+                        {{ entry.balance }}
+
+                    </td>
+
+                    <td>
+
+                        {{ entry.remarks|default:"-" }}
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="8" class="text-center py-5">
+
+                        <i class="bi bi-journal-text fs-1 text-muted"></i>
+
+                        <br><br>
+
+                        <h5>
+
+                            No Ledger Entries Found
+
+                        </h5>
+
+                        <p class="text-muted mb-0">
+
+                            Stock movements will appear here.
+
+                        </p>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+<!-- ========================================== -->
+<!-- FOOTER INFORMATION -->
+<!-- ========================================== -->
+
+<div class="row mt-3">
+
+    <div class="col-md-6">
+
+        <small class="text-muted">
+
+            Showing
+
+            <strong>
+
+                {{ page_obj.start_index }}
+
+            </strong>
+
+            to
+
+            <strong>
+
+                {{ page_obj.end_index }}
+
+            </strong>
+
+            of
+
+            <strong>
+
+                {{ page_obj.paginator.count }}
+
+            </strong>
+
+            ledger entries.
+
+        </small>
+
+    </div>
+
+    <div class="col-md-6 text-end">
+
+        <small class="text-muted">
+
+            Last Updated :
+
+            {% now "d M Y H:i" %}
+
+        </small>
+
+    </div>
+
+</div>
+
+</div>
+
+{% endblock %}

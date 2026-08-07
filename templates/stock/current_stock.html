@@ -1,0 +1,628 @@
+{% extends "base.html" %}
+
+{% block title %}
+Current Stock
+{% endblock %}
+
+{% block page_title %}
+Current Stock
+{% endblock %}
+
+{% block breadcrumb %}
+Stock / Current Stock
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- ========================================== -->
+    <!-- HEADER -->
+    <!-- ========================================== -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h3 class="mb-1">
+
+                Current Stock
+
+            </h3>
+
+            <p class="text-muted mb-0">
+
+                View and monitor the current inventory of all raw materials.
+
+            </p>
+
+        </div>
+
+        <a href="{% url 'purchase:purchase-add' %}" class="btn btn-primary">
+
+            <i class="bi bi-plus-circle me-1"></i>
+
+            New Purchase
+
+        </a>
+
+    </div>
+
+    <!-- ========================================== -->
+    <!-- SUMMARY CARDS -->
+    <!-- ========================================== -->
+
+    <div class="row g-3 mb-4">
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="card shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <small class="text-muted">
+
+                        Total Materials
+
+                    </small>
+
+                    <h2 class="mt-2">
+
+                        {{ materials|length }}
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="card shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <small class="text-muted">
+
+                        Low Stock
+
+                    </small>
+
+                    <h2 class="mt-2 text-warning">
+
+                        {{ low_stock }}
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="card shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <small class="text-muted">
+
+                        Out Of Stock
+
+                    </small>
+
+                    <h2 class="mt-2 text-danger">
+
+                        {{ out_of_stock }}
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="card shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <small class="text-muted">
+
+                        Inventory Value
+
+                    </small>
+
+                    <h2 class="mt-2">
+
+                        ₹{{ inventory_value }}
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================== -->
+    <!-- SEARCH & FILTERS -->
+    <!-- ========================================== -->
+
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-body">
+
+            <form method="get">
+
+                <div class="row g-2">
+
+                    <div class="col-lg-4">
+
+                        <input
+                            type="text"
+                            name="q"
+                            value="{{ request.GET.q }}"
+                            class="form-control"
+                            placeholder="Search Material...">
+
+                    </div>
+
+                    <div class="col-lg-2">
+
+                        <select
+                            name="category"
+                            class="form-select">
+
+                            <option value="">
+
+                                All Categories
+
+                            </option>
+
+                            {% for category in categories %}
+
+                            <option
+                                value="{{ category.id }}"
+                                {% if request.GET.category == category.id|stringformat:"s" %}
+                                selected
+                                {% endif %}>
+
+                                {{ category.name }}
+
+                            </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-lg-2">
+
+                        <select
+                            name="supplier"
+                            class="form-select">
+
+                            <option value="">
+
+                                All Suppliers
+
+                            </option>
+
+                            {% for supplier in suppliers %}
+
+                            <option
+                                value="{{ supplier.id }}"
+                                {% if request.GET.supplier == supplier.id|stringformat:"s" %}
+                                selected
+                                {% endif %}>
+
+                                {{ supplier.name }}
+
+                            </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-lg-2">
+
+                        <select
+                            name="status"
+                            class="form-select">
+
+                            <option value="">
+
+                                All Status
+
+                            </option>
+
+                            <option
+                                value="normal"
+                                {% if request.GET.status == "normal" %}selected{% endif %}>
+
+                                Normal
+
+                            </option>
+
+                            <option
+                                value="low"
+                                {% if request.GET.status == "low" %}selected{% endif %}>
+
+                                Low Stock
+
+                            </option>
+
+                            <option
+                                value="out"
+                                {% if request.GET.status == "out" %}selected{% endif %}>
+
+                                Out Of Stock
+
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-lg-2 d-grid">
+
+                        <button
+                            class="btn btn-primary">
+
+                            <i class="bi bi-search me-1"></i>
+
+                            Search
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+    <!-- ========================================== -->
+<!-- CURRENT STOCK TABLE -->
+<!-- ========================================== -->
+
+<div class="card shadow-sm">
+
+    <div class="card-header d-flex justify-content-between align-items-center">
+
+        <h5 class="mb-0">
+
+            Current Stock
+
+        </h5>
+
+        <span class="badge bg-primary">
+
+            {{ materials|length }} Materials
+
+        </span>
+
+    </div>
+
+    <div class="table-responsive">
+
+        <table class="table table-hover align-middle mb-0">
+
+            <thead class="table-light">
+
+                <tr>
+
+                    <th width="5%">#</th>
+
+                    <th width="22%">Material</th>
+
+                    <th width="15%">Category</th>
+
+                    <th width="15%">Supplier</th>
+
+                    <th width="10%" class="text-end">
+
+                        Current
+
+                    </th>
+
+                    <th width="10%" class="text-end">
+
+                        Minimum
+
+                    </th>
+
+                    <th width="8%" class="text-center">
+
+                        Unit
+
+                    </th>
+
+                    <th width="8%" class="text-center">
+
+                        Status
+
+                    </th>
+
+                    <th width="17%" class="text-center">
+
+                        Actions
+
+                    </th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for material in materials %}
+
+                <tr>
+
+                    <td>
+
+                        {{ forloop.counter }}
+
+                    </td>
+
+                    <td>
+
+                        <strong>
+
+                            {{ material.name }}
+
+                        </strong>
+
+                        <br>
+
+                        <small class="text-muted">
+
+                            {{ material.code }}
+
+                        </small>
+
+                    </td>
+
+                    <td>
+
+                        {{ material.category.name }}
+
+                    </td>
+
+                    <td>
+
+                        {{ material.supplier.name }}
+
+                    </td>
+
+                    <td class="text-end fw-bold">
+
+                        {{ material.current_stock }}
+
+                    </td>
+
+                    <td class="text-end">
+
+                        {{ material.minimum_stock }}
+
+                    </td>
+
+                    <td class="text-center">
+
+                        {{ material.unit.symbol }}
+
+                    </td>
+
+                    <td class="text-center">
+
+                        {% if material.current_stock == 0 %}
+
+                            <span class="badge bg-danger">
+
+                                Out Of Stock
+
+                            </span>
+
+                        {% elif material.current_stock <= material.minimum_stock %}
+
+                            <span class="badge bg-warning text-dark">
+
+                                Low Stock
+
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge bg-success">
+
+                                In Stock
+
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+
+                        <div class="d-flex justify-content-center gap-1">
+
+                            <a
+                                href="#"
+                                class="btn btn-sm btn-outline-primary"
+                                title="View">
+
+                                <i class="bi bi-eye"></i>
+
+                            </a>
+
+                            <a
+                                href="#"
+                                class="btn btn-sm btn-outline-success"
+                                title="Ledger">
+
+                                <i class="bi bi-journal-text"></i>
+
+                            </a>
+
+                            <a
+                                href="#"
+                                class="btn btn-sm btn-outline-warning"
+                                title="Adjust Stock">
+
+                                <i class="bi bi-sliders"></i>
+
+                            </a>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="9" class="text-center py-5">
+
+                        <i class="bi bi-box-seam fs-1 text-muted"></i>
+
+                        <br><br>
+
+                        <h5>
+
+                            No Materials Found
+
+                        </h5>
+
+                        <p class="text-muted mb-0">
+
+                            No raw materials are available.
+
+                        </p>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+<!-- ========================================== -->
+<!-- PAGINATION -->
+<!-- ========================================== -->
+
+{% if is_paginated %}
+
+<div class="card mt-3 shadow-sm">
+
+    <div class="card-body py-2">
+
+        <nav>
+
+            <ul class="pagination justify-content-center mb-0">
+
+                {% if page_obj.has_previous %}
+
+                <li class="page-item">
+
+                    <a
+                        class="page-link"
+                        href="?page=1&q={{ request.GET.q }}&category={{ request.GET.category }}&supplier={{ request.GET.supplier }}&status={{ request.GET.status }}">
+
+                        First
+
+                    </a>
+
+                </li>
+
+                <li class="page-item">
+
+                    <a
+                        class="page-link"
+                        href="?page={{ page_obj.previous_page_number }}&q={{ request.GET.q }}&category={{ request.GET.category }}&supplier={{ request.GET.supplier }}&status={{ request.GET.status }}">
+
+                        Previous
+
+                    </a>
+
+                </li>
+
+                {% endif %}
+
+                <li class="page-item active">
+
+                    <span class="page-link">
+
+                        {{ page_obj.number }}
+
+                        /
+
+                        {{ page_obj.paginator.num_pages }}
+
+                    </span>
+
+                </li>
+
+                {% if page_obj.has_next %}
+
+                <li class="page-item">
+
+                    <a
+                        class="page-link"
+                        href="?page={{ page_obj.next_page_number }}&q={{ request.GET.q }}&category={{ request.GET.category }}&supplier={{ request.GET.supplier }}&status={{ request.GET.status }}">
+
+                        Next
+
+                    </a>
+
+                </li>
+
+                <li class="page-item">
+
+                    <a
+                        class="page-link"
+                        href="?page={{ page_obj.paginator.num_pages }}&q={{ request.GET.q }}&category={{ request.GET.category }}&supplier={{ request.GET.supplier }}&status={{ request.GET.status }}">
+
+                        Last
+
+                    </a>
+
+                </li>
+
+                {% endif %}
+
+            </ul>
+
+        </nav>
+
+    </div>
+
+</div>
+
+{% endif %}
+
+</div>
+
+{% endblock %}
