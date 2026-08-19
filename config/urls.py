@@ -20,6 +20,7 @@ urlpatterns = [
     path("",include("pwa.urls"),),
     path("purchase/",include("apps.purchase.urls"),),
     path("stock/",include("apps.stock.urls"),),
+    path("recipes/",include("apps.recipes.urls"),),
 ]
 
 if settings.DEBUG:

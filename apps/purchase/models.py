@@ -317,7 +317,7 @@ class PurchaseItem(models.Model):
 
         self.purchase.calculate_totals()
         
-        def delete(self, *args, **kwargs):
+    def delete(self, *args, **kwargs):
 
             purchase = self.purchase
 

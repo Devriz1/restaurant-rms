@@ -3,19 +3,21 @@ from decimal import Decimal
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db import transaction
+from django.db.models import Sum
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, DeleteView
-from apps.stock.services import add_stock
+
+from apps.stock.services import add_stock, remove_stock
+
 from .models import Purchase
 from .forms import PurchaseForm, PurchaseItemFormSet
-from django.db.models import Sum
+
 
 # ==========================================================
 # PURCHASE LIST
 # ==========================================================
-
-
 
 class PurchaseListView(LoginRequiredMixin, ListView):
 
@@ -36,16 +38,18 @@ class PurchaseListView(LoginRequiredMixin, ListView):
         context["total_amount"] = (
             Purchase.objects.aggregate(
                 total=Sum("grand_total")
-            )["total"] or 0
+            )["total"] or Decimal("0.00")
         )
 
         return context
+
 
 # ==========================================================
 # PURCHASE CREATE
 # ==========================================================
 
 @login_required
+@transaction.atomic
 def purchase_create(request):
 
     if request.method == "POST":
@@ -56,42 +60,41 @@ def purchase_create(request):
 
         if form.is_valid() and formset.is_valid():
 
+            # --------------------------------------------------
+            # SAVE PURCHASE HEADER
+            # --------------------------------------------------
+
             purchase = form.save()
+
+            # --------------------------------------------------
+            # SAVE PURCHASE ITEMS
+            # --------------------------------------------------
 
             items = formset.save(commit=False)
 
-            subtotal = Decimal("0.00")
+            for item in items:
 
-        for item in items:
+                item.purchase = purchase
 
-            item.purchase = purchase
+                item.save()
 
-            item.save()
+                # --------------------------------------------------
+                # ADD PURCHASE QUANTITY TO STOCK
+                # --------------------------------------------------
 
-            add_stock(
+                add_stock(
+                    material=item.material,
+                    quantity=item.quantity,
+                    movement_type="PURCHASE",
+                    reference=purchase.purchase_number,
+                    remarks="Purchase Entry",
+                )
 
-                material=item.material,
+            # --------------------------------------------------
+            # RECALCULATE TOTALS
+            # --------------------------------------------------
 
-                quantity=item.quantity,
-
-                movement_type="PURCHASE",
-
-                reference=purchase.purchase_number,
-
-                remarks="Purchase Entry",
-
-            )
-
-            subtotal += item.line_total
-            purchase.subtotal = subtotal
-
-            purchase.grand_total = (
-                subtotal
-                - purchase.discount
-                + purchase.other_charges
-            )
-
-            purchase.save()
+            purchase.calculate_totals()
 
             messages.success(
                 request,
@@ -125,6 +128,7 @@ def purchase_create(request):
 # ==========================================================
 
 @login_required
+@transaction.atomic
 def purchase_update(request, pk):
 
     purchase = get_object_or_404(
@@ -146,35 +150,23 @@ def purchase_update(request, pk):
 
         if form.is_valid() and formset.is_valid():
 
+            # ==================================================
+            # SAVE CURRENT FORMSET STATE
+            # ==================================================
+
             purchase = form.save()
 
-            items = formset.save(commit=False)
+            # ==================================================
+            # SAVE ITEMS
+            # ==================================================
 
-            for obj in formset.deleted_objects:
+            items = formset.save()
 
-                obj.delete()
+            # ==================================================
+            # RECALCULATE PURCHASE TOTALS
+            # ==================================================
 
-            subtotal = Decimal("0.00")
-
-            for item in items:
-
-                item.purchase = purchase
-
-                item.save()
-
-            for item in purchase.items.all():
-
-                subtotal += item.line_total
-
-            purchase.subtotal = subtotal
-
-            purchase.grand_total = (
-                subtotal
-                - purchase.discount
-                + purchase.other_charges
-            )
-
-            purchase.save()
+            purchase.calculate_totals()
 
             messages.success(
                 request,
@@ -207,12 +199,14 @@ def purchase_update(request, pk):
         },
     )
 
-
 # ==========================================================
 # PURCHASE DETAIL
 # ==========================================================
 
-class PurchaseDetailView(LoginRequiredMixin, DetailView):
+class PurchaseDetailView(
+    LoginRequiredMixin,
+    DetailView,
+):
 
     model = Purchase
 
@@ -225,21 +219,50 @@ class PurchaseDetailView(LoginRequiredMixin, DetailView):
 # PURCHASE DELETE
 # ==========================================================
 
-class PurchaseDeleteView(LoginRequiredMixin, DeleteView):
+class PurchaseDeleteView(
+    LoginRequiredMixin,
+    DeleteView,
+):
 
     model = Purchase
 
-    template_name = "inventory/purchases/purchase_confirm_delete.html"
+    template_name = (
+        "inventory/purchases/purchase_confirm_delete.html"
+    )
 
     success_url = reverse_lazy(
         "purchase:purchase-list"
     )
 
-    def delete(self, request, *args, **kwargs):
+    @transaction.atomic
+    def delete(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+
+        purchase = self.get_object()
+
+        # --------------------------------------------------
+        # REMOVE PURCHASE QUANTITY FROM STOCK
+        # --------------------------------------------------
+
+        for item in purchase.items.select_related(
+            "material"
+        ):
+
+            remove_stock(
+                material=item.material,
+                quantity=item.quantity,
+                movement_type="RETURN",
+                reference=purchase.purchase_number,
+                remarks="Purchase Deleted - Stock Reversed",
+            )
 
         messages.success(
             request,
-            "Purchase deleted successfully.",
+            "Purchase deleted and stock reversed successfully.",
         )
 
         return super().delete(

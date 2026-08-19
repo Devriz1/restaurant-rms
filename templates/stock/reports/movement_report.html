@@ -1,0 +1,552 @@
+{% extends "base.html" %}
+
+{% block title %}
+Stock Movement Report
+{% endblock %}
+
+{% block page_title %}
+Stock Movement Report
+{% endblock %}
+
+{% block breadcrumb %}
+Stock / Reports / Movement
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- ========================================== -->
+    <!-- HEADER -->
+    <!-- ========================================== -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h3 class="mb-1">
+                Stock Movement Report
+            </h3>
+
+            <p class="text-muted mb-0">
+                Track all stock increases and decreases.
+            </p>
+
+        </div>
+
+        <a
+            href="{% url 'stock:dashboard' %}"
+            class="btn btn-outline-secondary">
+
+            <i class="bi bi-arrow-left me-1"></i>
+
+            Stock Dashboard
+
+        </a>
+
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- SUMMARY -->
+    <!-- ========================================== -->
+
+    <div class="row g-3 mb-4">
+
+        <div class="col-lg-6">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body">
+
+                    <small class="text-muted">
+                        Total Stock In
+                    </small>
+
+                    <h2 class="text-success mb-0">
+
+                        {{ total_in }}
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-lg-6">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body">
+
+                    <small class="text-muted">
+                        Total Stock Out
+                    </small>
+
+                    <h2 class="text-danger mb-0">
+
+                        {{ total_out }}
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- FILTERS -->
+    <!-- ========================================== -->
+
+    <div class="card shadow-sm border-0 mb-4">
+
+        <div class="card-body">
+
+            <form method="get">
+
+                <div class="row g-2">
+
+                    <div class="col-lg-2">
+
+                        <label class="form-label">
+                            From
+                        </label>
+
+                        <input
+                            type="date"
+                            name="date_from"
+                            value="{{ request.GET.date_from }}"
+                            class="form-control">
+
+                    </div>
+
+
+                    <div class="col-lg-2">
+
+                        <label class="form-label">
+                            To
+                        </label>
+
+                        <input
+                            type="date"
+                            name="date_to"
+                            value="{{ request.GET.date_to }}"
+                            class="form-control">
+
+                    </div>
+
+
+                    <div class="col-lg-3">
+
+                        <label class="form-label">
+                            Material
+                        </label>
+
+                        <select
+                            name="material"
+                            class="form-select">
+
+                            <option value="">
+                                All Materials
+                            </option>
+
+                            {% for material in materials %}
+
+                            <option
+                                value="{{ material.id }}"
+                                {% if request.GET.material == material.id|stringformat:"s" %}
+                                    selected
+                                {% endif %}>
+
+                                {{ material.name }}
+
+                            </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="col-lg-3">
+
+                        <label class="form-label">
+                            Movement
+                        </label>
+
+                        <select
+                            name="movement_type"
+                            class="form-select">
+
+                            <option value="">
+                                All Movements
+                            </option>
+
+                            {% for value, label in movement_types %}
+
+                            <option
+                                value="{{ value }}"
+                                {% if request.GET.movement_type == value %}
+                                    selected
+                                {% endif %}>
+
+                                {{ label }}
+
+                            </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="col-lg-2">
+
+                        <label class="form-label">
+                            Search
+                        </label>
+
+                        <input
+                            type="text"
+                            name="q"
+                            value="{{ request.GET.q }}"
+                            class="form-control"
+                            placeholder="Material / Ref">
+
+                    </div>
+
+                </div>
+
+
+                <div class="mt-3 d-flex gap-2">
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary">
+
+                        <i class="bi bi-search me-1"></i>
+
+                        Apply Filters
+
+                    </button>
+
+                    <a
+                        href="{% url 'stock:movement-report' %}"
+                        class="btn btn-light">
+
+                        Reset
+
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- TABLE -->
+    <!-- ========================================== -->
+
+    <div class="card shadow-sm border-0">
+
+        <div class="card-header">
+
+            <h5 class="mb-0">
+                Stock Movements
+            </h5>
+
+        </div>
+
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle mb-0">
+
+                <thead class="table-light">
+
+                    <tr>
+
+                        <th>#</th>
+
+                        <th>Date</th>
+
+                        <th>Material</th>
+
+                        <th>Movement</th>
+
+                        <th>Reference</th>
+
+                        <th class="text-end">
+                            Stock In
+                        </th>
+
+                        <th class="text-end">
+                            Stock Out
+                        </th>
+
+                        <th class="text-end">
+                            Balance
+                        </th>
+
+                        <th>
+                            Remarks
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for entry in entries %}
+
+                    <tr>
+
+                        <td>
+                            {{ forloop.counter }}
+                        </td>
+
+
+                        <td>
+
+                            {{ entry.created_at|date:"d-m-Y" }}
+
+                            <br>
+
+                            <small class="text-muted">
+
+                                {{ entry.created_at|time:"h:i A" }}
+
+                            </small>
+
+                        </td>
+
+
+                        <td>
+
+                            <strong>
+                                {{ entry.material.name }}
+                            </strong>
+
+                            <br>
+
+                            <small class="text-muted">
+                                {{ entry.material.code }}
+                            </small>
+
+                        </td>
+
+
+                        <td>
+
+                            {% if entry.movement_type == "PURCHASE" %}
+
+                                <span class="badge bg-success">
+                                    Purchase
+                                </span>
+
+                            {% elif entry.movement_type == "SALE" %}
+
+                                <span class="badge bg-danger">
+                                    Sale
+                                </span>
+
+                            {% elif entry.movement_type == "ADJUSTMENT" %}
+
+                                <span class="badge bg-warning text-dark">
+                                    Adjustment
+                                </span>
+
+                            {% elif entry.movement_type == "WASTE" %}
+
+                                <span class="badge bg-danger">
+                                    Waste
+                                </span>
+
+                            {% elif entry.movement_type == "OPENING" %}
+
+                                <span class="badge bg-primary">
+                                    Opening
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-secondary">
+                                    {{ entry.get_movement_type_display }}
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td>
+
+                            {{ entry.reference_number|default:"-" }}
+
+                        </td>
+
+
+                        <td class="text-end text-success fw-bold">
+
+                            {% if entry.quantity_in > 0 %}
+
+                                +{{ entry.quantity_in }}
+
+                            {% else %}
+
+                                -
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td class="text-end text-danger fw-bold">
+
+                            {% if entry.quantity_out > 0 %}
+
+                                -{{ entry.quantity_out }}
+
+                            {% else %}
+
+                                -
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td class="text-end fw-bold">
+
+                            {{ entry.balance }}
+
+                        </td>
+
+
+                        <td>
+
+                            <small>
+
+                                {{ entry.remarks|default:"-" }}
+
+                            </small>
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td
+                            colspan="9"
+                            class="text-center py-5">
+
+                            <i class="bi bi-journal-x fs-1 text-muted"></i>
+
+                            <h5 class="mt-3">
+                                No Stock Movements Found
+                            </h5>
+
+                            <p class="text-muted mb-0">
+                                Try changing your filters.
+                            </p>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- ====================================== -->
+        <!-- PAGINATION -->
+        <!-- ====================================== -->
+
+        {% if is_paginated %}
+
+        <div class="card-footer">
+
+            <nav>
+
+                <ul class="pagination justify-content-center mb-0">
+
+                    {% if page_obj.has_previous %}
+
+                    <li class="page-item">
+
+                        <a
+                            class="page-link"
+                            href="?page={{ page_obj.previous_page_number }}&date_from={{ request.GET.date_from }}&date_to={{ request.GET.date_to }}&material={{ request.GET.material }}&movement_type={{ request.GET.movement_type }}&q={{ request.GET.q }}">
+
+                            Previous
+
+                        </a>
+
+                    </li>
+
+                    {% endif %}
+
+
+                    <li class="page-item active">
+
+                        <span class="page-link">
+
+                            {{ page_obj.number }}
+
+                        </span>
+
+                    </li>
+
+
+                    {% if page_obj.has_next %}
+
+                    <li class="page-item">
+
+                        <a
+                            class="page-link"
+                            href="?page={{ page_obj.next_page_number }}&date_from={{ request.GET.date_from }}&date_to={{ request.GET.date_to }}&material={{ request.GET.material }}&movement_type={{ request.GET.movement_type }}&q={{ request.GET.q }}">
+
+                            Next
+
+                        </a>
+
+                    </li>
+
+                    {% endif %}
+
+                </ul>
+
+            </nav>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

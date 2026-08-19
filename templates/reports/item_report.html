@@ -1,192 +1,158 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}
-Item Report
-{% endblock %}
+{% block title %}Item Report | Restaurant RMS{% endblock %}
+{% block breadcrumb %}Reports{% endblock %}
+{% block page_title %}Item Report{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/reports.css' %}">
 <link rel="stylesheet" href="{% static 'css/report_customizer.css' %}">
+<style>
+    .sortable-header {
+        cursor: pointer;
+        user-select: none;
+        white-space: nowrap;
+    }
+    .sortable-header:hover {
+        background-color: rgba(0, 0, 0, 0.03);
+    }
+</style>
 {% endblock %}
 
 {% block content %}
+<div class="container-fluid py-3 reports-page">
 
-<div class="reports-page">
-
-    <!-- Header -->
-
-    <div class="reports-header">
-
+    <!-- Page Header -->
+    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-4">
         <div>
-
-            <h1>
-                Item Report
-            </h1>
-
-            <p>
-                Menu item sales analysis
-            </p>
-
+            <h2 class="fw-bold mb-1 d-flex align-items-center gap-2">
+                <i class="bi bi-cup-hot-fill text-primary"></i>
+                Item Performance Report
+            </h2>
+            <p class="text-muted mb-0">Menu item sales analysis, quantities and revenue.</p>
         </div>
-
+        <div>
+            <button type="button" id="openCustomizer" class="btn btn-outline-primary shadow-sm">
+                <i class="bi bi-layout-three-columns me-1"></i> Customize Columns
+            </button>
+        </div>
     </div>
 
-
-    <!-- Filters -->
-
-    {% include "components/report_filters.html" %}
-
-
-    <!-- Summary -->
-
-    <div class="summary-cards">
-
-        <div class="summary-card">
-
-            <small>Total Quantity Sold</small>
-
-            <h2>{{ total_quantity }}</h2>
-
+    <!-- Filter Panel -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body p-3">
+            {% include "components/report_filters.html" %}
         </div>
-
-        <div class="summary-card">
-
-            <small>Total Revenue</small>
-
-            <h2>₹ {{ total_sales }}</h2>
-
-        </div>
-
-        <div class="summary-card">
-
-            <small>Total Orders</small>
-
-            <h2>{{ total_orders }}</h2>
-
-        </div>
-
     </div>
 
-
-    <!-- Customize -->
-
-    <div class="report-actions">
-
-        <button
-            id="openCustomizer"
-            class="btn btn-outline-primary">
-
-            <i class="bi bi-layout-three-columns"></i>
-
-            Customize Report
-
-        </button>
-
+    <!-- Summary Cards -->
+    <div class="mb-4">
+        {% include "components/report_summary_cards.html" %}
     </div>
 
+    <!-- Column Customizer -->
     {% include "components/report_customizer.html" %}
 
+    <!-- Report Data Card -->
+    <div class="card border-0 shadow-sm mb-4">
+        <!-- Toolbar -->
+        <div class="card-header bg-white py-3 border-0 d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3">
+            <div class="w-100" style="max-width: 360px;">
+                <div class="input-group input-group-sm">
+                    <span class="input-group-text bg-light border-end-0 text-muted">
+                        <i class="bi bi-search"></i>
+                    </span>
+                    <input
+                        type="text"
+                        id="reportSearch"
+                        class="form-control bg-light border-start-0 ps-0"
+                        placeholder="Search menu item..."
+                        aria-label="Search menu items">
+                </div>
+            </div>
 
-    <!-- Table -->
+            <div class="text-muted fs-7 fw-medium">
+                <span id="recordCount" class="badge bg-light text-dark border me-1">{{ items|length }}</span>
+                Record{{ items|length|pluralize }} Found
+            </div>
+        </div>
 
-    <div class="report-table">
-
-        <table id="itemReportTable">
-
-            <thead>
-
-            <tr>
-
-                <th data-column="item">Item</th>
-
-                <th data-column="category">Category</th>
-
-                <th data-column="qty">Quantity</th>
-
-                <th data-column="orders">Orders</th>
-
-                <th data-column="sales">Revenue</th>
-
-            </tr>
-
-            </thead>
-
-            <tbody>
-
-            {% for item in items %}
-
-            <tr>
-
-                <td data-column="item">
-
-                    {{ item.menu_item__name }}
-
-                </td>
-
-                <td data-column="category">
-
-                    {{ item.menu_item__category__name }}
-
-                </td>
-
-                <td data-column="qty">
-
-                    {{ item.total_quantity }}
-
-                </td>
-
-                <td data-column="orders">
-
-                    {{ item.total_orders }}
-
-                </td>
-
-                <td data-column="sales">
-
-                    ₹ {{ item.total_sales }}
-
-                </td>
-
-            </tr>
-
-            {% empty %}
-
-            <tr>
-
-                <td colspan="5" class="text-center py-5">
-
-                    No item sales found.
-
-                </td>
-
-            </tr>
-
-            {% endfor %}
-
-            </tbody>
-
-        </table>
-
+        <!-- Table Container -->
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0 report-table" id="itemReportTable">
+                <thead class="table-light text-muted text-uppercase fs-8 border-bottom">
+                    <tr>
+                        <th class="sortable-header" data-column="item" data-sort="item">
+                            Item <i class="bi bi-arrow-down-up ms-1 text-muted fs-8"></i>
+                        </th>
+                        <th class="sortable-header" data-column="category" data-sort="category">
+                            Category <i class="bi bi-arrow-down-up ms-1 text-muted fs-8"></i>
+                        </th>
+                        <th class="sortable-header text-end" data-column="qty" data-sort="qty">
+                            Quantity <i class="bi bi-arrow-down-up ms-1 text-muted fs-8"></i>
+                        </th>
+                        <th class="sortable-header text-center" data-column="orders" data-sort="orders">
+                            Orders <i class="bi bi-arrow-down-up ms-1 text-muted fs-8"></i>
+                        </th>
+                        <th class="sortable-header text-end" data-column="sales" data-sort="sales">
+                            Revenue <i class="bi bi-arrow-down-up ms-1 text-muted fs-8"></i>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="fs-7">
+                {% for item in items %}
+                    <tr>
+                        <td data-column="item" class="fw-bold text-dark">
+                            {{ item.menu_item__name }}
+                        </td>
+                        <td data-column="category" class="text-secondary">
+                            {{ item.menu_item__category__name }}
+                        </td>
+                        <td data-column="qty" class="text-end">
+                            {{ item.total_quantity }}
+                        </td>
+                        <td data-column="orders" class="text-center">
+                            {{ item.total_orders }}
+                        </td>
+                        <td data-column="sales" class="text-end fw-bold text-dark font-monospace">
+                            ₹{{ item.total_sales }}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center py-5">
+                            <div class="text-muted py-3">
+                                <i class="bi bi-cart-x display-4 d-block mb-3 opacity-50"></i>
+                                <h5 class="fw-bold text-dark mb-1">No Item Sales Found</h5>
+                                <p class="fs-7 mb-0">There are no items matching your search or date filter selection.</p>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 
-
-    <!-- Export -->
-
-    {% include "components/report_export_buttons.html" %}
+    <!-- Export Action Buttons -->
+    <div class="d-flex justify-content-end mb-4">
+        {% include "components/report_export_buttons.html" %}
+    </div>
 
 </div>
-
 {% endblock %}
 
 {% block extra_js %}
-
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
-
 <script src="{% static 'js/report_customizer.js' %}"></script>
-
 <script src="{% static 'js/report_sort.js' %}"></script>
-
 <script src="{% static 'js/report_search.js' %}"></script>
-
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        ReportCustomizer.init('itemReportTable');
+        ReportSort.init('itemReportTable');
+        ReportSearch.init();
+    });
+</script>
 {% endblock %}

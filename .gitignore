@@ -33,3 +33,6 @@ Thumbs.db
 # Coverage
 htmlcov/
 .coverage
+
+# Local HTTPS certificates
+certs/

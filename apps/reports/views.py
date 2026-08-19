@@ -1,11 +1,14 @@
 from datetime import date
 
+from decimal import Decimal
+
 from django.contrib.auth.decorators import login_required
-from django.db.models import Avg, Count, Sum
+from django.db.models import Avg, Count, Prefetch, Sum
 from django.shortcuts import render
 from apps.billing.models import DailyClosing
 from apps.billing.models import Bill, Payment
-from apps.orders.models import KitchenOrderTicket, OrderItem
+from apps.orders.models import KitchenOrderTicket, OrderItem, TableSession, GuestOrder
+from apps.tables.models import RestaurantTable
 from apps.accounts.decorators import permission_required
 from .filters import apply_report_filters
 
@@ -14,9 +17,37 @@ from .filters import apply_report_filters
 @permission_required("reports.view")
 def dashboard(request):
 
+    today = date.today()
+
+    today_bills = Bill.objects.filter(
+        created_at__date=today,
+        status="paid",
+    )
+
+    today_sales = today_bills.aggregate(
+        total=Sum("grand_total")
+    )["total"] or 0
+
+    today_transactions = Payment.objects.filter(
+        paid_at__date=today,
+    ).count()
+
+    active_staff = KitchenOrderTicket.objects.filter(
+        created_at__date=today,
+        created_by__isnull=False,
+    ).values(
+        "created_by"
+    ).distinct().count()
+
     return render(
         request,
         "reports/dashboard.html",
+        {
+            "today_sales": today_sales,
+            "today_bills": today_bills.count(),
+            "today_transactions": today_transactions,
+            "active_staff": active_staff,
+        },
     )
 
 
@@ -427,7 +458,7 @@ def waiter_report(request):
 
             total_kots=Count("id"),
 
-            total_items=Count("items"),
+            total_items=Sum("items__quantity"),
 
         )
         .order_by("-total_kots")
@@ -568,11 +599,32 @@ def daily_closing_report(request):
     )["total"] or 0
 
     # ==========================================
-    # FUTURE DAILY CLOSING
+    # DAILY CLOSING MODEL INTEGRATION
     # ==========================================
 
-    opening_balance = 0
-    closing_balance = cash
+    today = date.today()
+
+    daily_closing = DailyClosing.objects.filter(
+        date=today
+    ).first()
+
+    if daily_closing:
+
+        opening_balance = daily_closing.opening_balance
+
+        closing_balance = daily_closing.closing_balance
+
+    else:
+
+        previous_closing = (
+            DailyClosing.objects
+            .order_by("-date")
+            .first()
+        )
+
+        opening_balance = previous_closing.closing_balance if previous_closing else 0
+
+        closing_balance = opening_balance + cash + upi + card
 
     context = {
 
@@ -662,3 +714,135 @@ def daily_closing_report(request):
         "reports/daily_closing.html",
         context,
     )
+
+
+@login_required
+def table_report(request):
+
+    tables = (
+        RestaurantTable.objects
+        .filter(is_active=True)
+        .select_related("area")
+        .prefetch_related(
+            Prefetch(
+                "sessions",
+                queryset=TableSession.objects.filter(
+                    status="open"
+                ).prefetch_related(
+                    Prefetch(
+                        "guest_orders",
+                        queryset=GuestOrder.objects.prefetch_related(
+                            "items__menu_item"
+                        ),
+                    )
+                ),
+            )
+        )
+        .order_by("area__name", "table_number")
+    )
+
+    report_tables = []
+
+    for table in tables:
+
+        total_guests = 0
+
+        total_revenue = Decimal("0.00")
+
+        total_items = 0
+
+        for session in table.sessions.all():
+
+            for guest in session.guest_orders.all():
+
+                total_guests += 1
+
+                for item in guest.items.all():
+
+                    total_revenue += item.line_total
+
+                    total_items += item.quantity
+
+        report_tables.append({
+
+            "table": table,
+
+            "total_guests": total_guests,
+
+            "total_revenue": total_revenue,
+
+            "total_items": total_items,
+
+        })
+
+    report_tables.sort(
+        key=lambda x: x["total_revenue"],
+        reverse=True,
+    )
+
+    context = {
+
+        "tables": report_tables,
+
+        "reset_url": "reports:tables",
+
+        "search_placeholder": "Search table...",
+
+        "columns": [
+
+            ("table", "Table"),
+
+            ("area", "Area"),
+
+            ("guests", "Guests"),
+
+            ("items", "Items"),
+
+            ("revenue", "Revenue"),
+
+        ],
+
+        "summary_cards": [
+
+            {
+
+                "title": "Active Tables",
+
+                "value": len(report_tables),
+
+            },
+
+            {
+
+                "title": "Total Guests",
+
+                "value": sum(t["total_guests"] for t in report_tables),
+
+            },
+
+            {
+
+                "title": "Total Items",
+
+                "value": sum(t["total_items"] for t in report_tables),
+
+            },
+
+            {
+
+                "title": "Total Revenue",
+
+                "value": f"₹ {sum(t['total_revenue'] for t in report_tables)}",
+
+            },
+
+        ],
+
+    }
+
+    return render(
+        request,
+        "reports/table_report.html",
+        context,
+    )
+

@@ -5,6 +5,35 @@
 {% block page_title %}{{ title }}{% endblock %}
 {% block breadcrumb %}Purchase{% endblock %}
 
+{% block extra_css %}
+<style>
+    /* Fix for clipped numbers in Qty / Unit Price / GST columns */
+    #purchase-items-table input[type="number"],
+    #purchase-items-table input[type="text"] {
+        min-width: 100%;
+        box-sizing: border-box;
+        padding-left: 10px;
+        padding-right: 8px;
+    }
+
+    #purchase-items-table td {
+        white-space: nowrap;
+    }
+
+    /* Hide the native spinner arrows entirely so no space is reserved for them
+       and the full number is always visible */
+    #purchase-items-table input[type="number"]::-webkit-outer-spin-button,
+    #purchase-items-table input[type="number"]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    #purchase-items-table input[type="number"] {
+        -moz-appearance: textfield;
+        appearance: textfield;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="container-fluid pb-4">
     <form method="post" id="purchaseForm">
@@ -74,9 +103,9 @@
                                 <thead class="table-light">
                                     <tr class="text-uppercase small font-monospace text-secondary">
                                         <th style="min-width: 220px;">Material / Product</th>
-                                        <th style="width: 110px;">Qty</th>
-                                        <th style="width: 140px;">Unit Price</th>
-                                        <th style="width: 110px;">GST %</th>
+                                        <th style="width: 130px;">Qty</th>
+                                        <th style="width: 160px;">Unit Price</th>
+                                        <th style="width: 130px;">GST %</th>
                                         <th style="width: 150px;" class="text-end">Line Total</th>
                                         <th style="width: 60px;" class="text-center">Action</th>
                                     </tr>

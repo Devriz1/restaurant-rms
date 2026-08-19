@@ -1,0 +1,683 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ title }}
+{% endblock %}
+
+{% block page_title %}
+{{ title }}
+{% endblock %}
+
+{% block breadcrumb %}
+Recipes / {{ title }}
+{% endblock %}
+
+{% block content %}
+
+<!-- ==========================================================
+     HEADER
+========================================================== -->
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+
+        <h3 class="mb-1">
+            {{ title }}
+        </h3>
+
+        <p class="text-muted mb-0">
+            Create and manage the ingredients used to prepare a menu item.
+        </p>
+
+    </div>
+
+    <a
+        href="{% url 'recipes:recipe-list' %}"
+        class="btn btn-light">
+
+        <i class="bi bi-arrow-left me-1"></i>
+
+        Back to Recipes
+
+    </a>
+
+</div>
+
+
+<!-- ==========================================================
+     FORM
+========================================================== -->
+
+<form
+    method="post"
+    id="recipeForm">
+
+    {% csrf_token %}
+
+
+    <!-- ======================================================
+         RECIPE DETAILS
+    ======================================================= -->
+
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-header">
+
+            <h5 class="mb-0">
+
+                <i class="bi bi-journal-text me-2"></i>
+
+                Recipe Details
+
+            </h5>
+
+        </div>
+
+
+        <div class="card-body">
+
+            <div class="row g-3">
+
+
+                <!-- MENU ITEM -->
+
+                <div class="col-lg-6">
+
+                    <label class="form-label">
+
+                        Menu Item
+
+                        <span class="text-danger">
+                            *
+                        </span>
+
+                    </label>
+
+                    {{ form.menu_item }}
+
+                    {% if form.menu_item.errors %}
+
+                        <div class="text-danger small mt-1">
+
+                            {{ form.menu_item.errors }}
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- STATUS -->
+
+                <div class="col-lg-6">
+
+                    <label class="form-label d-block">
+
+                        Status
+
+                    </label>
+
+                    <div class="form-check form-switch mt-2">
+
+                        {{ form.is_active }}
+
+                        <label
+                            class="form-check-label">
+
+                            Recipe Active
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+
+                <!-- INSTRUCTIONS -->
+
+                <div class="col-lg-12">
+
+                    <label class="form-label">
+
+                        Preparation Instructions
+
+                    </label>
+
+                    {{ form.instructions }}
+
+                    {% if form.instructions.errors %}
+
+                        <div class="text-danger small mt-1">
+
+                            {{ form.instructions.errors }}
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- NOTES -->
+
+                <div class="col-lg-12">
+
+                    <label class="form-label">
+
+                        Preparation Notes
+
+                    </label>
+
+                    {{ form.preparation_notes }}
+
+                    {% if form.preparation_notes.errors %}
+
+                        <div class="text-danger small mt-1">
+
+                            {{ form.preparation_notes.errors }}
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ======================================================
+         INGREDIENTS
+    ======================================================= -->
+
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-header d-flex justify-content-between align-items-center">
+
+            <div>
+
+                <h5 class="mb-0">
+
+                    <i class="bi bi-box-seam me-2"></i>
+
+                    Recipe Ingredients
+
+                </h5>
+
+                <small class="text-muted">
+
+                    Add the raw materials required to prepare this item.
+
+                </small>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="btn btn-sm btn-success"
+                id="addIngredientBtn">
+
+                <i class="bi bi-plus-lg me-1"></i>
+
+                Add Ingredient
+
+            </button>
+
+        </div>
+
+
+        <div class="card-body p-0">
+
+            {{ formset.management_form }}
+
+
+            <div class="table-responsive">
+
+                <table
+                    class="table table-hover align-middle mb-0"
+                    id="ingredientTable">
+
+                    <thead class="table-light">
+
+                        <tr>
+
+                            <th style="width:35%;">
+
+                                Material
+
+                            </th>
+
+                            <th style="width:15%;">
+
+                                Quantity
+
+                            </th>
+
+                            <th style="width:12%;">
+
+                                Wastage %
+
+                            </th>
+
+                            <th style="width:28%;">
+
+                                Remarks
+
+                            </th>
+
+                            <th
+                                style="width:10%;"
+                                class="text-center">
+
+                                Action
+
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="ingredientRows">
+
+                        {% for ingredient_form in formset %}
+
+                        <tr class="ingredient-row">
+
+
+                            <!-- MATERIAL -->
+
+                            <td>
+
+                                {{ ingredient_form.id }}
+
+                                {{ ingredient_form.material }}
+
+                                {% if ingredient_form.material.errors %}
+
+                                    <div class="text-danger small">
+
+                                        {{ ingredient_form.material.errors }}
+
+                                    </div>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- QUANTITY -->
+
+                            <td>
+
+                                {{ ingredient_form.quantity }}
+
+                                {% if ingredient_form.quantity.errors %}
+
+                                    <div class="text-danger small">
+
+                                        {{ ingredient_form.quantity.errors }}
+
+                                    </div>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- WASTAGE -->
+
+                            <td>
+
+                                {{ ingredient_form.wastage_percentage }}
+
+                                {% if ingredient_form.wastage_percentage.errors %}
+
+                                    <div class="text-danger small">
+
+                                        {{ ingredient_form.wastage_percentage.errors }}
+
+                                    </div>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- REMARKS -->
+
+                            <td>
+
+                                {{ ingredient_form.remarks }}
+
+                            </td>
+
+
+                            <!-- DELETE -->
+
+                            <td class="text-center">
+
+                                {% if ingredient_form.instance.pk %}
+
+                                    <div class="d-none">
+
+                                        {{ ingredient_form.DELETE }}
+
+                                    </div>
+
+                                    <button
+                                        type="button"
+                                        class="btn btn-sm btn-outline-danger delete-existing">
+
+                                        <i class="bi bi-trash"></i>
+
+                                    </button>
+
+                                {% else %}
+
+                                    <button
+                                        type="button"
+                                        class="btn btn-sm btn-outline-danger remove-row">
+
+                                        <i class="bi bi-trash"></i>
+
+                                    </button>
+
+                                {% endif %}
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ======================================================
+         ACTIONS
+    ======================================================= -->
+
+    <div class="d-flex justify-content-between align-items-center">
+
+        <a
+            href="{% url 'recipes:recipe-list' %}"
+            class="btn btn-light">
+
+            Cancel
+
+        </a>
+
+
+        <button
+            type="submit"
+            class="btn btn-primary px-4">
+
+            <i class="bi bi-check-circle me-1"></i>
+
+            Save Recipe
+
+        </button>
+
+    </div>
+
+</form>
+
+
+
+<!-- ==========================================================
+     HIDDEN EMPTY FORM TEMPLATE
+========================================================== -->
+
+<table class="d-none">
+
+    <tbody>
+
+        <tr id="emptyIngredientRow">
+
+            <td>
+
+                {{ formset.empty_form.id }}
+
+                {{ formset.empty_form.material }}
+
+            </td>
+
+            <td>
+
+                {{ formset.empty_form.quantity }}
+
+            </td>
+
+            <td>
+
+                {{ formset.empty_form.wastage_percentage }}
+
+            </td>
+
+            <td>
+
+                {{ formset.empty_form.remarks }}
+
+            </td>
+
+            <td class="text-center">
+
+                <button
+                    type="button"
+                    class="btn btn-sm btn-outline-danger remove-row">
+
+                    <i class="bi bi-trash"></i>
+
+                </button>
+
+            </td>
+
+        </tr>
+
+    </tbody>
+
+</table>
+
+
+
+<!-- ==========================================================
+     JAVASCRIPT
+========================================================== -->
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const addButton =
+            document.getElementById(
+                "addIngredientBtn"
+            );
+
+        const rowsContainer =
+            document.getElementById(
+                "ingredientRows"
+            );
+
+        const totalForms =
+            document.getElementById(
+                "id_ingredients-TOTAL_FORMS"
+            );
+
+        const emptyRow =
+            document.getElementById(
+                "emptyIngredientRow"
+            );
+
+
+        if (
+            !addButton ||
+            !rowsContainer ||
+            !totalForms ||
+            !emptyRow
+        ) {
+
+            return;
+
+        }
+
+
+        // ==================================================
+        // ADD INGREDIENT
+        // ==================================================
+
+        addButton.addEventListener(
+            "click",
+            function () {
+
+                const formIndex =
+                    parseInt(
+                        totalForms.value
+                    );
+
+
+                let html =
+                    emptyRow.innerHTML
+                    .replace(
+                        /__prefix__/g,
+                        formIndex
+                    );
+
+
+                const newRow =
+                    document.createElement(
+                        "tr"
+                    );
+
+                newRow.className =
+                    "ingredient-row";
+
+
+                newRow.innerHTML = html;
+
+
+                rowsContainer.appendChild(
+                    newRow
+                );
+
+
+                totalForms.value =
+                    formIndex + 1;
+
+            }
+        );
+
+
+        // ==================================================
+        // REMOVE NEW ROW
+        // ==================================================
+
+        rowsContainer.addEventListener(
+            "click",
+            function (event) {
+
+                const removeButton =
+                    event.target.closest(
+                        ".remove-row"
+                    );
+
+
+                if (removeButton) {
+
+                    const row =
+                        removeButton.closest(
+                            ".ingredient-row"
+                        );
+
+
+                    if (row) {
+
+                        row.remove();
+
+                    }
+
+                }
+
+            }
+        );
+
+
+        // ==================================================
+        // DELETE EXISTING ROW
+        // ==================================================
+
+        rowsContainer.addEventListener(
+            "click",
+            function (event) {
+
+                const deleteButton =
+                    event.target.closest(
+                        ".delete-existing"
+                    );
+
+
+                if (!deleteButton) {
+
+                    return;
+
+                }
+
+
+                const row =
+                    deleteButton.closest(
+                        ".ingredient-row"
+                    );
+
+
+                if (!row) {
+
+                    return;
+
+                }
+
+
+                const deleteCheckbox =
+                    row.querySelector(
+                        'input[type="checkbox"][name$="-DELETE"]'
+                    );
+
+
+                if (deleteCheckbox) {
+
+                    deleteCheckbox.checked =
+                        true;
+
+                }
+
+
+                row.style.display =
+                    "none";
+
+            }
+
+        );
+
+    }
+);
+
+</script>
+
+{% endblock %}

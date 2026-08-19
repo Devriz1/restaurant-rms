@@ -7,82 +7,261 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/reports.css' %}">
+<style>
+    .hover-lift {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .hover-lift:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 .5rem 1.5rem rgba(0,0,0,.08) !important;
+    }
+    .icon-box {
+        width: 48px;
+        height: 48px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
-<div class="reports-page">
+<div class="container-fluid py-3">
 
-    <!-- Header -->
-    <div class="reports-header">
+    <!-- Header & Intro -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
         <div>
-            <h1><i class="bi bi-bar-chart-line-fill me-2 text-primary"></i> Analytics & Reports Dashboard</h1>
-            <p>Access sales summaries, payment breakdown, waiter statistics, menu item sales, and daily settlement.</p>
+            <h2 class="fw-bold mb-1 d-flex align-items-center gap-2">
+                <i class="bi bi-bar-chart-line-fill text-primary"></i>
+                Analytics & Reports
+            </h2>
+            <p class="text-muted mb-0">
+                Access real-time sales performance, payment channels, staff metrics, and daily settlements.
+            </p>
+        </div>
+        <div>
+            <button class="btn btn-outline-secondary btn-sm rounded-pill px-3" onclick="window.location.reload();">
+                <i class="bi bi-arrow-clockwise me-1"></i> Refresh Data
+            </button>
+        </div>
+    </div>
+
+    <!-- Quick Stats Row -->
+    <div class="row g-3 mb-4">
+        <div class="col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="icon-box bg-primary-subtle text-primary">
+                        <i class="bi bi-cash-stack fs-4"></i>
+                    </div>
+                    <div>
+                        <small class="text-muted">Today's Sales</small>
+                        <h4 class="fw-bold mb-0 text-dark">₹ {{ today_sales|default:"0" }}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="icon-box bg-success-subtle text-success">
+                        <i class="bi bi-receipt fs-4"></i>
+                    </div>
+                    <div>
+                        <small class="text-muted">Today's Bills</small>
+                        <h4 class="fw-bold mb-0 text-dark">{{ today_bills|default:"0" }}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="icon-box bg-info-subtle text-info">
+                        <i class="bi bi-credit-card-2-front-fill fs-4"></i>
+                    </div>
+                    <div>
+                        <small class="text-muted">Transactions</small>
+                        <h4 class="fw-bold mb-0 text-dark">{{ today_transactions|default:"0" }}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="icon-box bg-warning-subtle text-warning">
+                        <i class="bi bi-person-badge-fill fs-4"></i>
+                    </div>
+                    <div>
+                        <small class="text-muted">Active Staff</small>
+                        <h4 class="fw-bold mb-0 text-dark">{{ active_staff|default:"0" }}</h4>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- Quick Info Banner -->
-    <div class="report-toolbar border-0 shadow-sm">
-        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-            <div>
-                <h5 class="fw-bold text-dark mb-1">Business Intelligence</h5>
-                <p class="text-secondary mb-0">Select a report tile below to view detailed breakdown, filter date ranges, and export CSV/PDF reports.</p>
+    <div class="card border-0 shadow-sm bg-gradient mb-4 overflow-hidden" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
+        <div class="card-body p-4">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div class="max-w-700">
+                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill mb-2">Business Intelligence</span>
+                    <h5 class="fw-bold text-dark mb-1">Explore Operational Insights</h5>
+                    <p class="text-secondary mb-0 fs-7">
+                        Select a report module below to analyze trends, set custom date ranges, and export records to CSV or PDF for audit compliance.
+                    </p>
+                </div>
+                <div class="d-none d-md-block opacity-50">
+                    <i class="bi bi-graph-up-arrow display-4 text-primary"></i>
+                </div>
             </div>
-            <i class="bi bi-graph-up-arrow fs-1 text-primary"></i>
         </div>
     </div>
 
-    <!-- Report Tiles Grid -->
-    <div class="report-grid">
+    <!-- Report Modules Grid -->
+    <div class="row g-4">
 
         <!-- Sales Report -->
-        <a href="{% url 'reports:sales' %}" class="report-card">
-            <i class="bi bi-cash-stack"></i>
-            <h3>Sales Analysis</h3>
-            <p>Track daily, weekly, monthly sales totals, order counts, and revenue trends.</p>
-            <span class="btn btn-sm btn-primary rounded-pill w-100 mt-auto">Open Sales Report</span>
-        </a>
+        <div class="col-sm-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm hover-lift transition-all">
+                <div class="card-body p-4 d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div class="icon-box bg-primary-subtle text-primary">
+                            <i class="bi bi-cash-stack fs-4"></i>
+                        </div>
+                        <span class="badge bg-light text-muted fw-normal">Revenue</span>
+                    </div>
+                    <h5 class="fw-bold text-dark mb-2">Sales Analysis</h5>
+                    <p class="text-muted fs-7 mb-4">
+                        Track daily, weekly, and monthly gross sales, average bill size, order volumes, and peak hours.
+                    </p>
+                    <div class="mt-auto pt-2 border-top border-light">
+                        <a href="{% url 'reports:sales' %}" class="btn btn-primary btn-sm rounded-pill w-100 stretched-link">
+                            Open Sales Report <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Payment Method Report -->
-        <a href="{% url 'reports:payments' %}" class="report-card">
-            <i class="bi bi-credit-card-2-front-fill"></i>
-            <h3>Payment Channels</h3>
-            <p>Breakdown of Cash, UPI QR code, and Debit/Credit Card transaction totals.</p>
-            <span class="btn btn-sm btn-primary rounded-pill w-100 mt-auto">Open Payment Report</span>
-        </a>
+        <div class="col-sm-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm hover-lift transition-all">
+                <div class="card-body p-4 d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div class="icon-box bg-info-subtle text-info">
+                            <i class="bi bi-credit-card-2-front-fill fs-4"></i>
+                        </div>
+                        <span class="badge bg-light text-muted fw-normal">Finance</span>
+                    </div>
+                    <h5 class="fw-bold text-dark mb-2">Payment Channels</h5>
+                    <p class="text-muted fs-7 mb-4">
+                        Detailed breakdown across Cash, UPI QR transfers, and Card reader settlement totals.
+                    </p>
+                    <div class="mt-auto pt-2 border-top border-light">
+                        <a href="{% url 'reports:payments' %}" class="btn btn-primary btn-sm rounded-pill w-100 stretched-link">
+                            Open Payment Report <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Item Performance -->
-        <a href="{% url 'reports:items' %}" class="report-card">
-            <i class="bi bi-cup-hot-fill"></i>
-            <h3>Item Performance</h3>
-            <p>Top selling menu items, category breakdowns, and individual item revenue.</p>
-            <span class="btn btn-sm btn-primary rounded-pill w-100 mt-auto">Open Item Report</span>
-        </a>
+        <div class="col-sm-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm hover-lift transition-all">
+                <div class="card-body p-4 d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div class="icon-box bg-warning-subtle text-warning-emphasis">
+                            <i class="bi bi-cup-hot-fill fs-4"></i>
+                        </div>
+                        <span class="badge bg-light text-muted fw-normal">Menu</span>
+                    </div>
+                    <h5 class="fw-bold text-dark mb-2">Item Performance</h5>
+                    <p class="text-muted fs-7 mb-4">
+                        Discover top-selling dishes, item profitability, category share, and low-performing menu items.
+                    </p>
+                    <div class="mt-auto pt-2 border-top border-light">
+                        <a href="{% url 'reports:items' %}" class="btn btn-primary btn-sm rounded-pill w-100 stretched-link">
+                            Open Item Report <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Waiters Report -->
-        <a href="{% url 'reports:waiters' %}" class="report-card">
-            <i class="bi bi-person-badge-fill"></i>
-            <h3>Staff Performance</h3>
-            <p>Staff order counts, table turnover, and waiter sales performance metrics.</p>
-            <span class="btn btn-sm btn-primary rounded-pill w-100 mt-auto">Open Waiter Report</span>
-        </a>
+        <div class="col-sm-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm hover-lift transition-all">
+                <div class="card-body p-4 d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div class="icon-box bg-success-subtle text-success">
+                            <i class="bi bi-person-badge-fill fs-4"></i>
+                        </div>
+                        <span class="badge bg-light text-muted fw-normal">HR & Service</span>
+                    </div>
+                    <h5 class="fw-bold text-dark mb-2">Staff Performance</h5>
+                    <p class="text-muted fs-7 mb-4">
+                        Evaluate waiter order counts, average service speed, table turnarounds, and total guest sales.
+                    </p>
+                    <div class="mt-auto pt-2 border-top border-light">
+                        <a href="{% url 'reports:waiters' %}" class="btn btn-primary btn-sm rounded-pill w-100 stretched-link">
+                            Open Staff Report <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Daily Closing -->
-        <a href="{% url 'reports:daily-closing' %}" class="report-card">
-            <i class="bi bi-calendar-check-fill"></i>
-            <h3>Daily Closing</h3>
-            <p>End-of-day register closing, cash drawer audit, and day settlement breakdown.</p>
-            <span class="btn btn-sm btn-primary rounded-pill w-100 mt-auto">Open Daily Closing</span>
-        </a>
+        <div class="col-sm-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm hover-lift transition-all">
+                <div class="card-body p-4 d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div class="icon-box bg-danger-subtle text-danger">
+                            <i class="bi bi-calendar-check-fill fs-4"></i>
+                        </div>
+                        <span class="badge bg-light text-muted fw-normal">Operations</span>
+                    </div>
+                    <h5 class="fw-bold text-dark mb-2">Daily Closing & EOD</h5>
+                    <p class="text-muted fs-7 mb-4">
+                        Perform register closing, audit cash drawer variances, and generate shift reconciliation sheets.
+                    </p>
+                    <div class="mt-auto pt-2 border-top border-light">
+                        <a href="{% url 'reports:daily-closing' %}" class="btn btn-primary btn-sm rounded-pill w-100 stretched-link">
+                            Open Daily Closing <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        <!-- Disabled / Future modules -->
-        <div class="report-card disabled">
-            <i class="bi bi-box-seam-fill text-muted"></i>
-            <h3 class="text-muted">Inventory Report</h3>
-            <p class="text-muted">Stock consumption & raw materials report (Coming Soon).</p>
-            <span class="btn btn-sm btn-light rounded-pill w-100 mt-auto disabled">Coming Soon</span>
+        <!-- Table Report -->
+        <div class="col-sm-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm hover-lift transition-all">
+                <div class="card-body p-4 d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div class="icon-box bg-secondary-subtle text-secondary">
+                            <i class="bi bi-grid-3x3-gap-fill fs-4"></i>
+                        </div>
+                        <span class="badge bg-light text-muted fw-normal">Operations</span>
+                    </div>
+                    <h5 class="fw-bold text-dark mb-2">Table Performance</h5>
+                    <p class="text-muted fs-7 mb-4">
+                        Revenue generated per table, guest counts, item volumes and table utilization.
+                    </p>
+                    <div class="mt-auto pt-2 border-top border-light">
+                        <a href="{% url 'reports:tables' %}" class="btn btn-primary btn-sm rounded-pill w-100 stretched-link">
+                            Open Table Report <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </div>
-
 </div>
 {% endblock %}

@@ -1,109 +1,147 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}
-Waiter Report
-{% endblock %}
+{% block title %}Waiter Report | Restaurant RMS{% endblock %}
+{% block breadcrumb %}Reports{% endblock %}
+{% block page_title %}Waiter Report{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/reports.css' %}">
 <link rel="stylesheet" href="{% static 'css/report_customizer.css' %}">
+<style>
+    .sortable-header {
+        cursor: pointer;
+        user-select: none;
+        white-space: nowrap;
+    }
+    .sortable-header:hover {
+        background-color: rgba(0, 0, 0, 0.03);
+    }
+</style>
 {% endblock %}
 
 {% block content %}
+<div class="container-fluid py-3 reports-page">
 
-<div class="reports-page">
-
-    <div class="reports-header">
-
+    <!-- Page Header -->
+    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-4">
         <div>
-
-            <h1>Waiter Report</h1>
-
-            <p>Waiter performance summary</p>
-
+            <h2 class="fw-bold mb-1 d-flex align-items-center gap-2">
+                <i class="bi bi-person-badge-fill text-primary"></i>
+                Staff Performance Report
+            </h2>
+            <p class="text-muted mb-0">Waiter order counts, KOTs and items served.</p>
         </div>
-
+        <div>
+            <button type="button" id="openCustomizer" class="btn btn-outline-primary shadow-sm">
+                <i class="bi bi-layout-three-columns me-1"></i> Customize Columns
+            </button>
+        </div>
     </div>
 
-    {% include "components/report_filters.html" %}
-
-    {% include "components/report_summary_cards.html" %}
-
-    <div class="report-actions">
-
-        <button
-            id="openCustomizer"
-            class="btn btn-outline-primary">
-
-            <i class="bi bi-layout-three-columns"></i>
-
-            Customize Report
-
-        </button>
-
+    <!-- Filter Panel -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body p-3">
+            {% include "components/report_filters.html" %}
+        </div>
     </div>
 
+    <!-- Summary Cards -->
+    <div class="mb-4">
+        {% include "components/report_summary_cards.html" %}
+    </div>
+
+    <!-- Column Customizer -->
     {% include "components/report_customizer.html" %}
 
-    <div class="report-table">
+    <!-- Report Data Card -->
+    <div class="card border-0 shadow-sm mb-4">
+        <!-- Toolbar -->
+        <div class="card-header bg-white py-3 border-0 d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3">
+            <div class="w-100" style="max-width: 360px;">
+                <div class="input-group input-group-sm">
+                    <span class="input-group-text bg-light border-end-0 text-muted">
+                        <i class="bi bi-search"></i>
+                    </span>
+                    <input
+                        type="text"
+                        id="reportSearch"
+                        class="form-control bg-light border-start-0 ps-0"
+                        placeholder="Search waiter..."
+                        aria-label="Search waiters">
+                </div>
+            </div>
 
-    <table id="waiterReportTable">
+            <div class="text-muted fs-7 fw-medium">
+                <span id="recordCount" class="badge bg-light text-dark border me-1">{{ waiters|length }}</span>
+                Record{{ waiters|length|pluralize }} Found
+            </div>
+        </div>
 
-        <thead>
+        <!-- Table Container -->
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0 report-table" id="waiterReportTable">
+                <thead class="table-light text-muted text-uppercase fs-8 border-bottom">
+                    <tr>
+                        <th class="sortable-header" data-column="waiter" data-sort="waiter">
+                            Waiter <i class="bi bi-arrow-down-up ms-1 text-muted fs-8"></i>
+                        </th>
+                        <th class="sortable-header text-center" data-column="kots" data-sort="kots">
+                            KOTs <i class="bi bi-arrow-down-up ms-1 text-muted fs-8"></i>
+                        </th>
+                        <th class="sortable-header text-center" data-column="items" data-sort="items">
+                            Items <i class="bi bi-arrow-down-up ms-1 text-muted fs-8"></i>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="fs-7">
+                {% for waiter in waiters %}
+                    <tr>
+                        <td data-column="waiter" class="fw-bold text-dark">
+                            <i class="bi bi-person me-1 text-muted"></i>
+                            {{ waiter.created_by__username }}
+                        </td>
+                        <td data-column="kots" class="text-center">
+                            <span class="badge bg-light text-dark border">{{ waiter.total_kots }}</span>
+                        </td>
+                        <td data-column="items" class="text-center">
+                            <span class="badge bg-primary text-white">{{ waiter.total_items }}</span>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="3" class="text-center py-5">
+                            <div class="text-muted py-3">
+                                <i class="bi bi-people display-4 d-block mb-3 opacity-50"></i>
+                                <h5 class="fw-bold text-dark mb-1">No Waiter Records Found</h5>
+                                <p class="fs-7 mb-0">There are no waiters matching your search or date filter selection.</p>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-            <tr>
-
-                <th data-column="waiter">Waiter</th>
-
-                <th data-column="kots">KOT</th>
-
-                <th data-column="items">Items</th>
-
-            </tr>
-
-        </thead>
-
-        <tbody>
-
-            {% for waiter in waiters %}
-
-            <tr>
-
-                <td data-column="waiter">
-                    {{ waiter.created_by__username }}
-                </td>
-
-                <td data-column="kots">
-                    {{ waiter.total_kots }}
-                </td>
-
-                <td data-column="items">
-                    {{ waiter.total_items }}
-                </td>
-
-            </tr>
-
-            {% empty %}
-
-            <tr>
-
-                <td colspan="3" class="text-center py-5">
-                    No waiter records found.
-                </td>
-
-            </tr>
-
-            {% endfor %}
-
-        </tbody>
-
-    </table>
+    <!-- Export Action Buttons -->
+    <div class="d-flex justify-content-end mb-4">
+        {% include "components/report_export_buttons.html" %}
+    </div>
 
 </div>
+{% endblock %}
 
-    {% include "components/report_export_buttons.html" %}
-
-</div>
-
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
+<script src="{% static 'js/report_customizer.js' %}"></script>
+<script src="{% static 'js/report_sort.js' %}"></script>
+<script src="{% static 'js/report_search.js' %}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        ReportCustomizer.init('waiterReportTable');
+        ReportSort.init('waiterReportTable');
+        ReportSearch.init();
+    });
+</script>
 {% endblock %}

@@ -42,6 +42,13 @@ urlpatterns = [
 
 
     path(
+        "tables/",
+        views.table_report,
+        name="tables",
+    ),
+
+
+    path(
         "daily-closing/",
         views.daily_closing_report,
         name="daily-closing",

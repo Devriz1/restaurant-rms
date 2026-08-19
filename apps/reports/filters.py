@@ -82,6 +82,9 @@ def apply_report_filters(
             }
         )
 
+    elif report_range == "all":
+        pass
+
     # ===========================
     # Custom Dates
     # ===========================

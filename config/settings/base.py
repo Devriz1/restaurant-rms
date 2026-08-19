@@ -15,7 +15,16 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = ['*']
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.ngrok-free.dev',
+    'https://*.ngrok-free.app',
+]
+
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    "*",
+]
 # Application definition
 
 INSTALLED_APPS = [
@@ -41,16 +50,26 @@ INSTALLED_APPS = [
     'apps.backup',
     'apps.purchase',
     'apps.stock',
+    'apps.recipes',
+    "pwa",
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+
+    "django.contrib.sessions.middleware.SessionMiddleware",
+
+    "django.middleware.common.CommonMiddleware",
+
+    "django.middleware.csrf.CsrfViewMiddleware",
+
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+
+    "config.middleware.NoCacheAuthenticatedMiddleware",
+
+    "django.contrib.messages.middleware.MessageMiddleware",
+
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -145,7 +164,7 @@ PWA_APP_DISPLAY = "standalone"
 
 PWA_APP_SCOPE = "/"
 
-PWA_APP_ORIENTATION = "portrait"
+PWA_APP_ORIENTATION = "any"
 
 PWA_APP_START_URL = "/orders/floor/"
 
@@ -155,10 +174,12 @@ PWA_APP_ICONS = [
     {
         "src": "/static/icons/icon-192.png",
         "sizes": "192x192",
+        "type": "image/png",
     },
     {
         "src": "/static/icons/icon-512.png",
         "sizes": "512x512",
+        "type": "image/png",
     },
 ]
 
@@ -172,3 +193,9 @@ PWA_APP_SPLASH_SCREEN = [
 PWA_APP_DIR = "ltr"
 
 PWA_APP_LANG = "en-US"
+
+PWA_APP_SHORTCUTS = []
+
+PWA_APP_SCREENSHOTS = []
+
+PWA_SERVICE_WORKER_PATH = BASE_DIR / "static" / "sw.js"

@@ -1,293 +1,224 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}
-Daily Closing
-{% endblock %}
+{% block title %}Daily Closing | Restaurant RMS{% endblock %}
+{% block breadcrumb %}Reports{% endblock %}
+{% block page_title %}Daily Closing & EOD{% endblock %}
 
 {% block extra_css %}
-
 <link rel="stylesheet" href="{% static 'css/reports.css' %}">
 <link rel="stylesheet" href="{% static 'css/report_customizer.css' %}">
-
+<style>
+    .sortable-header {
+        cursor: pointer;
+        user-select: none;
+        white-space: nowrap;
+    }
+    .sortable-header:hover {
+        background-color: rgba(0, 0, 0, 0.03);
+    }
+    .status-badge {
+        font-size: 0.75rem;
+        padding: 0.35em 0.65em;
+        font-weight: 600;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
+<div class="container-fluid py-3 reports-page">
 
-<div class="reports-page">
-
-    <!-- ==========================================
-         HEADER
-    =========================================== -->
-
-    <div class="reports-header">
-
+    <!-- Page Header -->
+    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-4">
         <div>
-
-            <h1>Daily Closing</h1>
-
-            <p>End of day sales settlement</p>
-
+            <h2 class="fw-bold mb-1 d-flex align-items-center gap-2">
+                <i class="bi bi-calendar-check-fill text-primary"></i>
+                Daily Closing & EOD
+            </h2>
+            <p class="text-muted mb-0">Register closing, cash drawer reconciliation and shift summary.</p>
         </div>
-
+        <div>
+            <button type="button" id="openCustomizer" class="btn btn-outline-primary shadow-sm">
+                <i class="bi bi-layout-three-columns me-1"></i> Customize Columns
+            </button>
+        </div>
     </div>
 
-
-    <!-- ==========================================
-         FILTERS
-    =========================================== -->
-
-    {% include "components/report_filters.html" %}
-
-
-    <!-- ==========================================
-         SUMMARY CARDS
-    =========================================== -->
-
-    {% include "components/report_summary_cards.html" %}
-
-
-    <!-- ==========================================
-         CUSTOMIZE
-    =========================================== -->
-
-    <div class="report-actions">
-
-        <button
-            type="button"
-            id="openCustomizer"
-            class="btn btn-outline-primary">
-
-            <i class="bi bi-layout-three-columns"></i>
-
-            Customize Report
-
-        </button>
-
+    <!-- Filter Panel -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body p-3">
+            {% include "components/report_filters.html" %}
+        </div>
     </div>
 
+    <!-- Summary Cards -->
+    <div class="mb-4">
+        {% include "components/report_summary_cards.html" %}
+    </div>
+
+    <!-- Column Customizer -->
     {% include "components/report_customizer.html" %}
 
+    <!-- Report Data Card -->
+    <div class="card border-0 shadow-sm mb-4">
+        <!-- Toolbar -->
+        <div class="card-header bg-white py-3 border-0 d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3">
+            <div class="w-100" style="max-width: 360px;">
+                <div class="input-group input-group-sm">
+                    <span class="input-group-text bg-light border-end-0 text-muted">
+                        <i class="bi bi-search"></i>
+                    </span>
+                    <input
+                        type="text"
+                        id="reportSearch"
+                        class="form-control bg-light border-start-0 ps-0"
+                        placeholder="Search bill, table or guest..."
+                        aria-label="Search daily closing records">
+                </div>
+            </div>
 
-    <!-- ==========================================
-         DAILY CLOSING TABLE
-    =========================================== -->
+            <div class="text-muted fs-7 fw-medium">
+                <span id="recordCount" class="badge bg-light text-dark border me-1">{{ bills|length }}</span>
+                Record{{ bills|length|pluralize }} Found
+            </div>
+        </div>
 
-    <div class="report-table">
-
-        <table id="dailyClosingTable">
-
-            <thead>
-
-                <tr>
-
-                    <th data-column="bill">Bill No</th>
-
-                    <th data-column="date">Date</th>
-
-                    <th data-column="table">Table</th>
-
-                    <th data-column="guest">Guest</th>
-
-                    <th data-column="cashier">Cashier</th>
-
-                    <th data-column="total">Total</th>
-
-                    <th data-column="status">Status</th>
-
-                </tr>
-
-            </thead>
-
-            <tbody>
-
-            {% for bill in bills %}
-
-                <tr>
-
-                    <td data-column="bill">
-
-                        {{ bill.bill_number }}
-
-                    </td>
-
-                    <td data-column="date">
-
-                        {{ bill.created_at|date:"d M Y H:i" }}
-
-                    </td>
-
-                    <td data-column="table">
-
-                        {{ bill.session.table.display_name }}
-
-                    </td>
-
-                    <td data-column="guest">
-
-                        Guest {{ bill.guest_order.guest_number }}
-
-                    </td>
-
-                    <td data-column="cashier">
-
-                        {{ bill.created_by }}
-
-                    </td>
-
-                    <td data-column="total">
-
-                        ₹ {{ bill.grand_total }}
-
-                    </td>
-
-                    <td data-column="status">
-
-                        <span class="status-badge status-paid">
-
-                            {{ bill.status|title }}
-
-                        </span>
-
-                    </td>
-
-                </tr>
-
-            {% empty %}
-
-                <tr>
-
-                    <td colspan="7" class="text-center py-5">
-
-                        No closing records found.
-
-                    </td>
-
-                </tr>
-
-            {% endfor %}
-
-            </tbody>
-
-        </table>
-
+        <!-- Table Container -->
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0 report-table" id="dailyClosingTable">
+                <thead class="table-light text-muted text-uppercase fs-8 border-bottom">
+                    <tr>
+                        <th class="sortable-header" data-column="bill" data-sort="bill">
+                            Bill No <i class="bi bi-arrow-down-up ms-1 text-muted fs-8"></i>
+                        </th>
+                        <th class="sortable-header" data-column="date" data-sort="date">
+                            Date & Time <i class="bi bi-arrow-down-up ms-1 text-muted fs-8"></i>
+                        </th>
+                        <th class="sortable-header" data-column="table" data-sort="table">
+                            Table <i class="bi bi-arrow-down-up ms-1 text-muted fs-8"></i>
+                        </th>
+                        <th class="sortable-header" data-column="guest" data-sort="guest">
+                            Guest <i class="bi bi-arrow-down-up ms-1 text-muted fs-8"></i>
+                        </th>
+                        <th class="sortable-header" data-column="cashier" data-sort="cashier">
+                            Cashier <i class="bi bi-arrow-down-up ms-1 text-muted fs-8"></i>
+                        </th>
+                        <th class="sortable-header text-end" data-column="total" data-sort="total">
+                            Total <i class="bi bi-arrow-down-up ms-1 text-muted fs-8"></i>
+                        </th>
+                        <th class="sortable-header text-center" data-column="status" data-sort="status">
+                            Status <i class="bi bi-arrow-down-up ms-1 text-muted fs-8"></i>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="fs-7">
+                {% for bill in bills %}
+                    <tr>
+                        <td data-column="bill" class="fw-bold text-dark font-monospace">
+                            #{{ bill.bill_number }}
+                        </td>
+                        <td data-column="date">
+                            <div class="d-flex flex-column">
+                                <span class="fw-medium text-dark">{{ bill.created_at|date:"d M Y" }}</span>
+                                <small class="text-muted fs-8">{{ bill.created_at|date:"h:i A" }}</small>
+                            </div>
+                        </td>
+                        <td data-column="table">
+                            <span class="badge bg-light text-dark border fw-medium">
+                                {{ bill.session.table.display_name }}
+                            </span>
+                        </td>
+                        <td data-column="guest" class="text-secondary">
+                            Guest #{{ bill.guest_order.guest_number|default:"1" }}
+                        </td>
+                        <td data-column="cashier" class="text-secondary">
+                            <i class="bi bi-person me-1"></i>{{ bill.created_by|default:"System" }}
+                        </td>
+                        <td data-column="total" class="text-end fw-bold text-dark font-monospace">
+                            ₹{{ bill.grand_total }}
+                        </td>
+                        <td data-column="status" class="text-center">
+                            {% if bill.status == "paid" %}
+                                <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill status-badge">
+                                    <i class="bi bi-check-circle-fill me-1"></i>Paid
+                                </span>
+                            {% elif bill.status == "unpaid" %}
+                                <span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill status-badge">
+                                    <i class="bi bi-x-circle-fill me-1"></i>Unpaid
+                                </span>
+                            {% else %}
+                                <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle rounded-pill status-badge">
+                                    {{ bill.status|title }}
+                                </span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center py-5">
+                            <div class="text-muted py-3">
+                                <i class="bi bi-receipt display-4 d-block mb-3 opacity-50"></i>
+                                <h5 class="fw-bold text-dark mb-1">No Closing Records Found</h5>
+                                <p class="fs-7 mb-0">There are no bills matching your search or date filter selection.</p>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 
-
-<!-- ==========================================
-     PAYMENT SETTLEMENT
-========================================== -->
-
-<div class="card shadow-sm border-0 mt-4">
-
-    <div class="card-header bg-white">
-
-        <h5 class="mb-0">
-
-            <i class="bi bi-cash-stack text-success"></i>
-
-            Payment Settlement
-
-        </h5>
-
+    <!-- Payment Settlement -->
+    <div class="card shadow-sm border-0 mt-4">
+        <div class="card-header bg-white">
+            <h5 class="mb-0">
+                <i class="bi bi-cash-stack text-success me-2"></i>
+                Payment Settlement
+            </h5>
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-hover table-bordered mb-0">
+                <tbody>
+                    <tr>
+                        <td class="fw-semibold">Cash</td>
+                        <td class="text-end text-success fw-bold">₹ {{ cash }}</td>
+                    </tr>
+                    <tr>
+                        <td class="fw-semibold">UPI</td>
+                        <td class="text-end text-success fw-bold">₹ {{ upi }}</td>
+                    </tr>
+                    <tr>
+                        <td class="fw-semibold">Card</td>
+                        <td class="text-end text-success fw-bold">₹ {{ card }}</td>
+                    </tr>
+                    <tr class="table-light">
+                        <td class="fw-bold">Total Collection</td>
+                        <td class="text-end fw-bold text-primary">₹ {{ total_sales }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
-    <div class="card-body p-0">
-
-        <table class="table table-hover table-bordered mb-0">
-
-            <tbody>
-
-                <tr>
-
-                    <td class="fw-semibold">
-
-                        Cash
-
-                    </td>
-
-                    <td class="text-end text-success fw-bold">
-
-                        ₹ {{ cash }}
-
-                    </td>
-
-                </tr>
-
-                <tr>
-
-                    <td class="fw-semibold">
-
-                        UPI
-
-                    </td>
-
-                    <td class="text-end text-success fw-bold">
-
-                        ₹ {{ upi }}
-
-                    </td>
-
-                </tr>
-
-                <tr>
-
-                    <td class="fw-semibold">
-
-                        Card
-
-                    </td>
-
-                    <td class="text-end text-success fw-bold">
-
-                        ₹ {{ card }}
-
-                    </td>
-
-                </tr>
-
-                <tr class="table-light">
-
-                    <td class="fw-bold">
-
-                        Total Collection
-
-                    </td>
-
-                    <td class="text-end fw-bold text-primary">
-
-                        ₹ {{ total_sales }}
-
-                    </td>
-
-                </tr>
-
-            </tbody>
-
-        </table>
-
+    <!-- Export Action Buttons -->
+    <div class="d-flex justify-content-end mb-4 mt-4">
+        {% include "components/report_export_buttons.html" %}
     </div>
 
 </div>
-    <!-- ==========================================
-         EXPORT
-    =========================================== -->
-
-    {% include "components/report_export_buttons.html" %}
-
-</div>
-
 {% endblock %}
 
-
 {% block extra_js %}
-
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
-
 <script src="{% static 'js/report_customizer.js' %}"></script>
-
 <script src="{% static 'js/report_sort.js' %}"></script>
-
 <script src="{% static 'js/report_search.js' %}"></script>
-
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        ReportCustomizer.init('dailyClosingTable');
+        ReportSort.init('dailyClosingTable');
+        ReportSearch.init();
+    });
+</script>
 {% endblock %}

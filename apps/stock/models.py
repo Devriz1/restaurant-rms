@@ -78,3 +78,59 @@ class StockLedger(models.Model):
             f"{self.material.name} - "
             f"{self.movement_type}"
         )
+        
+
+class StockAdjustment(models.Model):
+
+    class AdjustmentType(models.TextChoices):
+
+        INCREASE = "INCREASE", "Increase Stock"
+
+        DECREASE = "DECREASE", "Decrease Stock"
+
+    material = models.ForeignKey(
+        Material,
+        on_delete=models.PROTECT,
+        related_name="stock_adjustments",
+    )
+
+    adjustment_type = models.CharField(
+        max_length=20,
+        choices=AdjustmentType.choices,
+    )
+
+    quantity = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+    )
+
+    reason = models.CharField(
+        max_length=200,
+    )
+
+    remarks = models.TextField(
+        blank=True,
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+    )
+
+    class Meta:
+
+        ordering = [
+            "-created_at",
+            "-id",
+        ]
+
+        verbose_name = "Stock Adjustment"
+
+        verbose_name_plural = "Stock Adjustments"
+
+    def __str__(self):
+
+        return (
+            f"{self.material.name} - "
+            f"{self.adjustment_type} - "
+            f"{self.quantity}"
+        )

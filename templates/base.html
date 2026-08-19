@@ -6,9 +6,9 @@
 
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0">
+    <!-- MOBILE & PWA -->
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 
     <title>
         {% block title %}
@@ -16,84 +16,45 @@
         {% endblock %}
     </title>
 
+    <!-- PWA THEME -->
+    <meta name="theme-color" content="#2563eb">
+    <meta name="description" content="Restaurant Management System">
+    <meta name="application-name" content="Restaurant RMS">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Restaurant RMS">
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <!-- WINDOWS / TWA -->
+    <meta name="msapplication-TileColor" content="#2563eb">
+    <meta name="msapplication-navbutton-color" content="#2563eb">
+
+    <!-- MANIFEST -->
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="{% static 'icons/apple-touch-icon.png' %}">
+
     <!-- Google Fonts -->
-
-    <link rel="preconnect"
-          href="https://fonts.googleapis.com">
-
-    <link rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossorigin>
-
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
-          rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Bootstrap -->
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-          rel="stylesheet">
-
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
-    <!-- Manifest -->
-
-    <link rel="manifest"
-          href="{% static 'manifest.json' %}">
-
-    <!-- Theme -->
-
-    <meta name="theme-color"
-          content="#2563eb">
-
-    <meta name="mobile-web-app-capable"
-          content="yes">
-
-    <meta name="apple-mobile-web-app-capable"
-          content="yes">
-
-    <meta name="apple-mobile-web-app-status-bar-style"
-          content="black-translucent">
-
-    <meta name="apple-mobile-web-app-title"
-          content="Restaurant RMS">
-
-    <link rel="apple-touch-icon"
-          href="{% static 'icons/apple-touch-icon.png' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <!-- Core CSS -->
-
-    <link rel="stylesheet"
-          href="{% static 'css/core/variables.css' %}">
-
-    <link rel="stylesheet"
-          href="{% static 'css/core/layout.css' %}">
-
-    <link rel="stylesheet"
-          href="{% static 'css/core/responsive.css' %}">
+    <link rel="stylesheet" href="{% static 'css/core/variables.css' %}">
+    <link rel="stylesheet" href="{% static 'css/core/layout.css' %}">
+    <link rel="stylesheet" href="{% static 'css/core/responsive.css' %}">
 
     <!-- Components -->
-
-    <link rel="stylesheet"
-          href="{% static 'css/components/sidebar.css' %}">
-
-    <link rel="stylesheet"
-          href="{% static 'css/components/navbar.css' %}">
-
-    <link rel="stylesheet"
-          href="{% static 'css/components/buttons.css' %}">
-
-    <link rel="stylesheet"
-          href="{% static 'css/components/forms.css' %}">
-
-    <link rel="stylesheet"
-          href="{% static 'css/components/cards.css' %}">
-
-    <link rel="stylesheet"
-          href="{% static 'css/components/tables.css' %}">
-
-    <link rel="stylesheet"
-          href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/components/sidebar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/components/navbar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/components/buttons.css' %}">
+    <link rel="stylesheet" href="{% static 'css/components/forms.css' %}">
+    <link rel="stylesheet" href="{% static 'css/components/cards.css' %}">
+    <link rel="stylesheet" href="{% static 'css/components/tables.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
     {% block extra_css %}
     {% endblock %}
@@ -105,78 +66,79 @@
 <div class="app-layout">
 
     <!-- Sidebar -->
-
     <aside class="sidebar-wrapper">
-
         {% include "includes/sidebar.html" %}
-
     </aside>
 
     <!-- Main -->
-
     <div class="main-wrapper">
 
         <!-- Navbar -->
-
         <header class="navbar-wrapper">
-
             {% include "includes/navbar.html" %}
-
         </header>
 
         <!-- Content -->
-
         <main class="content-wrapper">
-
             {% include "includes/messages.html" %}
 
             {% block content %}
             {% endblock %}
-
         </main>
 
         <!-- Footer -->
-
         <footer class="status-bar">
-
             <div class="status-indicator">
-
                 <span class="status-dot"></span>
-
-                <span>
-
-                    Restaurant RMS v2.0 • System Operational
-
+                <span id="onlineStatus" class="text-success">
+                    <i class="bi bi-wifi me-1"></i> Online
                 </span>
-
+                <span class="ms-2 text-muted">Restaurant RMS v2.0</span>
             </div>
 
             <div>
-
-                Logged in as
-
-                <strong>
-
-                    {{ request.user.username }}
-
-                </strong>
-
+                Logged in as <strong>{{ request.user.username }}</strong>
             </div>
-
         </footer>
 
     </div>
 
 </div>
 
-<!-- Bootstrap -->
+<!-- PWA INSTALL BANNER -->
+<div id="pwaInstallBanner" class="pwa-install-banner">
+    <div class="pwa-install-content">
+        <div class="pwa-install-icon">
+            <img src="{% static 'icons/icon-192.png' %}" alt="RMS">
+        </div>
+        <div class="pwa-install-text">
+            <strong>Install Restaurant RMS</strong>
+            <small>Add to home screen for quick access</small>
+        </div>
+        <button id="pwaInstallBtn" class="btn btn-primary btn-sm rounded-pill">
+            Install
+        </button>
+        <button id="pwaDismissBtn" class="btn btn-link text-muted p-0 ms-2">
+            <i class="bi bi-x-lg"></i>
+        </button>
+    </div>
+</div>
 
+<script>
+(function () {
+    window.addEventListener("pageshow", function (event) {
+        if (event.persisted) {
+            window.location.reload();
+        }
+    });
+})();
+</script>
+
+<!-- Bootstrap -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- App -->
-
 <script src="{% static 'js/app.js' %}"></script>
-
 <script src="{% static 'js/pwa.js' %}"></script>
 
 {% block extra_js %}

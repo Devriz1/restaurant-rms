@@ -26,6 +26,8 @@ def dashboard(request):
         .filter(
             status__in=[
                 "open",
+                "preparing",
+                "ready",
                 "served",
             ],
             items__isnull=False,

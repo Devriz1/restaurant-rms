@@ -1,4 +1,5 @@
 import json
+from django.urls import reverse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
@@ -191,16 +192,24 @@ def add_item(request):
         pk=data.get("menu_item_id"),
     )
 
-    order_item = OrderItem.objects.filter(
-    order=guest,
-    menu_item=menu_item,
-    kot__isnull=True,
-).first()
+    existing_item = (
+        guest.items
+        .filter(
+            menu_item=menu_item,
+            kot__isnull=True,
+        )
+        .first()
+    )
 
-    if order_item:
+    if existing_item:
 
-        order_item.quantity += 1
-        order_item.save()
+        existing_item.quantity += 1
+
+        existing_item.save()
+
+        order_items = guest.items.select_related(
+            "menu_item",
+        )
 
     else:
 
@@ -211,9 +220,9 @@ def add_item(request):
             unit_price=menu_item.price,
         )
 
-    order_items = guest.items.select_related(
-        "menu_item",
-    )
+        order_items = guest.items.select_related(
+            "menu_item",
+        )
 
     pending_total = sum(
         item.line_total
@@ -331,6 +340,9 @@ def send_to_kitchen(request, guest_id):
 
     unsent_items.update(kot=kot)
 
+    guest.status = "preparing"
+    guest.save()
+
     order_items = guest.items.select_related("menu_item")
 
     pending_total = sum(
@@ -353,6 +365,9 @@ def send_to_kitchen(request, guest_id):
         "message": f"{kot.ticket_number} sent successfully.",
         "ticket": kot.ticket_number,
         "html": html,
+        "kot_url": request.build_absolute_uri(
+            reverse("orders:kot-print", kwargs={"kot_id": kot.id})
+        ),
     })
 @login_required
 def kot_print(request, kot_id):

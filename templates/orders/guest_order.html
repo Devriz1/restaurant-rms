@@ -1,249 +1,209 @@
 {% extends "base.html" %}
-
 {% load static %}
 
-{% block title %}
-Guest Order
-{% endblock %}
+{% block title %}Guest {{ guest.guest_number }} - Table {{ table.table_number }}{% endblock %}
 
 {% block content %}
-
-<div class="container-fluid">
+<div class="container-fluid py-3">
 
     <!-- Header -->
-
-    <div class="d-flex justify-content-between align-items-center mb-4">
-
+    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-4">
         <div>
-
-            <h2 class="mb-1">
-                🍽 Table {{ table.table_number }}
+            <h2 class="mb-0 fw-bold">
+                <span class="me-2">🍽️</span>Table {{ table.table_number }}
             </h2>
-
-            <small class="text-muted">
-                Guest {{ guest.guest_number }}
+            <small class="text-muted fs-6">
+                Guest #{{ guest.guest_number }}
             </small>
-
         </div>
 
-        <div style="width:300px;">
-
-            <input
-                type="text"
-                id="menu-search"
-                class="form-control"
-                placeholder="🔍 Search menu..."
-                autocomplete="off">
-
+        <!-- Search Bar -->
+        <div class="w-100" style="max-width: 320px;">
+            <div class="input-group">
+                <span class="input-group-text bg-white border-end-0">
+                    <i class="bi bi-search text-muted"></i>
+                </span>
+                <input
+                    type="text"
+                    id="menu-search"
+                    class="form-control border-start-0 ps-0"
+                    placeholder="Search menu items..."
+                    autocomplete="off"
+                    aria-label="Search menu">
+            </div>
         </div>
-
     </div>
 
-    <div class="row">
+    <div class="row g-4">
 
-        <!-- Categories -->
-
+        <!-- Sidebar: Categories -->
         <div class="col-lg-2">
-
-            <div class="card shadow-sm">
-
-                <div class="card-header">
-                    <strong>Categories</strong>
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white py-3 border-0">
+                    <h6 class="mb-0 fw-bold text-uppercase text-muted fs-7">Categories</h6>
                 </div>
-
-                <div class="list-group list-group-flush">
-
-                    <a href="#"
-                       class="list-group-item list-group-item-action active">
-
-                        All
-
-                    </a>
+                <div class="list-group list-group-flush rounded-bottom" id="category-filter">
+                    <button 
+                        type="button" 
+                        class="list-group-item list-group-item-action active fw-medium" 
+                        data-category="all">
+                        All Items
+                    </button>
 
                     {% for category in categories %}
-
-                        <a href="#"
-                           class="list-group-item list-group-item-action">
-
+                        <button 
+                            type="button" 
+                            class="list-group-item list-group-item-action fw-medium" 
+                            data-category="{{ category.id }}">
                             {{ category.name }}
-
-                        </a>
-
+                        </button>
                     {% empty %}
-
-                        <div class="list-group-item">
-
+                        <div class="list-group-item text-muted text-center py-3">
                             No Categories
-
                         </div>
-
                     {% endfor %}
-
                 </div>
-
             </div>
-
         </div>
 
-        <!-- Menu -->
-
+        <!-- Main Content: Menu Items Grid -->
         <div class="col-lg-6">
-
-            <div class="card shadow-sm">
-
-                <div class="card-header">
-
-                    <strong>Menu Items</strong>
-
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0 fw-bold text-uppercase text-muted fs-7">Menu Items</h6>
+                    <span class="badge bg-light text-dark fw-normal" id="item-count">{{ menu_items|length }} items</span>
                 </div>
 
-                <div class="card-body">
-
-                    <div class="row">
-
+                <div class="card-body bg-light-subtle">
+                    <div class="row g-3" id="menu-container">
                         {% for item in menu_items %}
-
-                        <div class="col-md-6 mb-3 menu-card"
-                             data-name="{{ item.name|lower }}">
-
-                            <div class="card h-100 border-0 shadow-sm">
-
-                                <div class="card-body">
-
-                                    <h5 class="mb-1">
-
-                                        {{ item.name }}
-
-                                    </h5>
-
-                                    <small class="text-muted">
-
-                                        {{ item.category.name }}
-
-                                    </small>
-
-                                    <h4 class="mt-3 text-success">
-
-                                        ₹{{ item.price }}
-
-                                    </h4>
-
+                        <div class="col-sm-6 menu-card" 
+                             data-name="{{ item.name|lower }}" 
+                             data-category="{{ item.category.id }}">
+                            <div class="card h-100 border-0 shadow-sm hover-shadow transition">
+                                <div class="card-body d-flex flex-column justify-content-between">
+                                    <div>
+                                        <div class="d-flex justify-content-between align-items-start mb-1">
+                                            <h5 class="card-title h6 mb-0 fw-bold text-dark">
+                                                {{ item.name }}
+                                            </h5>
+                                        </div>
+                                        <small class="text-muted d-block mb-3">
+                                            {{ item.category.name }}
+                                        </small>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center mt-2">
+                                        <span class="fs-5 fw-bold text-success">
+                                            ₹{{ item.price }}
+                                        </span>
+                                        <button
+                                            class="btn btn-outline-success btn-sm px-3 rounded-pill add-item"
+                                            data-item="{{ item.id }}"
+                                            data-guest="{{ guest.id }}">
+                                            <i class="bi bi-plus-lg me-1"></i> Add
+                                        </button>
+                                    </div>
                                 </div>
-
-                                <div class="card-footer bg-white border-0">
-
-                                    <button
-                                        class="btn btn-success w-100 add-item"
-                                        data-item="{{ item.id }}"
-                                        data-guest="{{ guest.id }}">
-
-                                        <i class="bi bi-plus-circle"></i>
-
-                                        Add
-
-                                    </button>
-
-                                </div>
-
                             </div>
-
                         </div>
-
                         {% empty %}
-
-                        <div class="col-12 text-center">
-
-                            No Menu Items
-
+                        <div class="col-12 py-5 text-center text-muted">
+                            <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                            No Menu Items Available
                         </div>
-
                         {% endfor %}
 
+                        <!-- JS Empty Search Result Indicator -->
+                        <div id="no-results" class="col-12 py-5 text-center text-muted d-none">
+                            <i class="bi bi-search fs-1 d-block mb-2"></i>
+                            No menu items match your query.
+                        </div>
                     </div>
-
                 </div>
-
             </div>
-
         </div>
 
-        <!-- Current Order -->
-
+        <!-- Right Column: Sticky Current Order -->
         <div class="col-lg-4">
-
-            <div class="card shadow-sm">
-
-                <div class="card-header">
-
-                    <strong>
+            <div class="card border-0 shadow-sm position-sticky" style="top: 1rem;">
+                <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0 fw-bold text-uppercase text-muted fs-7">
                         Current Order
-                    </strong>
-
+                    </h6>
+                    <span class="badge bg-primary-subtle text-primary">Active</span>
                 </div>
 
-                <div
-                    class="card-body"
-                    id="current-order">
-
+                <div class="card-body p-0" id="current-order">
                     {% include "orders/partials/current_order.html" %}
-
                 </div>
 
-                <div class="card-footer">
-
-                    <div class="d-grid">
-
-<button
-    class="btn btn-success btn-lg w-100"
-    id="send-kitchen"
-    data-guest="{{ guest.id }}">
-
-    <i class="bi bi-printer"></i>
-
-    Send To Kitchen
-
-</button>
-
-                    </div>
-
+                <div class="card-footer bg-white border-top-0 p-3">
+                    <button
+                        class="btn btn-success btn-lg w-100 py-2 fs-6 shadow-sm"
+                        id="send-kitchen"
+                        data-guest="{{ guest.id }}">
+                        <i class="bi bi-printer me-2"></i>Send To Kitchen
+                    </button>
                 </div>
-
             </div>
-
         </div>
 
     </div>
-
 </div>
 
 <script src="{% static 'js/waiter_pos.js' %}"></script>
 
 <script>
+document.addEventListener("DOMContentLoaded", () => {
+    const searchInput = document.getElementById("menu-search");
+    const categoryFilter = document.getElementById("category-filter");
+    const menuCards = document.querySelectorAll(".menu-card");
+    const noResults = document.getElementById("no-results");
 
-const searchInput = document.getElementById("menu-search");
+    let activeCategory = "all";
 
-searchInput.addEventListener("keyup", function(){
+    function filterMenu() {
+        const query = searchInput.value.toLowerCase().trim();
+        let visibleCount = 0;
 
-    const keyword = this.value.toLowerCase();
+        menuCards.forEach(card => {
+            const name = card.dataset.name;
+            const category = card.dataset.category;
 
-    document.querySelectorAll(".menu-card").forEach(function(card){
+            const matchesSearch = name.includes(query);
+            const matchesCategory = (activeCategory === "all" || category === activeCategory);
 
-        const itemName = card.dataset.name;
+            if (matchesSearch && matchesCategory) {
+                card.classList.remove("d-none");
+                visibleCount++;
+            } else {
+                card.classList.add("d-none");
+            }
+        });
 
-        if(itemName.includes(keyword)){
-
-            card.style.display = "";
-
-        }else{
-
-            card.style.display = "none";
-
+        if (visibleCount === 0) {
+            noResults.classList.remove("d-none");
+        } else {
+            noResults.classList.add("d-none");
         }
+    }
 
+    // Search event
+    searchInput.addEventListener("input", filterMenu);
+
+    // Category click event
+    categoryFilter.addEventListener("click", (e) => {
+        const button = e.target.closest("[data-category]");
+        if (!button) return;
+
+        // Toggle active button UI
+        categoryFilter.querySelectorAll(".list-group-item").forEach(el => el.classList.remove("active"));
+        button.classList.add("active");
+
+        // Update current category and re-filter
+        activeCategory = button.dataset.category;
+        filterMenu();
     });
-
 });
-
 </script>
-
 {% endblock %}

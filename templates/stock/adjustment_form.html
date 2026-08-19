@@ -1,0 +1,310 @@
+{% extends "base.html" %}
+
+{% block title %}
+Stock Adjustment
+{% endblock %}
+
+{% block page_title %}
+Stock Adjustment
+{% endblock %}
+
+{% block breadcrumb %}
+Stock / Adjustment
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- ========================================== -->
+    <!-- HEADER -->
+    <!-- ========================================== -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h3 class="mb-1">
+                Stock Adjustment
+            </h3>
+
+            <p class="text-muted mb-0">
+                Increase or decrease the current stock manually.
+            </p>
+
+        </div>
+
+        <a
+            href="{% url 'stock:current-stock' %}"
+            class="btn btn-outline-secondary">
+
+            <i class="bi bi-arrow-left me-1"></i>
+
+            Back to Stock
+
+        </a>
+
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- FORM -->
+    <!-- ========================================== -->
+
+    <div class="row">
+
+        <div class="col-lg-8">
+
+            <div class="card shadow-sm">
+
+                <div class="card-header">
+
+                    <h5 class="mb-0">
+                        Adjustment Details
+                    </h5>
+
+                </div>
+
+                <div class="card-body">
+
+                    <form method="post">
+
+                        {% csrf_token %}
+
+
+                        {% if form.non_field_errors %}
+
+                            <div class="alert alert-danger">
+
+                                {{ form.non_field_errors }}
+
+                            </div>
+
+                        {% endif %}
+
+
+                        <!-- MATERIAL -->
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+
+                                Material
+
+                            </label>
+
+                            {{ form.material }}
+
+                            {% if form.material.errors %}
+
+                                <div class="text-danger small mt-1">
+
+                                    {{ form.material.errors }}
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- ADJUSTMENT TYPE -->
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+
+                                Adjustment Type
+
+                            </label>
+
+                            {{ form.adjustment_type }}
+
+                            {% if form.adjustment_type.errors %}
+
+                                <div class="text-danger small mt-1">
+
+                                    {{ form.adjustment_type.errors }}
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- QUANTITY -->
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+
+                                Quantity
+
+                            </label>
+
+                            {{ form.quantity }}
+
+                            {% if form.quantity.errors %}
+
+                                <div class="text-danger small mt-1">
+
+                                    {{ form.quantity.errors }}
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- REASON -->
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+
+                                Reason
+
+                            </label>
+
+                            {{ form.reason }}
+
+                            {% if form.reason.errors %}
+
+                                <div class="text-danger small mt-1">
+
+                                    {{ form.reason.errors }}
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- REMARKS -->
+
+                        <div class="mb-4">
+
+                            <label class="form-label">
+
+                                Remarks
+
+                            </label>
+
+                            {{ form.remarks }}
+
+                            {% if form.remarks.errors %}
+
+                                <div class="text-danger small mt-1">
+
+                                    {{ form.remarks.errors }}
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- BUTTONS -->
+
+                        <div class="d-flex gap-2">
+
+                            <button
+                                type="submit"
+                                class="btn btn-primary">
+
+                                <i class="bi bi-check-circle me-1"></i>
+
+                                Save Adjustment
+
+                            </button>
+
+                            <a
+                                href="{% url 'stock:current-stock' %}"
+                                class="btn btn-light">
+
+                                Cancel
+
+                            </a>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ========================================== -->
+        <!-- INFORMATION -->
+        <!-- ========================================== -->
+
+        <div class="col-lg-4">
+
+            <div class="card shadow-sm">
+
+                <div class="card-body">
+
+                    <h5 class="mb-3">
+
+                        <i class="bi bi-info-circle me-1"></i>
+
+                        Stock Adjustment
+
+                    </h5>
+
+                    <p class="text-muted">
+
+                        Use stock adjustment when the physical stock
+                        does not match the stock shown in the system.
+
+                    </p>
+
+                    <hr>
+
+                    <div class="mb-3">
+
+                        <strong>
+                            Increase Stock
+                        </strong>
+
+                        <p class="text-muted small mb-0">
+
+                            Use when additional physical stock is found.
+
+                        </p>
+
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Decrease Stock
+                        </strong>
+
+                        <p class="text-muted small mb-0">
+
+                            Use for wastage, spoilage, damage,
+                            shortage, or other stock loss.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -85,6 +85,152 @@
 }
 
 /* ==========================================================
+   REPORT TOOLBAR
+========================================================== */
+
+.report-toolbar{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:18px;
+
+}
+
+/* ==========================================================
+   QUICK FILTERS
+========================================================== */
+
+.quick-filters{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:10px;
+
+}
+
+.quick-btn{
+
+    border:1px solid #e5e7eb;
+
+    background:#fff;
+
+    color:#374151;
+
+    padding:8px 18px;
+
+    border-radius:999px;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:all .2s ease;
+
+    text-decoration:none;
+
+}
+
+.quick-btn:hover{
+
+    background:#f3f4f6;
+
+    border-color:#d1d5db;
+
+    transform:translateY(-1px);
+
+}
+
+.quick-btn.active{
+
+    background:#2563eb;
+
+    color:#fff;
+
+    border-color:#2563eb;
+
+    box-shadow:0 4px 12px rgba(37,99,235,.25);
+
+}
+
+/* ==========================================================
+   FILTER GROUP
+========================================================== */
+
+.filter-group{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:12px;
+
+    align-items:center;
+
+}
+
+.report-control{
+
+    height:44px;
+
+    border-radius:12px;
+
+    border:1px solid #d1d5db;
+
+    padding:0 16px;
+
+    font-size:14px;
+
+    background:#fafafa;
+
+    transition:all .2s ease;
+
+    outline:none;
+
+}
+
+.report-control:focus{
+
+    border-color:#2563eb;
+
+    background:#fff;
+
+    box-shadow:0 0 0 4px rgba(37,99,235,.08);
+
+}
+
+.filter-group input[type="date"]{
+
+    width:160px;
+
+}
+
+.filter-group input[type="text"]{
+
+    flex:1;
+
+    min-width:220px;
+
+}
+
+.filter-group .btn{
+
+    height:44px;
+
+    border-radius:12px;
+
+    font-weight:600;
+
+    padding:0 24px;
+
+}
+
+/* ==========================================================
    TABLE CARD
 ========================================================== */
 

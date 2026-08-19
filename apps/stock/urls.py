@@ -25,5 +25,25 @@ urlpatterns = [
     views.MaterialDetailView.as_view(),
     name="material-detail",
 ),
+     path(
+        "adjustment/",
+        views.stock_adjustment,
+        name="stock-adjustment",
+    ),
+     path(
+    "low-stock/",
+    views.LowStockListView.as_view(),
+    name="low-stock",
+),
+     path(
+    "reports/movement/",
+    views.StockMovementReportView.as_view(),
+    name="movement-report",
+),
+     path(
+    "reports/",
+    views.stock_reports,
+    name="reports",
+),
 
 ]

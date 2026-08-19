@@ -2,42 +2,37 @@
 
 <form method="get">
 
+    <input type="hidden" name="range" id="rangeInput" value="{{ request.GET.range|default:'today' }}">
+
     <div class="quick-filters">
 
-        <a href="?range=today"
-           class="quick-btn {% if request.GET.range == 'today' or not request.GET.range %}active{% endif %}">
+        <button type="button" class="quick-btn {% if request.GET.range == 'today' or not request.GET.range %}active{% endif %}" data-range="today">
             Today
-        </a>
+        </button>
 
-        <a href="?range=yesterday"
-           class="quick-btn {% if request.GET.range == 'yesterday' %}active{% endif %}">
+        <button type="button" class="quick-btn {% if request.GET.range == 'yesterday' %}active{% endif %}" data-range="yesterday">
             Yesterday
-        </a>
+        </button>
 
-        <a href="?range=week"
-           class="quick-btn {% if request.GET.range == 'week' %}active{% endif %}">
+        <button type="button" class="quick-btn {% if request.GET.range == 'week' %}active{% endif %}" data-range="week">
             Last 7 Days
-        </a>
+        </button>
 
-        <a href="?range=month"
-           class="quick-btn {% if request.GET.range == 'month' %}active{% endif %}">
+        <button type="button" class="quick-btn {% if request.GET.range == 'month' %}active{% endif %}" data-range="month">
             This Month
-        </a>
+        </button>
 
-        <a href="?range=last_month"
-           class="quick-btn {% if request.GET.range == 'last_month' %}active{% endif %}">
+        <button type="button" class="quick-btn {% if request.GET.range == 'last_month' %}active{% endif %}" data-range="last_month">
             Last Month
-        </a>
+        </button>
 
-        <a href="?range=year"
-           class="quick-btn {% if request.GET.range == 'year' %}active{% endif %}">
+        <button type="button" class="quick-btn {% if request.GET.range == 'year' %}active{% endif %}" data-range="year">
             This Year
-        </a>
+        </button>
 
-        <a href="?range=all"
-           class="quick-btn {% if request.GET.range == 'all' %}active{% endif %}">
+        <button type="button" class="quick-btn {% if request.GET.range == 'all' %}active{% endif %}" data-range="all">
             All
-        </a>
+        </button>
 
     </div>
 
@@ -62,7 +57,7 @@
             placeholder="{{ search_placeholder|default:'Search...' }}"
             class="report-control">
 
-        <button class="btn btn-primary">
+        <button type="submit" class="btn btn-primary">
             Apply
         </button>
 
