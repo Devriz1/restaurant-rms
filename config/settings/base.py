@@ -15,19 +15,24 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG", "False") == "True"
 
-CSRF_TRUSTED_ORIGINS = [
-    'https://*.ngrok-free.dev',
-    'https://*.ngrok-free.app',
-]
+
+
+# config/settings/development.py
 
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
-    "*",
-    "https://rms.loca.lt"
-    
+    ".ngrok-free.dev",  # Wildcard allowing all *.ngrok-free.dev domains
+    ".ngrok-free.app",  # Wildcard allowing all *.ngrok-free.app domains
+    ".ngrok.io",        # Standard ngrok domain wildcard
 ]
-# Application definition
+
+# Required for POST requests / forms / logins to work over ngrok HTTPS
+CSRF_TRUSTED_ORIGINS = [
+    "https://*.ngrok-free.dev",
+    "https://*.ngrok-free.app",
+    "https://*.ngrok.io",
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -54,9 +59,40 @@ INSTALLED_APPS = [
     'apps.stock',
     'apps.recipes',
     "pwa",
+    "corsheaders",
 ]
 
+# config/settings/development.py
+
+# Direct Django to trust the domain passed in X-Forwarded-Host header from ngrok/proxy
+USE_X_FORWARDED_HOST = True
+USE_X_FORWARDED_PORT = True
+
+# Trust HTTPS proxy headers sent by ngrok
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+# config/settings/development.py
+
+# ----------------------------------------------------------
+# SESSION & COOKIE ISOLATION
+# ----------------------------------------------------------
+SESSION_COOKIE_NAME = "rms_sessionid"
+CSRF_COOKIE_NAME = "rms_csrftoken"
+
+# Ensure every device gets its own independent session
+SESSION_ENGINE = "django.contrib.sessions.backends.db"
+SESSION_SAVE_EVERY_REQUEST = True
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+
+# Cookie security for ngrok HTTPS
+SESSION_COOKIE_SAMESITE = "Lax"
+CSRF_COOKIE_SAMESITE = "Lax"
+SESSION_COOKIE_HTTPONLY = True
+CSRF_COOKIE_HTTPONLY = False
+
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
+    
     "django.middleware.security.SecurityMiddleware",
 
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -201,3 +237,30 @@ PWA_APP_SHORTCUTS = []
 PWA_APP_SCREENSHOTS = []
 
 PWA_SERVICE_WORKER_PATH = BASE_DIR / "static" / "sw.js"
+
+# ==========================================================
+# CORS CONFIGURATION
+# ==========================================================
+
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOW_HEADERS = [
+    "accept",
+    "accept-encoding",
+    "authorization",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+    "ngrok-skip-browser-warning",
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://127.0.0.1:8000",
+    "http://localhost:8000",
+    "https://*.ngrok-free.app",
+    "https://*.ngrok.io",
+]

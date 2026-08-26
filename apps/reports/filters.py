@@ -19,7 +19,7 @@ def apply_report_filters(
 
     today = date.today()
 
-    report_range = request.GET.get("range")
+    report_range = request.GET.get("range", "today")
 
     if report_range == "today":
 

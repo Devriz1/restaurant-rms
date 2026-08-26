@@ -202,6 +202,11 @@
     <span>Inventory</span>
 
 </a>
+<a href="{% url 'billing:customer_list' %}"
+   class="sidebar-link {% if request.resolver_match.url_name in 'customer_list customer_detail receive_customer_payment' %}active{% endif %}">
+    <i class="bi bi-journal-bookmark-fill"></i>
+    <span>Customer Ledger</span>
+</a>
         </div>
         {% endif %}
 

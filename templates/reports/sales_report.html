@@ -204,4 +204,11 @@
 <script src="{% static 'js/report_customizer.js' %}"></script>
 <script src="{% static 'js/report_sort.js' %}"></script>
 <script src="{% static 'js/report_search.js' %}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        ReportCustomizer.init('salesReportTable');
+        ReportSort.init('salesReportTable');
+        ReportSearch.init();
+    });
+</script>
 {% endblock %}

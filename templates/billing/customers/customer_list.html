@@ -1,0 +1,268 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Customer Ledger - Restaurant RMS{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-4">
+
+    <!-- Page Header & Action Controls -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="h3 mb-1 font-weight-bold text-gray-800">
+                <i class="bi bi-journal-bookmark-fill text-primary me-2"></i>Customer Ledger
+            </h2>
+            <p class="text-muted small mb-0">Manage customer accounts, credit balances, and track payments.</p>
+        </div>
+        
+        <div class="d-flex gap-2">
+            <button type="button" class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#addCustomerModal">
+                <i class="bi bi-person-plus-fill me-1"></i> Add New Customer
+            </button>
+        </div>
+    </div>
+
+    <!-- Summary KPI Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm border-start border-4 border-primary h-100">
+                <div class="card-body">
+                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Accounts</div>
+                    <div class="h3 mb-0 font-weight-bold text-dark">{{ customers|length|default:"0" }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm border-start border-4 border-danger h-100">
+                <div class="card-body">
+                    <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Total Credit / Balance Due</div>
+                    <div class="h3 mb-0 font-weight-bold text-dark">${{ total_balance|default:"0.00" }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm border-start border-4 border-success h-100">
+                <div class="card-body">
+                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Active Accounts</div>
+                    <div class="h3 mb-0 font-weight-bold text-dark">{{ active_customers_count|default:"0" }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Customer Table Card -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white py-3 d-flex align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">Customer Accounts & Ledgers</h6>
+            
+            <!-- Search & Filter Form -->
+            <form method="get" class="d-flex gap-2" style="max-width: 320px;">
+                <div class="input-group input-group-sm">
+                    <span class="input-group-text bg-light border-end-0"><i class="bi bi-search text-muted"></i></span>
+                    <input type="text" name="q" class="form-control bg-light border-start-0" placeholder="Search name or phone..." value="{{ request.GET.q|default:'' }}">
+                    {% if request.GET.q %}
+                        <a href="{% url 'billing:customer_list' %}" class="btn btn-outline-secondary btn-sm" title="Clear Search">
+                            <i class="bi bi-x"></i>
+                        </a>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4">Customer Name</th>
+                            <th>Type</th>
+                            <th>Phone / Contact</th>
+                            <th>Credit Limit</th>
+                            <th>Current Balance</th>
+                            <th class="text-end pe-4">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for customer in customers %}
+                        <tr>
+                            <td class="ps-4">
+                                <a href="{% url 'billing:customer_detail' customer.id %}" class="fw-bold text-decoration-none text-dark">
+                                    {{ customer.name|default:"Local Customer" }}
+                                </a>
+                                {% if customer.email %}
+                                    <small class="d-block text-muted">{{ customer.email }}</small>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if customer.is_credit_customer %}
+                                    <span class="badge bg-warning-subtle text-warning border border-warning-subtle rounded-pill">Credit Customer</span>
+                                {% else %}
+                                    <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle rounded-pill">Local / Walk-in</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span><i class="bi bi-telephone text-muted me-1"></i>{{ customer.phone|default:"N/A" }}</span>
+                            </td>
+                            <td>
+                                <span class="text-muted">${{ customer.credit_limit|default:"0.00" }}</span>
+                            </td>
+                             <td>
+                                 {% if customer.balance > 0 %}
+                                     <span class="fw-bold text-danger">₹{{ customer.balance|floatformat:2 }}</span>
+                                 {% elif customer.balance < 0 %}
+                                     <span class="fw-bold text-success">₹{{ customer.balance|floatformat:2 }}</span>
+                                 {% else %}
+                                     <span class="fw-bold text-muted">₹0.00</span>
+                                 {% endif %}
+                             </td>
+                            <td class="text-end pe-4">
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a href="{% url 'billing:customer_detail' customer.id %}" class="btn btn-outline-primary" title="View Statement">
+                                        <i class="bi bi-eye"></i> Statement
+                                    </a>
+                                    {% if customer.is_credit_customer %}
+                                    <a href="{% url 'billing:receive_customer_payment' customer.id %}" class="btn btn-outline-success" title="Receive Payment">
+                                        <i class="bi bi-cash-stack"></i> Pay
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center py-5 text-muted">
+                                <i class="bi bi-person-x display-6 d-block mb-2 text-secondary"></i>
+                                No customer records found.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        {% if is_paginated %}
+        <div class="card-footer bg-white py-3">
+            <nav aria-label="Customer list pagination">
+                <ul class="pagination pagination-sm mb-0 justify-content-center">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link">Previous</span></li>
+                    {% endif %}
+
+                    {% for num in page_obj.paginator.page_range %}
+                        <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                        </li>
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link">Next</span></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Modal: Add New Customer -->
+<div class="modal fade" id="addCustomerModal" tabindex="-1" aria-labelledby="addCustomerModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="{% url 'billing:customer_list' %}">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title font-weight-bold" id="addCustomerModalLabel">
+                        <i class="bi bi-person-plus me-2"></i>Add Customer Account
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    
+                    <!-- Customer Type Toggle -->
+                    <div class="mb-3 p-3 bg-light rounded border">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="isCreditCustomer" name="is_credit_customer" onchange="toggleCreditFields(this.checked)">
+                            <label class="form-check-label font-weight-bold text-dark" for="isCreditCustomer">
+                                Enable Credit / Ledger Account
+                            </label>
+                        </div>
+                        <small class="text-muted d-block mt-1">
+                            Unchecked defaults account to <strong>Local Customer</strong>. Enable this to track named credit accounts and individual ledgers.
+                        </small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label font-weight-bold">Customer Name <span id="nameRequired" class="text-danger d-none">*</span></label>
+                        <input type="text" id="customerNameInput" name="name" class="form-control" placeholder="Local Customer" value="Local Customer">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label font-weight-bold">Phone Number <span id="phoneRequired" class="text-danger d-none">*</span></label>
+                        <input type="tel" id="customerPhoneInput" name="phone" class="form-control" placeholder="e.g. +1 555 019 2831">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label font-weight-bold">Email Address</label>
+                        <input type="email" name="email" class="form-control" placeholder="e.g. customer@example.com">
+                    </div>
+
+                    <div id="creditFieldsSection" class="row d-none">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label font-weight-bold">Credit Limit ($)</label>
+                            <input type="number" step="0.01" name="credit_limit" class="form-control" value="0.00">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label font-weight-bold">Opening Balance ($)</label>
+                            <input type="number" step="0.01" name="opening_balance" class="form-control" value="0.00">
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Customer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleCreditFields(isCredit) {
+    const creditSection = document.getElementById('creditFieldsSection');
+    const nameInput = document.getElementById('customerNameInput');
+    const phoneInput = document.getElementById('customerPhoneInput');
+    const nameReq = document.getElementById('nameRequired');
+    const phoneReq = document.getElementById('phoneRequired');
+
+    if (isCredit) {
+        creditSection.classList.remove('d-none');
+        nameReq.classList.remove('d-none');
+        phoneReq.classList.remove('d-none');
+        
+        if (nameInput.value === "Local Customer") {
+            nameInput.value = "";
+            nameInput.placeholder = "e.g. John Doe";
+        }
+        nameInput.required = true;
+        phoneInput.required = true;
+    } else {
+        creditSection.classList.add('d-none');
+        nameReq.classList.add('d-none');
+        phoneReq.classList.add('d-none');
+        
+        if (!nameInput.value || nameInput.value === "") {
+            nameInput.value = "Local Customer";
+        }
+        nameInput.required = false;
+        phoneInput.required = false;
+    }
+}
+</script>
+{% endblock %}

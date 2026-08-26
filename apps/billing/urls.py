@@ -19,5 +19,8 @@ urlpatterns = [
         views.billing_screen,
         name="billing-screen",
     ),
+    path('customers/', views.customer_list, name='customer_list'),
+    path('customers/<int:pk>/', views.customer_detail, name='customer_detail'),
+    path('customers/<int:pk>/payment/', views.receive_customer_payment, name='receive_customer_payment'),
 
 ]

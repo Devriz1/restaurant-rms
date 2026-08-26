@@ -741,6 +741,8 @@ def table_report(request):
         .order_by("area__name", "table_number")
     )
 
+    search_query = request.GET.get("search", "").strip()
+
     report_tables = []
 
     for table in tables:
@@ -763,7 +765,7 @@ def table_report(request):
 
                     total_items += item.quantity
 
-        report_tables.append({
+        row = {
 
             "table": table,
 
@@ -773,7 +775,19 @@ def table_report(request):
 
             "total_items": total_items,
 
-        })
+        }
+
+        if search_query:
+
+            query = search_query.lower()
+
+            if query in table.display_name.lower() or query in table.area.name.lower():
+
+                report_tables.append(row)
+
+        else:
+
+            report_tables.append(row)
 
     report_tables.sort(
         key=lambda x: x["total_revenue"],
@@ -786,7 +800,7 @@ def table_report(request):
 
         "reset_url": "reports:tables",
 
-        "search_placeholder": "Search table...",
+        "search_placeholder": "Search table or area...",
 
         "columns": [
 

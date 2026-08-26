@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from .models import Bill
-from .models import Payment
+from .models import Payment,Customer, CreditLedgerEntry, CustomerPayment, BillPaymentAllocation
 
 
 class PaymentInline(admin.TabularInline):
@@ -110,3 +110,25 @@ class PaymentAdmin(admin.ModelAdmin):
         "reference_number",
 
     )
+    
+
+@admin.register(Customer)
+class CustomerAdmin(admin.ModelAdmin):
+    list_display = ('customer_number', 'name', 'phone', 'credit_limit', 'current_outstanding', 'is_active')
+    search_fields = ('name', 'phone', 'customer_number')
+    readonly_fields = ('customer_number',)
+
+@admin.register(CreditLedgerEntry)
+class CreditLedgerEntryAdmin(admin.ModelAdmin):
+    list_display = ('customer', 'transaction_type', 'entry_type', 'amount', 'created_by', 'created_at')
+    list_filter = ('transaction_type', 'entry_type', 'created_at')
+    search_fields = ('customer__name', 'reference_number')
+
+    def has_delete_permission(self, request, obj=None):
+        # Prevent accidental deletion of ledger history
+        return False
+
+@admin.register(CustomerPayment)
+class CustomerPaymentAdmin(admin.ModelAdmin):
+    list_display = ('payment_number', 'customer', 'amount', 'payment_method', 'received_by', 'created_at')
+    readonly_fields = ('payment_number',)

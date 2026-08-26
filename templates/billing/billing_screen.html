@@ -108,15 +108,48 @@
                     <h1>₹{{ bill.grand_total }}</h1>
                 </div>
 
+                    <!-- Customer Details & Selection Section -->
+                    <div class="customer-section mb-4 p-3 bg-light rounded border">
+                        <h5 class="fw-bold mb-2 text-dark fs-6">
+                            <i class="bi bi-person-fill me-1 text-primary"></i> Customer Details
+                        </h5>
+
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                {{ form.non_field_errors }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endif %}
+
+                        <div class="mb-2">
+                            <label class="form-label small font-weight-bold">Select Customer</label>
+                            {% if form.customer %}
+                                {{ form.customer }}
+                            {% else %}
+                                <select name="customer" id="customerSelect" class="form-select form-select-sm">
+                                    <option value="" selected>Local Customer (Default Cash/Walk-in)</option>
+                                    {% for customer in customers %}
+                                        <option value="{{ customer.id }}" {% if bill.customer_id == customer.id %}selected{% endif %}>
+                                            {{ customer.name }} {% if customer.phone %}({{ customer.phone }}){% endif %}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Section -->
                 <div class="payment-section">
                     <h5 class="fw-bold mb-3 text-dark"><i class="bi bi-credit-card me-2 text-success"></i> Payment Method</h5>
 
                     <div class="mb-3">
                         <label class="form-label">Select Payment Channel</label>
-                        <select name="payment_method" class="form-select">
+                        <select name="payment_method" id="paymentMethodSelect" class="form-select" onchange="handlePaymentMethodChange(this.value)">
                             <option value="cash">💵 Cash</option>
                             <option value="upi">📱 UPI / QR Code</option>
                             <option value="card">💳 Debit / Credit Card</option>
+                            <option value="credit">📑 Credit Account (Customer Ledger)</option>
                         </select>
                     </div>
 
@@ -127,7 +160,7 @@
 
                     <div class="mb-4">
                         <label class="form-label">Reference / Txn ID <span class="text-muted fw-normal">(Optional)</span></label>
-                        <input type="text" name="reference_number" class="form-control" placeholder="UPI Txn ID / Card Ref">
+                        <input type="text" name="reference_number" class="form-control" placeholder="UPI Txn ID / Card Ref / Credit Note">
                     </div>
                 </div>
 
@@ -145,6 +178,23 @@
     </form>
 
 </div>
+
+<script>
+function handlePaymentMethodChange(method) {
+    const customerSelect = document.getElementById('customerSelect');
+    if (customerSelect) {
+        if (method === 'credit') {
+            customerSelect.required = true;
+            if (!customerSelect.value) {
+                alert('Please select a Customer for Credit / Ledger payments.');
+                customerSelect.focus();
+            }
+        } else {
+            customerSelect.required = false;
+        }
+    }
+}
+</script>
 {% endblock %}
 
 {% block extra_js %}

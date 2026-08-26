@@ -1,735 +1,313 @@
-import socket
-import subprocess
+import os
 import sys
 import time
-import webview
-from pathlib import Path
+import signal
+import socket
+import subprocess
+from dotenv import load_dotenv
 
-
-
-# ==========================================================
-# PATHS
-# ==========================================================
-
-BASE_DIR = Path(__file__).resolve().parent.parent
-
-MANAGE_PY = BASE_DIR / "manage.py"
-
-VENV_PYTHON = (
-    BASE_DIR
-    / ".venv"
-    / "Scripts"
-    / "python.exe"
-)
-
-DEFAULT_PORT = 8000
-MAX_PORT = 8999
+try:
+    from pyngrok import ngrok
+except ImportError:
+    ngrok = None
 
 
 # ==========================================================
-# CONSOLE COLORS
+# CONFIGURATION
 # ==========================================================
 
-class Colors:
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_DIR = os.path.abspath(os.path.join(BASE_DIR, ".."))
 
-    RESET = "\033[0m"
-    GREEN = "\033[92m"
-    YELLOW = "\033[93m"
-    RED = "\033[91m"
-    CYAN = "\033[96m"
+HOST = "0.0.0.0"
+PORT = 8000
+
+LOCAL_URL = f"http://127.0.0.1:{PORT}"
+
+# Load .env configuration
+load_dotenv(os.path.join(PROJECT_DIR, ".env"))
+NGROK_AUTHTOKEN = os.getenv("NGROK_AUTHTOKEN")
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.development")
+
+django_process = None
+pwa_process = None
+ngrok_url = None
 
 
 # ==========================================================
-# CONSOLE HELPERS
+# LOGGING
 # ==========================================================
 
 def info(message):
-
-    print(
-        f"{Colors.CYAN}[RMS]{Colors.RESET} {message}"
-    )
+    print(f"[RMS] {message}", flush=True)
 
 
 def success(message):
-
-    print(
-        f"{Colors.GREEN}[OK]{Colors.RESET} {message}"
-    )
+    print(f"[RMS] ✓ {message}", flush=True)
 
 
 def warning(message):
-
-    print(
-        f"{Colors.YELLOW}[WARNING]{Colors.RESET} {message}"
-    )
+    print(f"[RMS] ⚠ {message}", flush=True)
 
 
 def error(message):
-
-    print(
-        f"{Colors.RED}[ERROR]{Colors.RESET} {message}"
-    )
+    print(f"[RMS] ✗ {message}", flush=True)
 
 
 # ==========================================================
-# GET LOCAL IPv4
+# CHECK PORT & SERVER STATUS
 # ==========================================================
 
-def get_local_ip():
-
-    sock = socket.socket(
-        socket.AF_INET,
-        socket.SOCK_DGRAM,
-    )
-
+def is_port_open(host, port):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.settimeout(0.5)
     try:
-
-        # This does not actually send data.
-        # It allows Windows to determine
-        # the active network interface.
-
-        sock.connect(
-            ("8.8.8.8", 80)
-        )
-
-        return sock.getsockname()[0]
-
-    except Exception:
-
-        return "127.0.0.1"
-
-    finally:
-
-        sock.close()
-
-
-# ==========================================================
-# CHECK PORT
-# ==========================================================
-
-def is_port_available(port):
-
-    sock = socket.socket(
-        socket.AF_INET,
-        socket.SOCK_STREAM,
-    )
-
-    try:
-
-        sock.bind(
-            ("0.0.0.0", port)
-        )
-
+        sock.connect((host, port))
         return True
-
     except OSError:
-
         return False
-
     finally:
-
         sock.close()
 
 
-# ==========================================================
-# FIND AVAILABLE PORT
-# ==========================================================
+def wait_for_django(timeout=30):
+    info("Waiting for Django to initialize...")
+    start = time.time()
+    while time.time() - start < timeout:
+        if is_port_open("127.0.0.1", PORT):
+            success(f"Django is running on port {PORT}")
+            return True
+        time.sleep(0.5)
 
-def find_available_port():
-
-    for port in range(
-        DEFAULT_PORT,
-        MAX_PORT + 1,
-    ):
-
-        if is_port_available(port):
-
-            return port
-
-    return None
-
-
-# ==========================================================
-# RESOLVE PYTHON
-# ==========================================================
-
-def resolve_python_executable():
-
-    if VENV_PYTHON.exists():
-
-        return str(
-            VENV_PYTHON
-        )
-
-    warning(
-        "Virtual environment not found."
-    )
-
-    warning(
-        "Using current Python executable."
-    )
-
-    return sys.executable
-
-
-# ==========================================================
-# CHECK PROJECT
-# ==========================================================
-
-def check_project():
-
-    if not MANAGE_PY.exists():
-
-        error(
-            f"manage.py not found:\n{MANAGE_PY}"
-        )
-
-        return False
-
-    return True
-
-
-# ==========================================================
-# RUN DATABASE MIGRATIONS
-# ==========================================================
-
-def run_migrations(
-    python_executable,
-):
-
-    info(
-        "Checking database migrations..."
-    )
-
-    command = [
-
-        python_executable,
-
-        str(MANAGE_PY),
-
-        "migrate",
-
-        "--noinput",
-
-    ]
-
-    try:
-
-        result = subprocess.run(
-            command,
-            cwd=BASE_DIR,
-        )
-
-    except Exception as exc:
-
-        error(
-            f"Could not run migrations: {exc}"
-        )
-
-        return False
-
-    if result.returncode != 0:
-
-        error(
-            "Database migration failed."
-        )
-
-        return False
-
-    success(
-        "Database is ready."
-    )
-
-    return True
+    error("Django did not start within the timeout.")
+    return False
 
 
 # ==========================================================
 # START DJANGO
 # ==========================================================
 
-def start_django(
-    python_executable,
-    port,
-):
+def start_django():
+    global django_process
+
+    info("Starting Django server...")
+
+    python_executable = sys.executable
+    manage_py = os.path.join(PROJECT_DIR, "manage.py")
+
+    if not os.path.exists(manage_py):
+        error("manage.py was not found.")
+        return False
 
     command = [
-
         python_executable,
-
-        str(MANAGE_PY),
-
+        manage_py,
         "runserver",
-
-        f"0.0.0.0:{port}",
-
+        f"{HOST}:{PORT}",
         "--noreload",
-
     ]
 
-    info(
-        "Starting Django HTTP server..."
-    )
-
     try:
-
-        process = subprocess.Popen(
+        django_process = subprocess.Popen(
             command,
-            cwd=BASE_DIR,
+            cwd=PROJECT_DIR,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            creationflags=(
+                subprocess.CREATE_NEW_PROCESS_GROUP if os.name == "nt" else 0
+            ),
         )
-
-        return process
+        return wait_for_django()
 
     except Exception as exc:
+        error(f"Could not start Django: {exc}")
+        return False
 
-        error(
-            f"Could not start Django: {exc}"
+
+# ==========================================================
+# START NGROK
+# ==========================================================
+
+def start_ngrok():
+    global ngrok_url
+
+    if not NGROK_AUTHTOKEN or not ngrok:
+        warning("NGROK_AUTHTOKEN missing or pyngrok not installed. Running local mode only.")
+        return False
+
+    # Force kill lingering orphan ngrok processes to prevent ERR_NGROK_334
+    if os.name == "nt":
+        subprocess.run(
+            ["taskkill", "/F", "/IM", "ngrok.exe"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
         )
 
-        return None
-
-
-# ==========================================================
-# WAIT FOR DJANGO SERVER
-# ==========================================================
-
-def wait_for_server(
-    process,
-    host,
-    port,
-    timeout=20,
-):
-
-    info(
-        "Waiting for RMS server..."
-    )
-
-    start_time = time.time()
-
-    while (
-        time.time() - start_time
-        < timeout
-    ):
-
-        # Check whether Django has crashed.
-
-        if process.poll() is not None:
-
-            return False
-
-        sock = socket.socket(
-            socket.AF_INET,
-            socket.SOCK_STREAM,
-        )
-
-        sock.settimeout(0.5)
-
-        try:
-
-            result = sock.connect_ex(
-                (host, port)
-            )
-
-            if result == 0:
-
-                return True
-
-        except Exception:
-
-            pass
-
-        finally:
-
-            sock.close()
-
-        time.sleep(0.5)
-
-    return False
-
-
-# ==========================================================
-# OPEN RMS IN PYWEBVIEW
-# ==========================================================
-
-def open_rms(url):
-
-    info(
-        "Starting Restaurant RMS desktop window..."
-    )
+    info("Starting ngrok tunnel...")
 
     try:
+        ngrok.set_auth_token(NGROK_AUTHTOKEN)
+        tunnel = ngrok.connect(PORT, "http")
+        ngrok_url = tunnel.public_url.replace("http://", "https://")
 
-        window = webview.create_window(
-            "Restaurant RMS",
-            url,
-            width=1400,
-            height=900,
-            min_size=(1000, 700),
-            resizable=True,
-            text_select=True,
-        )
-
-        webview.start()
-
+        success(f"Public HTTPS URL: {ngrok_url}")
         return True
 
     except Exception as exc:
-
-        error(
-            f"Could not start RMS desktop window: {exc}"
-        )
-
+        warning(f"Could not start ngrok: {exc}")
+        warning("RMS will continue locally.")
         return False
 
+
 # ==========================================================
-# STOP DJANGO
+# OPEN INSTALLED PWA DESKTOP APP
 # ==========================================================
 
-def stop_django(process):
+def launch_pwa_window():
+    global pwa_process
 
-    if process is None:
+    info("Launching Installed Desktop PWA...")
 
-        return
+    # Path explicitly targeting user's Chrome Apps directory
+    app_data = os.environ.get("APPDATA", r"C:\Users\risal\AppData\Roaming")
+    chrome_apps_dir = os.path.join(app_data, r"Microsoft\Windows\Start Menu\Programs\Chrome Apps")
 
-    if process.poll() is not None:
+    # Scans directory for installed RMS shortcut file (.lnk)
+    pwa_shortcut = None
+    if os.path.exists(chrome_apps_dir):
+        for file in os.listdir(chrome_apps_dir):
+            if file.endswith(".lnk") and "restaurant" in file.lower():
+                pwa_shortcut = os.path.join(chrome_apps_dir, file)
+                break
+        
+        # Default name check if scan finds nothing specific
+        if not pwa_shortcut:
+            default_lnk = os.path.join(chrome_apps_dir, "Restaurant RMS.lnk")
+            if os.path.exists(default_lnk):
+                pwa_shortcut = default_lnk
 
-        return
+    if pwa_shortcut and os.path.exists(pwa_shortcut):
+        info(f"Opening installed PWA shortcut: {os.path.basename(pwa_shortcut)}")
+        pwa_process = subprocess.Popen(["cmd", "/c", "start", "", pwa_shortcut], shell=True)
+        success("Installed Desktop PWA active.")
+    else:
+        info("Installed shortcut not found in Chrome Apps. Launching via standalone App mode...")
+        chrome_path = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
+        edge_path = r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
+        
+        browser_bin = chrome_path if os.path.exists(chrome_path) else edge_path
+        
+        if os.path.exists(browser_bin):
+            user_data_dir = os.path.join(PROJECT_DIR, ".pwa_profile")
+            pwa_process = subprocess.Popen([
+                browser_bin,
+                f"--app={LOCAL_URL}",
+                f"--user-data-dir={user_data_dir}",
+                "--no-first-run",
+                "--no-default-browser-check"
+            ])
+            success("Desktop PWA window opened.")
+        else:
+            warning("Browser executable not found. Opening system default browser...")
+            import webbrowser
+            webbrowser.open(LOCAL_URL)
 
-    warning(
-        "Stopping RMS server..."
-    )
 
-    try:
+# ==========================================================
+# CLEANUP & TERMINATION
+# ==========================================================
 
-        process.terminate()
+def cleanup():
+    global django_process, pwa_process
 
-        process.wait(
-            timeout=5
+    info("Shutting down RMS server and tunnels...")
+
+    # Force kill lingering ngrok executable on Windows
+    if os.name == "nt":
+        subprocess.run(
+            ["taskkill", "/F", "/IM", "ngrok.exe"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
         )
 
-    except subprocess.TimeoutExpired:
-
-        warning(
-            "Django did not stop normally."
-        )
-
+    # Close PWA process window if active
+    if pwa_process and pwa_process.poll() is None:
         try:
-
-            process.kill()
-
+            pwa_process.terminate()
         except Exception:
-
             pass
 
-    except Exception:
-
+    # Stop pyngrok session
+    if ngrok:
         try:
-
-            process.kill()
-
+            ngrok.kill()
         except Exception:
-
             pass
+
+    # Stop Django process
+    if django_process and django_process.poll() is None:
+        try:
+            django_process.terminate()
+            django_process.wait(timeout=3)
+        except Exception:
+            django_process.kill()
+
+    success("RMS, ngrok, and backend services stopped cleanly.")
 
 
 # ==========================================================
-# MAIN
+# MAIN EXECUTION
 # ==========================================================
 
 def main():
+    info("==========================================")
+    info("         RESTAURANT RMS SERVER            ")
+    info("==========================================")
+
+    if not start_django():
+        error("Django server failed to start.")
+        return
+
+    start_ngrok()
 
     print()
-
-    print(
-        "=" * 65
-    )
-
-    print(
-        "                 RESTAURANT RMS"
-    )
-
-    print(
-        "                    Launcher"
-    )
-
-    print(
-        "=" * 65
-    )
-
+    info("------------------------------------------")
+    success(f"Local Access:   {LOCAL_URL}")
+    if ngrok_url:
+        success(f"Remote Access:  {ngrok_url}")
+        info("Customer phones/tablets can use the remote HTTPS URL.")
+    info("------------------------------------------")
     print()
 
+    launch_pwa_window()
 
-    # ======================================================
-    # CHECK PROJECT
-    # ======================================================
-
-    info(
-        "Checking RMS project..."
-    )
-
-    if not check_project():
-
-        input(
-            "\nPress Enter to exit..."
-        )
-
-        sys.exit(1)
-
-    success(
-        "RMS project found."
-    )
-
-
-    # ======================================================
-    # PYTHON
-    # ======================================================
-
-    python_executable = (
-        resolve_python_executable()
-    )
-
-    success(
-        f"Python: {python_executable}"
-    )
-
-
-    # ======================================================
-    # DETECT LOCAL IPv4
-    # ======================================================
-
-    info(
-        "Detecting local network..."
-    )
-
-    local_ip = get_local_ip()
-
-    success(
-        f"Local IPv4: {local_ip}"
-    )
-
-
-    # ======================================================
-    # FIND AVAILABLE PORT
-    # ======================================================
-
-    info(
-        "Finding available port..."
-    )
-
-    port = find_available_port()
-
-    if port is None:
-
-        error(
-            f"No available port between "
-            f"{DEFAULT_PORT} and {MAX_PORT}."
-        )
-
-        input(
-            "\nPress Enter to exit..."
-        )
-
-        sys.exit(1)
-
-    success(
-        f"Port selected: {port}"
-    )
-
-
-    # ======================================================
-    # URLS
-    # ======================================================
-
-    local_url = (
-        f"http://127.0.0.1:{port}"
-    )
-
-    network_url = (
-        f"http://{local_ip}:{port}"
-    )
-
-
-    # ======================================================
-    # RUN MIGRATIONS
-    # ======================================================
-
-    if not run_migrations(
-        python_executable
-    ):
-
-        input(
-            "\nPress Enter to exit..."
-        )
-
-        sys.exit(1)
-
-
-    # ======================================================
-    # START DJANGO
-    # ======================================================
-
-    process = start_django(
-        python_executable,
-        port,
-    )
-
-    if process is None:
-
-        input(
-            "\nPress Enter to exit..."
-        )
-
-        sys.exit(1)
-
-
-    # ======================================================
-    # WAIT FOR DJANGO
-    # ======================================================
-
-    server_started = wait_for_server(
-        process,
-        "127.0.0.1",
-        port,
-    )
-
-    if not server_started:
-
-        error(
-            "Django failed to start."
-        )
-
-        stop_django(
-            process
-        )
-
-        input(
-            "\nPress Enter to exit..."
-        )
-
-        sys.exit(1)
-
-
-    success(
-        "RMS server is running."
-    )
-
-
-    # ======================================================
-    # OPEN RMS
-    # ======================================================
-
-    open_rms(
-        local_url
-    )
-
-
-    # ======================================================
-    # DISPLAY INFORMATION
-    # ======================================================
-
-    print()
-
-    print(
-        "=" * 65
-    )
-
-    print(
-        "                    RMS IS RUNNING"
-    )
-
-    print(
-        "=" * 65
-    )
-
-    print()
-
-    print(
-        "Desktop / Laptop:"
-    )
-
-    print(
-        f"  {local_url}"
-    )
-
-    print()
-
-    print(
-        "Same Wi-Fi devices:"
-    )
-
-    print(
-        f"  {network_url}"
-    )
-
-    print()
-
-    print(
-        "Port:"
-    )
-
-    print(
-        f"  {port}"
-    )
-
-    print()
-
-    print(
-        "HTTPS / ngrok:"
-    )
-
-    print(
-        "  Not enabled yet"
-    )
-
-    print()
-
-    print(
-        "RMS server is running."
-    )
-
-    print(
-        "Keep this launcher running while using RMS."
-    )
-
-    print()
-
-    print(
-        "Press CTRL+C to stop RMS."
-    )
-
-    print()
-
-
-    # ======================================================
-    # KEEP SERVER RUNNING
-    # ======================================================
+    info("Server is running. Press CTRL+C in this console window to exit everything.")
 
     try:
-
-        process.wait()
-
+        while True:
+            time.sleep(1)
     except KeyboardInterrupt:
-
-        print()
-
-        warning(
-            "Stopping RMS..."
-        )
-
-        stop_django(
-            process
-        )
-
-        success(
-            "RMS stopped."
-        )
-
-        print()
+        pass
+    finally:
+        cleanup()
 
 
 # ==========================================================
-# ENTRY POINT
+# ENTRY POINT & SIGNAL HANDLERS
 # ==========================================================
+
+def handle_exit(signum, frame):
+    cleanup()
+    sys.exit(0)
+
+
+signal.signal(signal.SIGINT, handle_exit)
+
+if hasattr(signal, "SIGTERM"):
+    signal.signal(signal.SIGTERM, handle_exit)
+
 
 if __name__ == "__main__":
-
     main()
