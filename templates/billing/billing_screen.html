@@ -15,188 +15,449 @@
     <!-- POS Header -->
     <div class="pos-header">
         <div>
-            <h1><i class="bi bi-calculator me-2 text-primary"></i> POS Checkout Terminal</h1>
-            <p>
-                Table: <strong>{{ guest.session.table.display_name }}</strong> &bull; 
-                Guest Session #<strong>{{ guest.guest_number }}</strong>
+            <h1>
+                <i class="bi bi-calculator me-2 text-primary"></i>
+                POS Checkout Terminal
+            </h1>
+
+            <p class="mb-0 text-muted">
+                Table:
+                <strong>{{ guest.session.table.display_name }}</strong>
+                &bull;
+                Guest Session #
+                <strong>{{ guest.guest_number }}</strong>
             </p>
         </div>
+
         <div class="pos-order-number">
-            <i class="bi bi-hash"></i> {{ guest.order_number }}
+            <i class="bi bi-hash"></i>
+            {{ guest.order_number }}
         </div>
     </div>
 
-    <form method="post">
+
+    <form method="post" id="posBillingForm">
+
         {% csrf_token %}
 
         <div class="pos-layout">
 
-            <!-- Left Itemized Table Panel -->
+
+            <!-- LEFT ITEMIZED TABLE PANEL -->
+
             <div class="pos-items-panel">
-                <div class="panel-title d-flex justify-content-between align-items-center">
-                    <span><i class="bi bi-basket3 me-2 text-primary"></i> Ordered Items</span>
-                    <span class="badge bg-primary rounded-pill px-3 py-2">{{ items|length }} Items</span>
+
+                <div class="panel-title d-flex justify-content-between align-items-center mb-3">
+
+                    <span class="fw-bold">
+                        <i class="bi bi-basket3 me-2 text-primary"></i>
+                        Ordered Items
+                    </span>
+
+                    <span class="badge bg-primary rounded-pill px-3 py-2">
+                        {{ items|length }} Items
+                    </span>
+
                 </div>
+
 
                 <div class="table-wrapper border-0">
-                    <table class="pos-table">
+
+                    <table class="pos-table align-middle">
+
                         <thead>
+
                             <tr>
                                 <th>Item Details</th>
-                                <th>Qty</th>
-                                <th>Unit Price</th>
-                                <th>Total</th>
+                                <th class="text-center">Qty</th>
+                                <th class="text-end">Unit Price</th>
+                                <th class="text-end">Total</th>
                             </tr>
+
                         </thead>
+
+
                         <tbody>
+
                             {% for item in items %}
+
                             <tr>
+
                                 <td>
-                                    <span class="fw-bold text-dark d-block">{{ item.menu_item.name }}</span>
+                                    <span class="fw-bold text-dark d-block">
+                                        {{ item.menu_item.name }}
+                                    </span>
                                 </td>
-                                <td>
-                                    <span class="badge bg-light text-dark border px-3 py-1">×{{ item.quantity }}</span>
+
+                                <td class="text-center">
+
+                                    <span class="badge bg-light text-dark border px-3 py-1">
+                                        ×{{ item.quantity }}
+                                    </span>
+
                                 </td>
-                                <td>₹{{ item.unit_price }}</td>
-                                <td><strong class="text-primary">₹{{ item.line_total }}</strong></td>
+
+                                <td class="text-end">
+                                    ₹{{ item.unit_price }}
+                                </td>
+
+                                <td class="text-end">
+
+                                    <strong class="text-primary">
+                                        ₹{{ item.line_total }}
+                                    </strong>
+
+                                </td>
+
                             </tr>
+
                             {% empty %}
+
                             <tr>
-                                <td colspan="4" class="text-center py-4 text-muted">
-                                    <i class="bi bi-cart-x fs-3 d-block mb-1"></i> No items found in this order.
+
+                                <td colspan="4"
+                                    class="text-center py-4 text-muted">
+
+                                    <i class="bi bi-cart-x fs-3 d-block mb-1"></i>
+
+                                    No items found in this order.
+
                                 </td>
+
                             </tr>
+
                             {% endfor %}
+
                         </tbody>
+
                     </table>
+
                 </div>
+
             </div>
 
-            <!-- Right Summary & Payment Panel -->
+
+
+            <!-- RIGHT SUMMARY & PAYMENT PANEL -->
+
             <div class="pos-summary-panel">
-                <div class="panel-title">
-                    <i class="bi bi-receipt me-2 text-primary"></i> Bill Calculation
+
+                <div class="panel-title mb-3">
+
+                    <i class="bi bi-receipt me-2 text-primary"></i>
+                    Bill Calculation
+
                 </div>
 
-                <div class="summary-line">
-                    <span class="text-secondary">Subtotal</span>
-                    <strong class="text-dark fs-5">₹{{ bill.subtotal }}</strong>
+
+                <div class="summary-line d-flex justify-content-between align-items-center mb-3">
+
+                    <span class="text-secondary">
+                        Subtotal
+                    </span>
+
+                    <strong class="text-dark fs-5">
+                        ₹{{ bill.subtotal }}
+                    </strong>
+
                 </div>
 
-                <div class="summary-field">
-                    <label class="form-label">Discount Type</label>
+
+                <div class="summary-field mb-2">
+
+                    <label class="form-label small text-muted">
+                        Discount Type
+                    </label>
+
                     {{ form.discount_type }}
+
                 </div>
 
-                <div class="summary-field">
-                    <label class="form-label">Discount Amount</label>
+
+                <div class="summary-field mb-2">
+
+                    <label class="form-label small text-muted">
+                        Discount Amount
+                    </label>
+
                     {{ form.discount }}
+
                 </div>
 
-                <div class="summary-field">
-                    <label class="form-label">Service Charge</label>
+
+                <div class="summary-field mb-2">
+
+                    <label class="form-label small text-muted">
+                        Service Charge
+                    </label>
+
                     {{ form.service_charge }}
+
                 </div>
 
-                <div class="summary-field">
-                    <label class="form-label">Tax Rate / Amount</label>
+
+                <div class="summary-field mb-3">
+
+                    <label class="form-label small text-muted">
+                        Tax Rate / Amount
+                    </label>
+
                     {{ form.tax }}
+
                 </div>
 
-                <div class="total-box">
-                    <span>Grand Total Payable</span>
-                    <h1>₹{{ bill.grand_total }}</h1>
-                </div>
 
-                    <!-- Customer Details & Selection Section -->
-                    <div class="customer-section mb-4 p-3 bg-light rounded border">
-                        <h5 class="fw-bold mb-2 text-dark fs-6">
-                            <i class="bi bi-person-fill me-1 text-primary"></i> Customer Details
-                        </h5>
+                <div class="total-box text-center p-3 rounded-4 mb-4 text-white shadow-sm" style="background: linear-gradient(135deg, #059669 0%, #10b981 100%);">
+    <span class="small text-uppercase fw-semibold text-white-50 d-block mb-1">Grand Total Payable</span>
+    <h1 class="display-5 fw-bold mb-0">₹{{ bill.grand_total }}</h1>
+</div>
 
-                        {% if form.non_field_errors %}
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                {{ form.non_field_errors }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
+
+                <!-- CUSTOMER DETAILS -->
+
+                <div class="customer-section mb-4 p-3 bg-light rounded border">
+
+                    <h5 class="fw-bold mb-2 text-dark fs-6">
+
+                        <i class="bi bi-person-fill me-1 text-primary"></i>
+                        Customer Details
+
+                    </h5>
+
+
+                    {% if form.non_field_errors %}
+
+                    <div class="alert alert-danger alert-dismissible fade show"
+                         role="alert">
+
+                        {{ form.non_field_errors }}
+
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="alert"
+                                aria-label="Close">
+                        </button>
+
+                    </div>
+
+                    {% endif %}
+
+
+                    <div class="mb-2">
+
+                        <label class="form-label small fw-bold">
+                            Select Customer
+                        </label>
+
+
+                        {% if form.customer %}
+
+                            {{ form.customer }}
+
+                        {% else %}
+
+                            <select name="customer"
+                                    id="customerSelect"
+                                    class="form-select form-select-sm">
+
+                                <option value="" selected>
+                                    Local Customer (Default Cash/Walk-in)
+                                </option>
+
+
+                                {% for customer in customers %}
+
+                                <option value="{{ customer.id }}"
+                                    {% if bill.customer_id == customer.id %}
+                                        selected
+                                    {% endif %}>
+
+                                    {{ customer.name }}
+
+                                    {% if customer.phone %}
+                                        ({{ customer.phone }})
+                                    {% endif %}
+
+                                </option>
+
+                                {% endfor %}
+
+                            </select>
+
                         {% endif %}
 
-                        <div class="mb-2">
-                            <label class="form-label small font-weight-bold">Select Customer</label>
-                            {% if form.customer %}
-                                {{ form.customer }}
-                            {% else %}
-                                <select name="customer" id="customerSelect" class="form-select form-select-sm">
-                                    <option value="" selected>Local Customer (Default Cash/Walk-in)</option>
-                                    {% for customer in customers %}
-                                        <option value="{{ customer.id }}" {% if bill.customer_id == customer.id %}selected{% endif %}>
-                                            {{ customer.name }} {% if customer.phone %}({{ customer.phone }}){% endif %}
-                                        </option>
-                                    {% endfor %}
-                                </select>
-                            {% endif %}
-                        </div>
                     </div>
+
                 </div>
 
-                <!-- Payment Section -->
-                <div class="payment-section">
-                    <h5 class="fw-bold mb-3 text-dark"><i class="bi bi-credit-card me-2 text-success"></i> Payment Method</h5>
+
+
+                <!-- PAYMENT SECTION -->
+
+                <div class="payment-section mb-4">
+
+                    <h5 class="fw-bold mb-3 text-dark fs-6">
+
+                        <i class="bi bi-credit-card me-2 text-success"></i>
+                        Payment Method
+
+                    </h5>
+
 
                     <div class="mb-3">
-                        <label class="form-label">Select Payment Channel</label>
-                        <select name="payment_method" id="paymentMethodSelect" class="form-select" onchange="handlePaymentMethodChange(this.value)">
-                            <option value="cash">💵 Cash</option>
-                            <option value="upi">📱 UPI / QR Code</option>
-                            <option value="card">💳 Debit / Credit Card</option>
-                            <option value="credit">📑 Credit Account (Customer Ledger)</option>
+
+                        <label class="form-label small text-muted">
+                            Select Payment Channel
+                        </label>
+
+
+                        <select name="payment_method"
+                                id="paymentMethodSelect"
+                                class="form-select"
+                                onchange="handlePaymentMethodChange(this.value)">
+
+                            <option value="cash">
+                                💵 Cash
+                            </option>
+
+                            <option value="upi">
+                                📱 UPI / QR Code
+                            </option>
+
+                            <option value="card">
+                                💳 Debit / Credit Card
+                            </option>
+
+                            <option value="credit">
+                                📑 Credit Account (Customer Ledger)
+                            </option>
+
                         </select>
+
                     </div>
+
 
                     <div class="mb-3">
-                        <label class="form-label">Amount Tendered / Received</label>
-                        <input type="number" step="0.01" name="amount" value="{{ bill.grand_total }}" class="form-control form-control-lg fw-bold text-success" placeholder="Amount received">
+
+                        <label class="form-label small text-muted">
+                            Amount Tendered / Received
+                        </label>
+
+
+                        <input type="number"
+                               step="0.01"
+                               name="amount"
+                               value="{{ bill.grand_total }}"
+                               class="form-control form-control-lg fw-bold text-success"
+                               placeholder="Amount received">
+
                     </div>
 
-                    <div class="mb-4">
-                        <label class="form-label">Reference / Txn ID <span class="text-muted fw-normal">(Optional)</span></label>
-                        <input type="text" name="reference_number" class="form-control" placeholder="UPI Txn ID / Card Ref / Credit Note">
+
+                    <div class="mb-3">
+
+                        <label class="form-label small text-muted">
+
+                            Reference / Txn ID
+                            <span class="text-muted fw-normal">
+                                (Optional)
+                            </span>
+
+                        </label>
+
+
+                        <input type="text"
+                               name="reference_number"
+                               class="form-control"
+                               placeholder="UPI Txn ID / Card Ref / Credit Note">
+
                     </div>
+
                 </div>
+
+
+
+                <!-- ACTION BUTTONS -->
 
                 <div class="d-grid gap-2">
-                    <button type="submit" name="action" value="complete_payment" class="btn btn-success btn-lg rounded-pill fw-bold py-3 shadow-sm">
-                        <i class="bi bi-check-circle-fill me-2"></i> Complete Payment
+
+                    <button type="submit"
+                            name="action"
+                            value="complete_payment"
+                            class="btn btn-success btn-lg rounded-pill fw-bold py-3 shadow-sm">
+
+                        <i class="bi bi-check-circle-fill me-2"></i>
+
+                        Complete Payment
+
                     </button>
-                    <button type="submit" name="action" value="update_bill" class="btn btn-light rounded-pill fw-bold">
-                        <i class="bi bi-arrow-clockwise me-1"></i> Recalculate Bill
+
+
+                    <button type="submit"
+                            name="action"
+                            value="update_bill"
+                            class="btn btn-outline-secondary rounded-pill fw-bold">
+
+                        <i class="bi bi-arrow-clockwise me-1"></i>
+
+                        Recalculate Bill
+
                     </button>
+
                 </div>
+
             </div>
 
         </div>
+
     </form>
 
 </div>
 
+
 <script>
+
 function handlePaymentMethodChange(method) {
-    const customerSelect = document.getElementById('customerSelect');
+
+    const customerSelect =
+        document.getElementById('id_customer') ||
+        document.getElementById('customerSelect');
+
+
     if (customerSelect) {
+
         if (method === 'credit') {
+
             customerSelect.required = true;
+
+
             if (!customerSelect.value) {
-                alert('Please select a Customer for Credit / Ledger payments.');
+
+                alert(
+                    'Please select a Customer for Credit / Ledger payments.'
+                );
+
                 customerSelect.focus();
+
             }
+
         } else {
+
             customerSelect.required = false;
+
         }
+
     }
+
 }
+
 </script>
+
 {% endblock %}
 
+
 {% block extra_js %}
+
 <script src="{% static 'js/billing.js' %}"></script>
+
 {% endblock %}
