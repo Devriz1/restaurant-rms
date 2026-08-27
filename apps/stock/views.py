@@ -10,7 +10,7 @@ from django.db.models import Count, F, Q, Sum
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView,DetailView
 
-from apps.inventory.models import Material
+from apps.inventory.models import Material, Category, Supplier
 from apps.purchase.models import Purchase
 
 from .models import StockLedger, StockAdjustment
@@ -119,7 +119,7 @@ class CurrentStockListView(LoginRequiredMixin, ListView):
 
             "unit",
 
-    )
+        )
 
         search = self.request.GET.get("q")
 
@@ -133,57 +133,83 @@ class CurrentStockListView(LoginRequiredMixin, ListView):
 
             queryset = queryset.filter(
 
-            Q(name__icontains=search)
+                Q(name__icontains=search)
 
-            | Q(code__icontains=search)
+                | Q(code__icontains=search)
 
-            | Q(barcode__icontains=search)
+                | Q(barcode__icontains=search)
 
-        )
+            )
 
         if category:
 
             queryset = queryset.filter(
 
-            category_id=category
+                category_id=category
 
-        )
+            )
 
         if supplier:
 
             queryset = queryset.filter(
 
-            supplier_id=supplier
+                supplier_id=supplier
 
-        )
+            )
 
         if status == "low":
 
             queryset = queryset.filter(
 
-            current_stock__lte=F("minimum_stock"),
+                current_stock__lte=F("minimum_stock"),
 
-            current_stock__gt=0,
+                current_stock__gt=0,
 
-        )
+            )
 
         elif status == "out":
 
             queryset = queryset.filter(
 
-            current_stock=0,
+                current_stock=0,
 
-        )
+            )
 
         elif status == "normal":
 
             queryset = queryset.filter(
 
-            current_stock__gt=F("minimum_stock")
+                current_stock__gt=F("minimum_stock")
 
-        )
+            )
 
         return queryset.order_by("name")
+
+    def get_context_data(self, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+
+        materials = Material.objects.all()
+
+        context["low_stock"] = materials.filter(
+            current_stock__lte=F("minimum_stock"),
+            current_stock__gt=0,
+        ).count()
+
+        context["out_of_stock"] = materials.filter(
+            current_stock=0,
+        ).count()
+
+        context["inventory_value"] = sum(
+            material.current_stock * material.cost_price
+            for material in materials
+        )
+
+        context["categories"] = Category.objects.all()
+
+        context["suppliers"] = Supplier.objects.all()
+
+        return context
     
     
 class MaterialDetailView(LoginRequiredMixin, DetailView):
