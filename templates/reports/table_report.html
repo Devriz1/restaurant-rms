@@ -109,7 +109,7 @@
                             {{ row.total_items }}
                         </td>
                         <td data-column="revenue" class="text-end fw-bold text-dark font-monospace">
-                            ₹{{ row.total_revenue }}
+                            {{ currency_symbol }}{{ row.total_revenue }}
                         </td>
                     </tr>
                 {% empty %}

@@ -577,7 +577,7 @@
                                     <span class="required-star">*</span>
                                 </label>
                                 <div class="input-icon-wrap">
-                                    <span class="field-prefix">₹</span>
+                                    <span class="field-prefix">{{ currency_symbol }}</span>
                                     {{ form.price }}
                                 </div>
                                 {% if form.price.errors %}

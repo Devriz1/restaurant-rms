@@ -132,7 +132,7 @@
                             {% endif %}
                         </td>
                         <td data-column="amount" class="text-end fw-bold text-dark font-monospace">
-                            ₹{{ payment.amount }}
+                            {{ currency_symbol }}{{ payment.amount }}
                         </td>
                         <td data-column="reference">
                             {% if payment.reference_number %}

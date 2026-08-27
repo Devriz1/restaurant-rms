@@ -1104,6 +1104,52 @@
         });
     }
 
+    /* ---------- Auto-sync currency symbol ---------- */
+    const currencyInput = $("id_currency");
+    const symbolInput = $("id_currency_symbol");
+
+    if (currencyInput && symbolInput) {
+        const currencySymbols = {
+            "INR": "₹", "USD": "$", "EUR": "€", "GBP": "£",
+            "JPY": "¥", "CNY": "¥", "AUD": "A$", "CAD": "C$",
+            "CHF": "Fr", "HKD": "HK$", "SGD": "S$", "AED": "د.إ",
+            "SAR": "﷼", "ZAR": "R", "BRL": "R$", "MXN": "$",
+            "KRW": "₩", "THB": "฿", "MYR": "RM", "IDR": "Rp",
+            "PHP": "₱", "NZD": "NZ$", "SEK": "kr", "NOK": "kr",
+            "DKK": "kr", "PLN": "zł", "RUB": "₽", "TRY": "₺",
+            "BGN": "лв", "CZK": "Kč", "HUF": "Ft", "RON": "lei",
+            "ILS": "₪", "EGP": "E£", "BDT": "৳", "PKR": "Rs",
+            "LKR": "Rs", "NPR": "Rs", "AFN": "؋", "IRR": "﷼",
+            "IQD": "ع.د", "KWD": "د.ك", "QAR": "﷼", "BHD": "ب.د",
+            "OMR": "﷼", "JOD": "د.ا", "LBP": "ل.ل", "SYP": "£S",
+            "MAD": "د.م.", "TND": "د.ت", "DZD": "د.ج", "LYD": "ل.د",
+            "SDG": "ج.س.", "SSP": "£", "ETB": "Br", "KES": "KSh",
+            "TZS": "TSh", "UGX": "USh", "RWF": "RF", "MUR": "₨",
+            "MVR": "ރ", "PKR": "₨", "INR": "₹", "NPR": "₨",
+            "BTN": "Nu.", "SCR": "₨", "GMD": "D", "GHS": "₵",
+            "NGN": "₦", "XOF": "CFA", "XAF": "CFA", "MGA": "Ar",
+            "MZM": "MT", "BWP": "P", "NAD": "N$", "ZMW": "ZK",
+            "ZWL": "Z$", "AOA": "Kz", "CVE": "Esc", "STN": "Db",
+            "GNF": "FG", "SLL": "Le", "LRD": "L$", "CDF": "FC",
+            "ANG": "ƒ", "AWG": "ƒ", "BBD": "Bds$", "BZD": "BZ$",
+            "BMD": "BD$", "KYD": "CI$", "CRC": "₡", "NIO": "C$",
+            "PAB": "B/.", "PYG": "₲", "UYU": "$U", "ARS": "$",
+            "CLP": "$", "COP": "$", "BOB": "Bs.", "PEN": "S/.",
+            "VES": "Bs.", "COP": "$", "DOP": "RD$", "HTG": "G",
+            "JMD": "J$", "TTD": "TT$", "XCD": "EC$", "BZD": "BZ$",
+        };
+
+        const updateSymbol = () => {
+            const code = currencyInput.value.trim().toUpperCase();
+            if (code && currencySymbols[code]) {
+                symbolInput.value = currencySymbols[code];
+            }
+        };
+
+        currencyInput.addEventListener("change", updateSymbol);
+        currencyInput.addEventListener("blur", updateSymbol);
+    }
+
 })();
 </script>
 {% endblock %}

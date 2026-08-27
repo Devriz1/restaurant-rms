@@ -248,7 +248,7 @@ Recipes
 
                     <td class="text-end fw-semibold">
 
-                        ₹{{ recipe.total_cost|floatformat:2 }}
+                         {{ currency_symbol }}{{ recipe.total_cost|floatformat:2 }}
 
                     </td>
 
@@ -257,7 +257,7 @@ Recipes
 
                     <td class="text-end">
 
-                        ₹{{ recipe.selling_price|floatformat:2 }}
+                         {{ currency_symbol }}{{ recipe.selling_price|floatformat:2 }}
 
                     </td>
 

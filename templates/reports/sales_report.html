@@ -150,7 +150,7 @@
 
                         <!-- Total -->
                         <td data-column="total" class="text-end fw-bold text-dark font-monospace">
-                            ₹{{ bill.grand_total|floatformat:2 }}
+                            {{ currency_symbol }}{{ bill.grand_total|floatformat:2 }}
                         </td>
 
                         <!-- Cashier -->

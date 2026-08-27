@@ -276,7 +276,7 @@ Inventory / Purchases / Details
 
                             <td class="text-end">
 
-                                ₹ {{ item.unit_price }}
+                                 {{ currency_symbol }} {{ item.unit_price }}
 
                             </td>
 
@@ -288,7 +288,7 @@ Inventory / Purchases / Details
 
                             <td class="text-end fw-bold">
 
-                                ₹ {{ item.line_total }}
+                                 {{ currency_symbol }} {{ item.line_total }}
 
                             </td>
 
@@ -403,7 +403,7 @@ Inventory / Purchases / Details
 
                         <strong>
 
-                            ₹ {{ purchase.subtotal }}
+                            {{ currency_symbol }} {{ purchase.subtotal }}
 
                         </strong>
 
@@ -419,7 +419,7 @@ Inventory / Purchases / Details
 
                         <strong class="text-danger">
 
-                            ₹ {{ purchase.discount }}
+                            {{ currency_symbol }} {{ purchase.discount }}
 
                         </strong>
 
@@ -435,7 +435,7 @@ Inventory / Purchases / Details
 
                         <strong>
 
-                            ₹ {{ purchase.other_charges }}
+                            {{ currency_symbol }} {{ purchase.other_charges }}
 
                         </strong>
 
@@ -453,7 +453,7 @@ Inventory / Purchases / Details
 
                         <h4 class="text-success fw-bold">
 
-                            ₹ {{ purchase.grand_total }}
+                            {{ currency_symbol }} {{ purchase.grand_total }}
 
                         </h4>
 

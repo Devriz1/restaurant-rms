@@ -95,7 +95,7 @@ Stock
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
                             <span class="text-muted text-uppercase fs-7 fw-semibold">Inventory Value</span>
-                            <h3 class="fw-bold mt-2 mb-0">₹{{ inventory_value|default:"0.00" }}</h3>
+                            <h3 class="fw-bold mt-2 mb-0">{{ currency_symbol }}{{ inventory_value|default:"0.00" }}</h3>
                         </div>
                         <div class="icon-shape bg-success-soft text-success">
                             <i class="bi bi-currency-rupee fs-5"></i>

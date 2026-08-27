@@ -116,7 +116,7 @@
                             {{ item.total_orders }}
                         </td>
                         <td data-column="sales" class="text-end fw-bold text-dark font-monospace">
-                            ₹{{ item.total_sales }}
+                            {{ currency_symbol }}{{ item.total_sales }}
                         </td>
                     </tr>
                 {% empty %}

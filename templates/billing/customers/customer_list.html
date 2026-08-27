@@ -108,11 +108,11 @@
                             </td>
                              <td>
                                  {% if customer.balance > 0 %}
-                                     <span class="fw-bold text-danger">₹{{ customer.balance|floatformat:2 }}</span>
+                                     <span class="fw-bold text-danger">{{ currency_symbol }}{{ customer.balance|floatformat:2 }}</span>
                                  {% elif customer.balance < 0 %}
-                                     <span class="fw-bold text-success">₹{{ customer.balance|floatformat:2 }}</span>
+                                     <span class="fw-bold text-success">{{ currency_symbol }}{{ customer.balance|floatformat:2 }}</span>
                                  {% else %}
-                                     <span class="fw-bold text-muted">₹0.00</span>
+                                     <span class="fw-bold text-muted">{{ currency_symbol }}0.00</span>
                                  {% endif %}
                              </td>
                             <td class="text-end pe-4">

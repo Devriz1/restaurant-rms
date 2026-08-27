@@ -1,9 +1,9 @@
 <div class="report-actions">
 
     <button
-        class="btn btn-outline-primary"
+        class="btn btn-outline-secondary"
         type="button"
-    >
+        onclick="window.print();">
 
         <i class="bi bi-printer"></i>
 
@@ -14,7 +14,7 @@
     <button
         class="btn btn-outline-success"
         type="button"
-    >
+        onclick="window.location.href=getExportUrl('csv');">
 
         <i class="bi bi-file-earmark-excel"></i>
 
@@ -25,7 +25,7 @@
     <button
         class="btn btn-outline-danger"
         type="button"
-    >
+        onclick="window.location.href=getExportUrl('pdf');">
 
         <i class="bi bi-file-earmark-pdf"></i>
 
@@ -34,3 +34,15 @@
     </button>
 
 </div>
+
+<script>
+function getExportUrl(format) {
+    var path = window.location.pathname;
+    if (path.endsWith('/')) {
+        path = path.slice(0, -1);
+    }
+    var search = window.location.search;
+    var prefix = search ? '?' : '';
+    return path + '/export/' + format + '/' + prefix + search.replace('?', '');
+}
+</script>

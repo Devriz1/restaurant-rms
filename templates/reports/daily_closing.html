@@ -135,7 +135,7 @@
                             <i class="bi bi-person me-1"></i>{{ bill.created_by|default:"System" }}
                         </td>
                         <td data-column="total" class="text-end fw-bold text-dark font-monospace">
-                            ₹{{ bill.grand_total }}
+                                {{ currency_symbol }}{{ bill.grand_total }}
                         </td>
                         <td data-column="status" class="text-center">
                             {% if bill.status == "paid" %}
@@ -182,19 +182,19 @@
                 <tbody>
                     <tr>
                         <td class="fw-semibold">Cash</td>
-                        <td class="text-end text-success fw-bold">₹ {{ cash }}</td>
+                        <td class="text-end text-success fw-bold">{{ currency_symbol }} {{ cash }}</td>
                     </tr>
                     <tr>
                         <td class="fw-semibold">UPI</td>
-                        <td class="text-end text-success fw-bold">₹ {{ upi }}</td>
+                        <td class="text-end text-success fw-bold">{{ currency_symbol }} {{ upi }}</td>
                     </tr>
                     <tr>
                         <td class="fw-semibold">Card</td>
-                        <td class="text-end text-success fw-bold">₹ {{ card }}</td>
+                        <td class="text-end text-success fw-bold">{{ currency_symbol }} {{ card }}</td>
                     </tr>
                     <tr class="table-light">
                         <td class="fw-bold">Total Collection</td>
-                        <td class="text-end fw-bold text-primary">₹ {{ total_sales }}</td>
+                        <td class="text-end fw-bold text-primary">{{ currency_symbol }} {{ total_sales }}</td>
                     </tr>
                 </tbody>
             </table>

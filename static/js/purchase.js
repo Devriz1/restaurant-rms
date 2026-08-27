@@ -155,20 +155,22 @@ function calculatePurchase() {
 
     grandTotal = subtotal + gstTotal + other - discount;
 
+    const symbol = document.querySelector('meta[name="currency-symbol"]')?.content || "₹";
+
     document.getElementById("subtotal").innerText =
-        "₹ " + subtotal.toFixed(2);
+        symbol + " " + subtotal.toFixed(2);
 
     document.getElementById("gst-total").innerText =
-        "₹ " + gstTotal.toFixed(2);
+        symbol + " " + gstTotal.toFixed(2);
 
     document.getElementById("discount-total").innerText =
-        "₹ " + discount.toFixed(2);
+        symbol + " " + discount.toFixed(2);
 
     document.getElementById("other-total").innerText =
-        "₹ " + other.toFixed(2);
+        symbol + " " + other.toFixed(2);
 
     document.getElementById("grand-total").innerText =
-        "₹ " + grandTotal.toFixed(2);
+        symbol + " " + grandTotal.toFixed(2);
 
 }
 // ==========================================================

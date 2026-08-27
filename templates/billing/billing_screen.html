@@ -98,13 +98,13 @@
                                 </td>
 
                                 <td class="text-end">
-                                    ₹{{ item.unit_price }}
+                                    {{ currency_symbol }}{{ item.unit_price }}
                                 </td>
 
                                 <td class="text-end">
 
                                     <strong class="text-primary">
-                                        ₹{{ item.line_total }}
+                                        {{ currency_symbol }}{{ item.line_total }}
                                     </strong>
 
                                 </td>
@@ -157,7 +157,7 @@
                     </span>
 
                     <strong class="text-dark fs-5">
-                        ₹{{ bill.subtotal }}
+                        {{ currency_symbol }}{{ bill.subtotal }}
                     </strong>
 
                 </div>
@@ -209,7 +209,7 @@
 
                 <div class="total-box text-center p-3 rounded-4 mb-4 text-white shadow-sm" style="background: linear-gradient(135deg, #059669 0%, #10b981 100%);">
     <span class="small text-uppercase fw-semibold text-white-50 d-block mb-1">Grand Total Payable</span>
-    <h1 class="display-5 fw-bold mb-0">₹{{ bill.grand_total }}</h1>
+    <h1 class="display-5 fw-bold mb-0">{{ currency_symbol }}{{ bill.grand_total }}</h1>
 </div>
 
 

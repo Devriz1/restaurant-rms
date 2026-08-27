@@ -55,7 +55,7 @@
             <div class="card h-100 border-0 shadow-sm border-start border-4 border-danger">
                 <div class="card-body">
                     <h6 class="text-uppercase text-muted fw-bold mb-2 fs-7">Current Outstanding</h6>
-                    <h2 class="fw-bold text-danger mb-0">₹{{ outstanding|floatformat:2 }}</h2>
+                     <h2 class="fw-bold text-danger mb-0">{{ currency_symbol }}{{ outstanding|floatformat:2 }}</h2>
                     <small class="text-muted">Authoritative ledger balance</small>
                 </div>
             </div>
@@ -66,7 +66,7 @@
             <div class="card h-100 border-0 shadow-sm border-start border-4 border-info">
                 <div class="card-body">
                     <h6 class="text-uppercase text-muted fw-bold mb-2 fs-7">Credit Limit</h6>
-                    <h2 class="fw-bold text-dark mb-0">₹{{ customer.credit_limit|floatformat:2 }}</h2>
+                     <h2 class="fw-bold text-dark mb-0">{{ currency_symbol }}{{ customer.credit_limit|floatformat:2 }}</h2>
                     <small class="text-muted">Maximum allowable credit</small>
                 </div>
             </div>
@@ -77,7 +77,7 @@
             <div class="card h-100 border-0 shadow-sm border-start border-4 border-success">
                 <div class="card-body">
                     <h6 class="text-uppercase text-muted fw-bold mb-2 fs-7">Available Credit</h6>
-                    <h2 class="fw-bold text-success mb-0">₹{{ available_credit|floatformat:2 }}</h2>
+                     <h2 class="fw-bold text-success mb-0">{{ currency_symbol }}{{ available_credit|floatformat:2 }}</h2>
                     <small class="text-muted">Remaining purchasing capacity</small>
                 </div>
             </div>
@@ -150,7 +150,7 @@
                             <!-- Debit Column -->
                             <td class="text-end fw-bold text-danger">
                                 {% if entry.entry_type == 'DEBIT' %}
-                                    +₹{{ entry.amount|floatformat:2 }}
+                                    {{ currency_symbol }}{{ entry.amount|floatformat:2 }}
                                 {% else %}
                                     <span class="text-muted font-weight-normal">—</span>
                                 {% endif %}
@@ -158,14 +158,14 @@
                             <!-- Credit Column -->
                             <td class="text-end fw-bold text-success">
                                 {% if entry.entry_type == 'CREDIT' %}
-                                    -₹{{ entry.amount|floatformat:2 }}
+                                    -{{ currency_symbol }}{{ entry.amount|floatformat:2 }}
                                 {% else %}
                                     <span class="text-muted font-weight-normal">—</span>
                                 {% endif %}
                             </td>
                             <!-- Running Balance Column -->
                             <td class="text-end pe-3 fw-bold text-dark fs-6">
-                                ₹{{ balance|floatformat:2 }}
+                                {{ currency_symbol }}{{ balance|floatformat:2 }}
                             </td>
                         </tr>
                         {% empty %}
