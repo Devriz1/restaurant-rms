@@ -29,6 +29,8 @@ from .models import (
     Material,
 )
 
+from apps.stock.models import StockLedger
+
 from .forms import (
     UnitForm,
     SupplierForm,
@@ -39,15 +41,56 @@ from .forms import (
 @login_required
 def dashboard(request):
 
+    total_materials = Material.objects.count()
+
+    total_suppliers = Supplier.objects.count()
+
+    low_stock = Material.objects.filter(
+        current_stock__gt=0,
+        current_stock__lte=F("minimum_stock"),
+    ).count()
+
+    out_of_stock = Material.objects.filter(
+        current_stock=0,
+    ).count()
+
+    low_stock_items = Material.objects.filter(
+        current_stock__lte=F("minimum_stock"),
+    ).select_related("unit", "category")[:10]
+
+    total_units = Unit.objects.count()
+
+    active_units = Unit.objects.filter(is_active=True).count()
+
+    weight_units = Unit.objects.filter(unit_type="WEIGHT").count()
+
+    volume_units = Unit.objects.filter(unit_type="VOLUME").count()
+
+    recent_activities = StockLedger.objects.select_related(
+        "material"
+    ).order_by("-created_at")[:10]
+
     context = {
 
-        "total_materials": 0,
+        "total_materials": total_materials,
 
-        "total_suppliers": 0,
+        "total_suppliers": total_suppliers,
 
-        "low_stock": 0,
+        "low_stock": low_stock,
 
-        "out_of_stock": 0,
+        "out_of_stock": out_of_stock,
+
+        "low_stock_items": low_stock_items,
+
+        "total_units": total_units,
+
+        "active_units": active_units,
+
+        "weight_units": weight_units,
+
+        "volume_units": volume_units,
+
+        "recent_activities": recent_activities,
 
     }
 
