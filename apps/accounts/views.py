@@ -1,6 +1,9 @@
 from django.contrib import messages
 from django.contrib.auth import get_user_model, logout
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.cache import never_cache
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import never_cache
 from django.contrib.auth.views import LoginView
 from django.shortcuts import (
     get_object_or_404,
@@ -25,6 +28,7 @@ User = get_user_model()
 # ==========================================================
 @login_required
 @permission_required("users.view")
+@never_cache
 def user_list(request):
 
     users = User.objects.order_by("username")
@@ -44,6 +48,7 @@ def user_list(request):
 
 @login_required
 @permission_required("users.add")
+@never_cache
 def user_add(request):
 
     permissions = Permission.objects.order_by(
@@ -185,6 +190,7 @@ def user_edit(request, pk):
 
 @login_required
 @permission_required("users.delete")
+@never_cache
 def user_delete(request, pk):
 
     user = get_object_or_404(
@@ -298,8 +304,9 @@ def change_user_password(request, pk):
 # LOGIN
 # ==========================================================
 
+@method_decorator(never_cache, name="dispatch")
 class UserLoginView(LoginView):
-
+    #//this main part login //
     template_name = "registration/login.html"
 
     authentication_form = LoginForm
@@ -309,6 +316,17 @@ class UserLoginView(LoginView):
     def get_success_url(self):
 
         user = self.request.user
+
+        # Persist the selected financial period on the user
+        period_id = self.request.POST.get("period")
+        if period_id:
+            try:
+                from apps.billing.models import Period
+                period = Period.objects.get(pk=period_id)
+                user.current_period = period
+                user.save(update_fields=["current_period"])
+            except Exception:
+                pass
 
         if user.is_superuser:
             return "/"

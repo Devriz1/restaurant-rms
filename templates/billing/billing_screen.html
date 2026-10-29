@@ -21,11 +21,16 @@
             </h1>
 
             <p class="mb-0 text-muted">
+                {% if guest.is_takeaway %}
+                Takeaway:
+                <strong>{{ guest.guest_name|default:"Walk-in Customer" }}</strong>
+                {% else %}
                 Table:
                 <strong>{{ guest.session.table.display_name }}</strong>
                 &bull;
                 Guest Session #
                 <strong>{{ guest.guest_number }}</strong>
+                {% endif %}
             </p>
         </div>
 
@@ -55,7 +60,7 @@
                     </span>
 
                     <span class="badge bg-primary rounded-pill px-3 py-2">
-                        {{ items|length }} Items
+                        {{ grouped_items|length }} Items
                     </span>
 
                 </div>
@@ -79,20 +84,23 @@
 
                         <tbody>
 
-                            {% for item in items %}
+                            {% for item in grouped_items %}
 
                             <tr>
 
                                 <td>
                                     <span class="fw-bold text-dark d-block">
-                                        {{ item.menu_item.name }}
+                                        {{ item.menu_item__name }}
                                     </span>
+                                    <small class="text-muted fs-7">
+                                        {{ item.menu_item__item_code|default:"" }}
+                                    </small>
                                 </td>
 
                                 <td class="text-center">
 
                                     <span class="badge bg-light text-dark border px-3 py-1">
-                                        ×{{ item.quantity }}
+                                        ×{{ item.total_quantity }}
                                     </span>
 
                                 </td>
@@ -104,7 +112,7 @@
                                 <td class="text-end">
 
                                     <strong class="text-primary">
-                                        {{ currency_symbol }}{{ item.line_total }}
+                                        {{ currency_symbol }}{{ item.total_line_total }}
                                     </strong>
 
                                 </td>

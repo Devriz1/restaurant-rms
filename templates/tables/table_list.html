@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load permissions %}
 
 {% block title %}Restaurant Tables | Restaurant RMS{% endblock %}
 {% block breadcrumb %}Master Data{% endblock %}
@@ -29,6 +30,7 @@
                         <th>Dining Area / Zone</th>
                         <th>Seating Capacity</th>
                         <th>Current Status</th>
+                        <th class="text-end">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -53,10 +55,22 @@
                                 <span class="badge-status badge-primary">Out of Service</span>
                             {% endif %}
                         </td>
+                        <td class="text-end">
+                            {% if request.user|has_permission:"tables.edit" %}
+                            <a href="{% url 'tables:table-edit' table.pk %}" class="btn btn-sm btn-outline-primary" title="Edit">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            {% endif %}
+                            {% if request.user|has_permission:"tables.delete" %}
+                            <a href="{% url 'tables:table-delete' table.pk %}" class="btn btn-sm btn-outline-danger" title="Delete">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                            {% endif %}
+                        </td>
                     </tr>
                 {% empty %}
                     <tr>
-                        <td colspan="5" class="text-center py-5 text-muted">
+                        <td colspan="6" class="text-center py-5 text-muted">
                             <i class="bi bi-table fs-1 text-muted mb-2 d-block"></i>
                             <h5 class="fw-bold text-dark">No Tables Configured</h5>
                             <p class="text-secondary mb-3">Click below to add your first dining table.</p>

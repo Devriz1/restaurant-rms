@@ -8,4 +8,6 @@ from .dining_area import (
 from .restaurant_table import (
     RestaurantTableListView,
     RestaurantTableCreateView,
+    RestaurantTableUpdateView,
+    RestaurantTableDeleteView,
 )

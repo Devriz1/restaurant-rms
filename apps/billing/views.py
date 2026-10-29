@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.db import transaction, IntegrityError
-from django.db.models import Q, Sum
+from django.db.models import F, Q, Sum
 from django.db.models.functions import Coalesce
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
@@ -13,8 +13,19 @@ from apps.orders.models import GuestOrder
 from apps.settings.printer import PrinterManager
 from apps.settings.receipt_builder import build_receipt
 
-from .forms import BillForm
-from .models import Bill, Customer, CreditLedgerEntry, CustomerPayment, Payment
+from .forms import BillForm, PeriodForm
+from .models import Bill, Customer, CreditLedgerEntry, CustomerPayment, Payment, Period
+from apps.audit.utils import audit_log
+from apps.restaurant.models import Restaurant
+
+
+def _get_currency_symbol():
+    """Return the configured currency symbol from restaurant settings."""
+    try:
+        restaurant = Restaurant.objects.first()
+        return restaurant.currency_symbol if restaurant else "₹"
+    except Exception:
+        return "₹"
 
 
 # ==========================================================
@@ -44,9 +55,9 @@ def dashboard(request):
             "items",
         )
         .order_by(
-            "session__table__area",
-            "session__table__table_number",
-            "guest_number",
+            F("session__table__area").asc(nulls_last=True),
+            F("session__table__table_number").asc(nulls_last=True),
+            F("guest_number").asc(nulls_last=True),
         )
     )
 
@@ -167,7 +178,7 @@ def billing_screen(request, guest_id):
                     if bill.customer.available_credit < amount:
                         messages.warning(
                             request,
-                            f"Credit limit exceeded! Customer available credit: ₹{bill.customer.available_credit}. "
+                            f"Credit limit exceeded! Customer available credit: {_get_currency_symbol()}{bill.customer.available_credit}. "
                             f"Proceeding with credit sale anyway."
                         )
 
@@ -200,6 +211,36 @@ def billing_screen(request, guest_id):
                 bill.paid_at = timezone.now()
                 bill.save()
 
+                audit_log(
+                    request.user,
+                    "payment",
+                    "Bill",
+                    bill.id,
+                    str(bill),
+                    f"Bill {bill.bill_number} paid with {payment_method} for amount {bill.grand_total}.",
+                    request,
+                )
+
+                # Defer receipt printing to after the transaction commits
+                # and run it in a background thread to avoid blocking
+                # the HTTP response on slow printer I/O
+                def _print_receipt():
+                    try:
+                        receipt = build_receipt(bill)
+                        PrinterManager.print_bill(receipt)
+                    except Exception as e:
+                        print("=" * 60)
+                        print("Receipt Printing Failed")
+                        print(e)
+                        print("=" * 60)
+
+                def _async_print():
+                    import threading
+                    thread = threading.Thread(target=_print_receipt, daemon=True)
+                    thread.start()
+
+                transaction.on_commit(_async_print)
+
                 # ======================================
                 # MARK GUEST AS PAID
                 # ======================================
@@ -207,40 +248,30 @@ def billing_screen(request, guest_id):
                 guest.save()
 
                 # ======================================
-                # PRINT RECEIPT
-                # ======================================
-                try:
-                    receipt = build_receipt(bill)
-                    PrinterManager.print_bill(receipt)
-                except Exception as e:
-                    print("=" * 60)
-                    print("Receipt Printing Failed")
-                    print(e)
-                    print("=" * 60)
-
-                # ======================================
                 # CLOSE SESSION IF NO ACTIVE GUESTS
                 # ======================================
                 session = guest.session
 
-                active_guests = session.guest_orders.filter(
-                    status__in=[
-                        "open",
-                        "preparing",
-                        "ready",
-                        "served",
-                    ]
-                ).exists()
+                if session is not None:
 
-                if not active_guests:
+                    active_guests = session.guest_orders.filter(
+                        status__in=[
+                            "open",
+                            "preparing",
+                            "ready",
+                            "served",
+                        ]
+                    ).exists()
 
-                    session.status = "closed"
-                    session.closed_at = timezone.now()
-                    session.save()
+                    if not active_guests:
 
-                    table = session.table
-                    table.status = "available"
-                    table.save()
+                        session.status = "closed"
+                        session.closed_at = timezone.now()
+                        session.save()
+
+                        table = session.table
+                        table.status = "available"
+                        table.save()
 
                 messages.success(
                     request,
@@ -254,11 +285,33 @@ def billing_screen(request, guest_id):
     # Fetch all active customers for selection
     customers = Customer.objects.filter(is_active=True).order_by("name")
 
+    # Group items by menu_item + charged unit price, summing quantities
+    # Exclude cancelled items so they don't appear on the bill
+    grouped_items = (
+        guest.items
+        .exclude(status="cancelled")
+        .values(
+            "menu_item__id",
+            "menu_item__name",
+            "unit_price",
+            "menu_item__image",
+            "menu_item__is_veg",
+            "menu_item__is_available",
+            "menu_item__item_code",
+        )
+        .annotate(
+            total_quantity=Sum("quantity"),
+            total_line_total=Sum("line_total"),
+        )
+        .order_by("menu_item__name")
+    )
+
     context = {
         "guest": guest,
         "bill": bill,
         "form": form,
-        "items": guest.items.all(),
+        "items": guest.items.exclude(status="cancelled"),
+        "grouped_items": grouped_items,
         "customers": customers,
     }
 
@@ -416,10 +469,31 @@ def receive_customer_payment(request, pk):
             created_by=request.user,
         )
 
-        messages.success(request, f"Successfully recorded payment of ₹{amount} for {customer.name}.")
+        messages.success(request, f"Successfully recorded payment of {_get_currency_symbol()}{amount} for {customer.name}.")
         return redirect('billing:customer_detail', pk=customer.pk)
 
     return render(request, 'billing/customers/receive_payment.html', {
         'customer': customer,
         'outstanding': customer.current_outstanding,
     })
+
+
+# ==========================================================
+# FINANCIAL PERIODS
+# ==========================================================
+
+@login_required
+def activate_period(request, pk):
+    """Activate a financial period — bill numbering resets from 1."""
+
+    period = get_object_or_404(Period, pk=pk)
+    Period.objects.filter(is_active=True).exclude(pk=pk).update(is_active=False)
+    period.is_active = True
+    period.save()
+
+    messages.success(
+        request,
+        f"Period '{period.name}' is now active. Invoice numbers will reset from 1.",
+    )
+
+    return redirect("billing:period-list")

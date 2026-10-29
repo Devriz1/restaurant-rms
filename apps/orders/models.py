@@ -85,6 +85,11 @@ class TableSession(models.Model):
 
 class GuestOrder(models.Model):
 
+    ORDER_TYPE_CHOICES = [
+        ("dine_in", "Dine In"),
+        ("takeaway", "Takeaway"),
+    ]
+
     STATUS_CHOICES = [
         ("open", "Open"),
         ("preparing", "Preparing"),
@@ -100,10 +105,18 @@ class GuestOrder(models.Model):
         blank=True,
     )
 
+    order_type = models.CharField(
+        max_length=10,
+        choices=ORDER_TYPE_CHOICES,
+        default="dine_in",
+    )
+
     session = models.ForeignKey(
         TableSession,
         on_delete=models.CASCADE,
         related_name="guest_orders",
+        null=True,
+        blank=True,
     )
 
     guest_number = models.PositiveSmallIntegerField()
@@ -170,11 +183,36 @@ class GuestOrder(models.Model):
         super().save(*args, **kwargs)
 
     @property
+    def is_takeaway(self):
+        return self.order_type == "takeaway"
+
+    @property
+    def price_type(self):
+        """Menu price tier this order bills at."""
+        return (
+            MenuItem.PRICE_TAKEAWAY
+            if self.is_takeaway
+            else MenuItem.PRICE_NORMAL
+        )
+
+    @property
+    def table(self):
+        return self.session.table if self.session else None
+
+    @property
+    def label(self):
+        if self.is_takeaway:
+            return self.guest_name or "Takeaway"
+        if self.session:
+            return self.session.table.display_name
+        return self.order_number
+
+    @property
     def subtotal(self):
 
         total = Decimal("0.00")
 
-        for item in self.items.all():
+        for item in self.items.exclude(status="cancelled"):
             total += item.line_total
 
         return total
@@ -345,3 +383,58 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f"{self.menu_item} x {self.quantity}"
+
+
+class Notification(models.Model):
+
+    TYPE_CHOICES = [
+        ("order_ready", "Order Ready"),
+        ("order_served", "Order Served"),
+        ("item_served", "Item Served"),
+    ]
+
+    recipient = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="notifications",
+        null=True,
+        blank=True,
+    )
+
+    order = models.ForeignKey(
+        GuestOrder,
+        on_delete=models.CASCADE,
+        related_name="notifications",
+        null=True,
+        blank=True,
+    )
+
+    bill = models.ForeignKey(
+        "billing.Bill",
+        on_delete=models.CASCADE,
+        related_name="notifications",
+        null=True,
+        blank=True,
+    )
+
+    message = models.CharField(max_length=255)
+
+    notification_type = models.CharField(
+        max_length=20,
+        choices=TYPE_CHOICES,
+        default="item_served",
+    )
+
+    is_read = models.BooleanField(
+        default=False,
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+    )
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return self.message

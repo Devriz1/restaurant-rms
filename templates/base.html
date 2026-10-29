@@ -35,6 +35,9 @@
     <link rel="manifest" href="/manifest.json">
     <link rel="apple-touch-icon" href="{% static 'icons/apple-touch-icon.png' %}">
 
+    <!-- WebSocket Heartbeat Port (set by launcher) -->
+    <meta name="ws-port" content="{{ ws_port|default:'8001' }}">
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -142,6 +145,45 @@
 <!-- App -->
 <script src="{% static 'js/app.js' %}"></script>
 <script src="{% static 'js/pwa.js' %}"></script>
+
+<script>
+(function () {
+    'use strict';
+
+    var ws = null;
+    var pingTimer = null;
+
+    function connectHeartbeat() {
+        var meta = document.querySelector('meta[name="ws-port"]');
+        var wsPort = meta ? meta.content : '8001';
+        var proto = window.location.protocol === 'https:' ? 'wss' : 'ws';
+        var wsUrl = proto + '://' + window.location.hostname + ':' + wsPort;
+
+        ws = new WebSocket(wsUrl);
+
+        ws.onopen = function () {
+            sendPing();
+            if (pingTimer === null) {
+                pingTimer = setInterval(sendPing, 3000);
+            }
+        };
+
+        ws.onerror = function () {
+            if (ws) {
+                ws.close();
+            }
+        };
+    }
+
+    function sendPing() {
+        if (ws && ws.readyState === WebSocket.OPEN) {
+            ws.send('ping');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', connectHeartbeat);
+})();
+</script>
 
 {% block extra_js %}
 {% endblock %}

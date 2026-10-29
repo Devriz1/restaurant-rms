@@ -155,7 +155,7 @@ function calculatePurchase() {
 
     grandTotal = subtotal + gstTotal + other - discount;
 
-    const symbol = document.querySelector('meta[name="currency-symbol"]')?.content || "₹";
+    const symbol = document.querySelector('meta[name="currency-symbol"]')?.content || "$";
 
     document.getElementById("subtotal").innerText =
         symbol + " " + subtotal.toFixed(2);

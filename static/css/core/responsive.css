@@ -54,15 +54,40 @@
         height: 100vh;
         z-index: 1050;
         box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
-        transition: transform var(--transition-normal), left var(--transition-normal);
+        transition: left var(--transition-normal);
     }
 
     .sidebar-wrapper.active {
         left: 0;
     }
 
+    .sidebar-wrapper.active .logo-text,
+    .sidebar-wrapper.active .sidebar-link span,
+    .sidebar-wrapper.active .sidebar-title,
+    .sidebar-wrapper.active .sidebar-user-info {
+        display: block;
+    }
+
     .main-wrapper {
         width: 100vw;
+    }
+
+    /* Mobile sidebar overlay backdrop */
+    .app-layout.mobile-sidebar-open::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1049;
+    }
+
+    /* Shift main content when sidebar is open on mobile */
+    .app-layout.mobile-sidebar-open .main-wrapper {
+        transform: translateX(280px);
+        transition: transform var(--transition-normal);
     }
 
     .grid-4, .grid-3, .grid-2 {

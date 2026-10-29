@@ -1,0 +1,28 @@
+.audit-page {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.audit-filters {
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.audit-filters .form-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #6c757d;
+    margin-bottom: 0.25rem;
+}
+
+.max-200 {
+    max-width: 200px;
+}
+
+.table tbody tr:hover {
+    background-color: rgba(0, 123, 255, 0.025);
+}
+
+.badge {
+    font-size: 0.75rem;
+    font-weight: 500;
+}

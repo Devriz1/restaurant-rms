@@ -1,0 +1,178 @@
+/* ==========================================================
+   KITCHEN DISPLAY STYLING
+   Bill-based layout: items grouped by bill instead of station
+========================================================= */
+
+.kitchen-display {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    min-height: calc(100vh - 80px);
+}
+
+.kitchen-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 30px;
+    background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+    border-radius: 14px;
+    color: #ffffff;
+    box-shadow: 0 4px 20px rgba(220, 38, 38, 0.3);
+}
+
+.kitchen-header h1 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.kitchen-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.kitchen-controls .btn {
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.kitchen-auto-refresh {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 12px 20px;
+}
+
+.kitchen-bills {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(520px, 1fr));
+    gap: 20px;
+}
+
+.kitchen-bill {
+    background: var(--bg-card, #fff);
+    border: 1px solid var(--border-color, #e2e8f0);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow-md, 0 1px 3px rgba(0, 0, 0, .06));
+    display: flex;
+    flex-direction: column;
+}
+
+.kitchen-bill:hover {
+    box-shadow: var(--shadow-lg, 0 4px 12px rgba(0, 0, 0, .08));
+}
+
+.kitchen-bill.bill-empty {
+    opacity: 0.6;
+}
+
+.kitchen-bill-header {
+    padding: 16px 20px;
+    background: var(--bg-subtle, #f1f5f9);
+    border-bottom: 2px solid var(--primary, #2563eb);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.bill-ref {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary, #0f172a);
+    margin: 0;
+}
+
+.kitchen-bill-meta {
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.kitchen-bill-body {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.kitchen-item-card {
+    background: #fff;
+    border: 1px solid var(--border-color, #e2e8f0);
+    border-radius: 10px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    transition: all .15s ease;
+}
+
+.kitchen-item-card.pending {
+    border-left: 4px solid #f59e0b;
+    background: #fffbeb;
+}
+
+.kitchen-item-card.preparing {
+    border-left: 4px solid #3b82f6;
+    background: #eff6ff;
+}
+
+.kitchen-item-card.ready {
+    border-left: 4px solid #10b981;
+    background: #d1fae5;
+}
+
+.kitchen-item-body {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.kitchen-item-main {
+    flex: 1;
+    min-width: 0;
+}
+
+.kitchen-qty {
+    font-size: 0.9rem;
+    font-weight: 700;
+    min-width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.kitchen-order-ref {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+}
+
+.kitchen-item-code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.04em;
+}
+
+.kitchen-notes {
+    margin-top: 4px;
+}
+
+.kitchen-item-actions {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.kitchen-item-actions .btn-group {
+    min-width: 90px;
+}
+
+.kitchen-notification {
+    border-radius: 10px;
+}

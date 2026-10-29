@@ -9,7 +9,14 @@ from django.template.loader import render_to_string
 from xhtml2pdf import pisa
 
 
-CURRENCY_SYMBOL = "₹"
+def get_currency_symbol():
+    """Return the configured currency symbol from restaurant settings."""
+    from apps.restaurant.models import Restaurant
+    try:
+        restaurant = Restaurant.objects.first()
+        return restaurant.currency_symbol if restaurant else "₹"
+    except Exception:
+        return "₹"
 
 
 def _get_value(obj, field_path):
@@ -35,7 +42,9 @@ def _format_row(row, columns):
     return [_get_value(row, field) for field, _ in columns]
 
 
-def export_csv(data, columns, filename, summary_cards=None, symbol="₹"):
+def export_csv(data, columns, filename, summary_cards=None, symbol=None):
+    if symbol is None:
+        symbol = get_currency_symbol()
     response = HttpResponse(content_type="text/csv")
     response["Content-Disposition"] = f'attachment; filename="{filename}"'
 
@@ -54,7 +63,9 @@ def export_csv(data, columns, filename, summary_cards=None, symbol="₹"):
     return response
 
 
-def export_excel(data, columns, filename, summary_cards=None, symbol="₹"):
+def export_excel(data, columns, filename, summary_cards=None, symbol=None):
+    if symbol is None:
+        symbol = get_currency_symbol()
     workbook = Workbook()
     sheet = workbook.active
     sheet.title = "Report"
@@ -96,7 +107,9 @@ def export_excel(data, columns, filename, summary_cards=None, symbol="₹"):
     return response
 
 
-def export_pdf(data, columns, filename, title, summary_cards=None, symbol="₹"):
+def export_pdf(data, columns, filename, title, summary_cards=None, symbol=None):
+    if symbol is None:
+        symbol = get_currency_symbol()
     formatted_data = []
     for row in data:
         formatted_row = []

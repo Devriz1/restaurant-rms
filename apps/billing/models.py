@@ -3,6 +3,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Sum, Q
+from django.utils import timezone
 from apps.orders.models import GuestOrder, TableSession
 
 
@@ -98,6 +99,8 @@ class Bill(models.Model):
         TableSession,
         on_delete=models.PROTECT,
         related_name="bills",
+        null=True,
+        blank=True,
     )
 
     discount_type = models.CharField(
@@ -154,6 +157,15 @@ class Bill(models.Model):
     # String reference 'Customer' resolves the forward declaration issue
     customer = models.ForeignKey('Customer', on_delete=models.SET_NULL, null=True, blank=True, related_name='bills')
 
+    period = models.ForeignKey(
+        'Period',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='bills',
+        help_text="Financial year period this bill belongs to.",
+    )
+
     class Meta:
         ordering = ["-id"]
 
@@ -189,21 +201,53 @@ class Bill(models.Model):
         self.calculate_totals()
 
         if not self.bill_number:
-            last_bill = Bill.objects.order_by("-id").first()
-            if last_bill:
-                try:
-                    number = int(
-                        last_bill.bill_number.replace("BILL", "")
-                    ) + 1
-                except ValueError:
-                    number = last_bill.id + 1
+            # Determine the financial period for this bill.
+            period = self.period
+            if period is None:
+                period = Period.get_period_for_date(
+                    timezone.now().date()
+                )
+                self.period = period
+
+            if period is not None:
+                # Number bills within the period: BILL-YYYY-000001
+                last_bill = (
+                    Bill.objects
+                    .filter(period=period)
+                    .order_by("-id")
+                    .first()
+                )
+                if last_bill and last_bill.bill_number:
+                    try:
+                        number = int(last_bill.bill_number.rsplit("-", 1)[-1]) + 1
+                    except ValueError:
+                        number = last_bill.id + 1
+                else:
+                    number = 1
+
+                while Bill.objects.filter(
+                    bill_number=f"BILL-{period.start_date.year}-{number:06d}"
+                ).exists():
+                    number += 1
+
+                self.bill_number = f"BILL-{period.start_date.year}-{number:06d}"
             else:
-                number = 1
+                # Fallback: global sequential numbering (no active period)
+                last_bill = Bill.objects.order_by("-id").first()
+                if last_bill and last_bill.bill_number:
+                    try:
+                        number = int(
+                            last_bill.bill_number.replace("BILL", "")
+                        ) + 1
+                    except ValueError:
+                        number = last_bill.id + 1
+                else:
+                    number = 1
 
-            while Bill.objects.filter(bill_number=f"BILL{number:06d}").exists():
-                number += 1
+                while Bill.objects.filter(bill_number=f"BILL{number:06d}").exists():
+                    number += 1
 
-            self.bill_number = f"BILL{number:06d}"
+                self.bill_number = f"BILL{number:06d}"
 
         super().save(*args, **kwargs)
 
@@ -336,6 +380,78 @@ class DailyClosing(models.Model):
 
     def __str__(self):
         return f"{self.date}"
+
+
+class Period(models.Model):
+    """Financial year period — 1 April to 31 March.
+
+    Bill/invoice numbers reset to 1 at the start of each new period.
+    """
+
+    PERIOD_TYPE_CHOICES = [
+        ("financial_year", "Financial Year"),
+        ("custom", "Custom"),
+    ]
+
+    name = models.CharField(
+        max_length=80,
+        help_text="e.g. FY 2025-26",
+    )
+
+    start_date = models.DateField(
+        help_text="First day of the period (e.g. 1 April)",
+    )
+
+    end_date = models.DateField(
+        help_text="Last day of the period (e.g. 31 March)",
+    )
+
+    period_type = models.CharField(
+        max_length=20,
+        choices=PERIOD_TYPE_CHOICES,
+        default="financial_year",
+    )
+
+    is_active = models.BooleanField(
+        default=False,
+        help_text="The period currently in use for new bill numbering.",
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-start_date"]
+        verbose_name = "Period"
+        verbose_name_plural = "Periods"
+
+    def __str__(self):
+        return self.name
+
+    def clean(self):
+        from django.core.exceptions import ValidationError
+        if self.end_date < self.start_date:
+            raise ValidationError("End date must be after start date.")
+
+    def save(self, *args, **kwargs):
+        # Only one active period at a time
+        if self.is_active:
+            Period.objects.filter(is_active=True).exclude(
+                pk=self.pk
+            ).update(is_active=False)
+        super().save(*args, **kwargs)
+
+    @classmethod
+    def get_active_period(cls):
+        return cls.objects.filter(is_active=True).first()
+
+    @classmethod
+    def get_period_for_date(cls, target_date):
+        return cls.objects.filter(
+            start_date__lte=target_date,
+            end_date__gte=target_date,
+        ).first()
 
 
 class CustomerPayment(models.Model):

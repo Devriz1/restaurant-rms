@@ -79,6 +79,12 @@ urlpatterns = [
     ),
 
     path(
+        "daily-closing/close/",
+        views.close_day,
+        name="close-day",
+    ),
+
+    path(
         "daily-closing/export/<str:export_format>/",
         views.export_daily_closing,
         name="export-daily-closing",

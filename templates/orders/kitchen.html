@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Kitchen Display | Restaurant RMS{% endblock %}
+
+{% block breadcrumb %}Operations{% endblock %}
+{% block page_title %}Kitchen{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/kitchen.css' %}">
+<style>
+    body.full-screen {
+        min-height: 100vh;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="kitchen-display" id="kitchen-display">
+
+    <!-- Header -->
+    <div class="kitchen-header">
+        <div class="d-flex align-items-center gap-3">
+            <h1 class="mb-0 fw-bold">
+                <i class="bi bi-fire me-2"></i>Kitchen Display
+            </h1>
+            <span class="badge bg-light text-dark border fs-7" id="kitchen-status-badge">
+                <i class="bi bi-circle-fill text-success me-1"></i> Live
+            </span>
+            <span class="badge bg-primary-subtle text-primary rounded-pill fs-7" id="bill-count-badge">
+                Bill{{ bill_count|pluralize:"s" }}
+            </span>
+        </div>
+
+        <div class="kitchen-controls">
+            <button type="button" class="btn btn-outline-light btn-sm rounded-pill" id="kitchen-refresh-btn">
+                <i class="bi bi-arrow-clockwise"></i>
+            </button>
+            <button type="button" class="btn btn-outline-light btn-sm rounded-pill" id="kitchen-fullscreen-btn">
+                <i class="bi bi-fullscreen"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Auto-refresh indicator -->
+    <div class="kitchen-auto-refresh">
+        <small class="text-muted">
+            <i class="bi bi-arrow-clockwise me-1"></i>
+            Auto-refreshing every 15s
+            <span class="text-muted">(last updated: <span id="kitchen-last-update">{% now "g:i A" %}</span>)</span>
+        </small>
+    </div>
+
+    <!-- Bills Grid -->
+    <div id="kitchen-bills-container">
+        {% include "orders/partials/kitchen_bills.html" %}
+    </div>
+
+    <input type="hidden" id="kitchen-csrf-token" value="{{ csrf_token }}">
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/kitchen.js' %}"></script>
+{% endblock %}

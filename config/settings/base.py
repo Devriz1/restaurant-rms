@@ -19,20 +19,14 @@ DEBUG = os.getenv("DEBUG", "False") == "True"
 
 # config/settings/development.py
 
-ALLOWED_HOSTS = [
-    "localhost",
-    "127.0.0.1",
-    ".ngrok-free.dev",  # Wildcard allowing all *.ngrok-free.dev domains
-    ".ngrok-free.app",  # Wildcard allowing all *.ngrok-free.app domains
-    ".ngrok.io",        # Standard ngrok domain wildcard
-]
+ALLOWED_HOSTS = ["*"]
 
 # Required for POST requests / forms / logins to work over ngrok HTTPS
 CSRF_TRUSTED_ORIGINS = [
-    "https://*.ngrok-free.dev",
-    "https://*.ngrok-free.app",
-    "https://*.ngrok.io",
+    "*"
 ]
+
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -60,6 +54,7 @@ INSTALLED_APPS = [
     'apps.recipes',
     "pwa",
     "corsheaders",
+    "apps.audit",
 ]
 
 # config/settings/development.py
@@ -108,6 +103,8 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
 
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    
+    "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -123,6 +120,8 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'apps.restaurant.context_processors.currency_context',
+                'apps.orders.context_processors.notification_context',
+                'config.context_processors.ws_port',
             ],
         },
     },
@@ -131,10 +130,10 @@ TEMPLATES = [
 WSGI_APPLICATION = 'config.wsgi.application'
 
 
-# Database
+# Database npg_VaHolGDSj2w3
 # Supports both SQLite and PostgreSQL
 
-DB_ENGINE = os.getenv("DB_ENGINE", "sqlite")
+DB_ENGINE = os.getenv("DB_ENGINE", "sqlite").lower()
 
 if DB_ENGINE == "postgres":
     DATABASES = {
@@ -152,6 +151,10 @@ else:
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
             "NAME": BASE_DIR / os.getenv("DB_NAME", "db.sqlite3"),
+            "OPTIONS": {
+                "timeout": 60,
+                "init_command": "PRAGMA journal_mode=WAL; PRAGMA synchronous=NORMAL; PRAGMA foreign_keys=ON;",
+            },
         }
     }
 AUTH_USER_MODEL = "accounts.User"
@@ -179,6 +182,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = "static/"
+
+# WebSocket heartbeat port (set by launcher via WS_PORT env var)
+WS_PORT = os.getenv("WS_PORT", "8001")
 
 STATICFILES_DIRS = [
     BASE_DIR / "static",
@@ -265,3 +271,5 @@ CSRF_TRUSTED_ORIGINS = [
     "https://*.ngrok-free.app",
     "https://*.ngrok.io",
 ]
+
+WHITE_NOISE_AUTOREFRESH = True

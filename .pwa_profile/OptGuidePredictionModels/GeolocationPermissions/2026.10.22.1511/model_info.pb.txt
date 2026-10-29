@@ -1,0 +1,8 @@
+optimization_target: OPTIMIZATION_TARGET_GEOLOCATION_PERMISSION_PREDICTIONS
+version: 1792681868
+supported_model_engine_versions: MODEL_ENGINE_VERSION_TFLITE_2_18
+model_metadata: {
+  type_url: "type.googleapis.com/google.privacy.webpermissionpredictions.v1.WebPermissionPredictionsModelMetadata"
+  value: "\n\x0c\x01\x02\x03\x04\x05\x06\x07\x08\t\n\x0b\x0c\x10\x02\x18\x02%\x9a\x99\x99>*\x14\r\x00\x00\x80>\x15\x00\x00\x00?\x1d\n\xd7#?%\xc3\xf5h?"
+}
+keep_beyond_valid_duration: false

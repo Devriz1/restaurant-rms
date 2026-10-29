@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% load permissions %}
+
+{% block title %}Periods | Restaurant RMS{% endblock %}
+{% block breadcrumb %}Settings{% endblock %}
+{% block page_title %}Periods{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+    <div>
+        <h2 class="fw-bold mb-1 d-flex align-items-center gap-2">
+            <i class="bi bi-calendar-range text-primary"></i>
+            Periods
+        </h2>
+        <p class="text-muted mb-0">
+            Indian financial year periods (1 April – 31 March). Invoice numbers reset from 1 when a new period becomes active.
+        </p>
+    </div>
+    {% if request.user|has_permission:"billing.add" %}
+    <a href="{% url 'billing:period-add' %}" class="btn btn-primary rounded-pill px-4">
+        <i class="bi bi-plus-lg me-1"></i> Add Period
+    </a>
+    {% endif %}
+</div>
+
+<div class="card border-0 shadow-sm rounded-4">
+    <div class="card-body p-0">
+        {% if periods %}
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Period Name</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Type</th>
+                        <th class="text-center">Status</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for period in periods %}
+                    <tr>
+                        <td class="fw-bold">{{ period.name }}</td>
+                        <td>{{ period.start_date|date:"d M Y" }}</td>
+                        <td>{{ period.end_date|date:"d M Y" }}</td>
+                        <td><span class="badge bg-light text-dark border">{{ period.get_period_type_display }}</span></td>
+                        <td class="text-center">
+                            {% if period.is_active %}
+                            <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill">
+                                <i class="bi bi-check-circle-fill me-1"></i>Active
+                            </span>
+                            {% else %}
+                            <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle rounded-pill">Inactive</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end">
+                            {% if request.user|has_permission:"billing.edit" %}
+                            <a href="{% url 'billing:period-edit' period.pk %}" class="btn btn-sm btn-outline-primary" title="Edit">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            {% endif %}
+                            {% if not period.is_active and request.user|has_permission:"billing.edit" %}
+                            <form method="post" action="{% url 'billing:period-activate' period.pk %}" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-outline-success" title="Activate"
+                                        onclick="return confirm('Activate period \'{{ period.name }}\'? Invoice numbers will reset from 1.');">
+                                    <i class="bi bi-play-fill"></i> Activate
+                                </button>
+                            </form>
+                            {% endif %}
+                            {% if request.user|has_permission:"billing.delete" %}
+                            <a href="{% url 'billing:period-delete' period.pk %}" class="btn btn-sm btn-outline-danger" title="Delete">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-calendar-range display-3 text-secondary"></i>
+            <h4 class="mt-3">No Periods</h4>
+            <p class="text-muted">Create your first financial year period to enable period-based invoice numbering.</p>
+            {% if request.user|has_permission:"billing.add" %}
+            <a href="{% url 'billing:period-add' %}" class="btn btn-primary mt-2">
+                <i class="bi bi-plus-lg me-1"></i> Add Period
+            </a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

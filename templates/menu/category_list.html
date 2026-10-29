@@ -23,46 +23,46 @@
         {% if categories %}
         <div class="table-wrapper border-0 rounded-0">
             <table class="table table-hover align-middle mb-0">
-                <thead>
-                    <tr>
-                        <th>Category Name</th>
-                        <th>Description</th>
-                        <th>Display Order</th>
-                        <th>Status</th>
-                        <th width="120" class="text-end">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {% for category in categories %}
-                    <tr>
-                        <td>
-                            <div class="d-flex align-items-center gap-2">
-                                <div class="bg-light p-2 rounded-3 text-primary fs-5">
-                                    <i class="bi bi-tags-fill"></i>
+                    <thead>
+                        <tr>
+                            <th>Category Name</th>
+                            <th>Description</th>
+                            <th>Display Order</th>
+                            <th>Status</th>
+                            <th width="120" class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for category in categories %}
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="bg-light p-2 rounded-3 text-primary fs-5">
+                                        <i class="bi bi-tags-fill"></i>
+                                    </div>
+                                    <span class="fw-bold text-dark">{{ category.name }}</span>
                                 </div>
-                                <span class="fw-bold text-dark">{{ category.name }}</span>
-                            </div>
-                        </td>
-                        <td><span class="text-secondary">{{ category.description|default:"-" }}</span></td>
-                        <td><span class="badge bg-light text-dark border px-3 py-1">Order #{{ category.display_order }}</span></td>
-                        <td>
-                            {% if category.is_active %}
-                                <span class="badge-status badge-success">Active</span>
-                            {% else %}
-                                <span class="badge-status badge-danger">Inactive</span>
-                            {% endif %}
-                        </td>
-                        <td class="text-end">
-                            <a href="{% url 'menu:category-edit' category.pk %}" class="btn btn-sm btn-light text-primary rounded-circle" title="Edit">
-                                <i class="bi bi-pencil"></i>
-                            </a>
-                            <a href="{% url 'menu:category-delete' category.pk %}" class="btn btn-sm btn-light text-danger rounded-circle" title="Delete">
-                                <i class="bi bi-trash"></i>
-                            </a>
-                        </td>
-                    </tr>
-                {% endfor %}
-                </tbody>
+                            </td>
+                            <td><span class="text-secondary">{{ category.description|default:"-" }}</span></td>
+                            <td><span class="badge bg-light text-dark border px-3 py-1">Order #{{ category.display_order }}</span></td>
+                            <td>
+                                {% if category.is_active %}
+                                    <span class="badge-status badge-success">Active</span>
+                                {% else %}
+                                    <span class="badge-status badge-danger">Inactive</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-end">
+                                <a href="{% url 'menu:category-edit' category.pk %}" class="btn btn-sm btn-light text-primary rounded-circle" title="Edit">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a href="{% url 'menu:category-delete' category.pk %}" class="btn btn-sm btn-light text-danger rounded-circle" title="Delete">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
             </table>
         </div>
         {% else %}

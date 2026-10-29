@@ -56,8 +56,56 @@ html, body {
 }
 
 /* ==========================================================
-   MAIN WRAPPER & NAVIGATION
-   ========================================================== */
+    SIDEBAR COLLAPSED
+    ========================================================== */
+
+.app-layout.sidebar-collapsed {
+    grid-template-columns: var(--sidebar-collapsed-width) 1fr;
+}
+
+.app-layout.sidebar-collapsed .sidebar-wrapper {
+    width: var(--sidebar-collapsed-width);
+    min-width: var(--sidebar-collapsed-width);
+    overflow: hidden;
+}
+
+.app-layout.sidebar-collapsed .sidebar-logo .logo-text,
+.app-layout.sidebar-collapsed .sidebar-link span,
+.app-layout.sidebar-collapsed .sidebar-title,
+.app-layout.sidebar-collapsed .sidebar-user-info {
+    display: none;
+}
+
+.app-layout.sidebar-collapsed .sidebar-link {
+    justify-content: center;
+    padding: 11px 0;
+}
+
+.app-layout.sidebar-collapsed .sidebar-link i {
+    margin: 0 auto;
+}
+
+.app-layout.sidebar-collapsed .sidebar-logo {
+    justify-content: center;
+    padding: 24px 0;
+}
+
+.app-layout.sidebar-collapsed .sidebar-footer {
+    justify-content: center;
+    padding: 16px 0;
+}
+
+.app-layout.sidebar-collapsed .sidebar-nav {
+    padding: 16px 8px;
+}
+
+.app-layout.sidebar-collapsed .sidebar-section {
+    margin-bottom: 12px;
+}
+
+/* ==========================================================
+    MAIN WRAPPER & NAVIGATION
+    ========================================================== */
 
 .main-wrapper {
     display: grid;

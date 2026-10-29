@@ -1,0 +1,38 @@
+{% if notifications %}
+<ul class="list-group" id="notification-list">
+    {% for notif in notifications %}
+    <li class="list-group-item d-flex align-items-start gap-2 {% if not notif.is_read %}bg-light{% endif %}">
+        <div class="flex-1">
+            <small class="fw-medium">{{ notif.message }}</small>
+            <div class="text-muted fs-7">
+                {{ notif.created_at|date:"g:i A" }}
+                {% if notif.notification_type == "item_served" and notif.order %}
+                • Order {{ notif.order.order_number }}
+                {% elif notif.notification_type == "order_served" and notif.bill %}
+                • Bill {{ notif.bill.bill_number }}
+                {% endif %}
+            </div>
+        </div>
+        {% if not notif.is_read %}
+        <button type="button"
+                class="btn btn-sm btn-outline-secondary mark-notification-read"
+                data-notification="{{ notif.id }}">
+            <i class="bi bi-mark-email-read"></i>
+        </button>
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>
+<div class="p-2 border-top text-center">
+    <button type="button"
+            class="btn btn-sm btn-link text-decoration-none"
+            id="mark-all-read-btn">
+        Mark All Read
+    </button>
+</div>
+{% else %}
+<div class="p-4 text-center text-muted">
+    <i class="bi bi-bell-slash fs-4 d-block mb-1"></i>
+    No new notifications
+</div>
+{% endif %}

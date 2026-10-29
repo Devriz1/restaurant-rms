@@ -1,5 +1,9 @@
 from django.core.management.base import BaseCommand
-from apps.accounts.models import Permission
+from django.contrib.auth import get_user_model
+from apps.accounts.models import Permission, UserPermission
+
+
+User = get_user_model()
 
 
 PERMISSIONS = [
@@ -70,6 +74,8 @@ PERMISSIONS = [
     ("guest.view", "Guest Order", "Orders"),
     ("kot.send", "Send To Kitchen", "Orders"),
     ("kot.print", "Print KOT", "Orders"),
+    ("kitchen.view", "View Kitchen Display", "Orders"),
+    ("kitchen.manage", "Manage Kitchen Items", "Orders"),
 
 
     # ==========================================================
@@ -80,6 +86,9 @@ PERMISSIONS = [
     ("billing.payment", "Receive Payment", "Billing"),
     ("billing.print", "Print Bills", "Billing"),
     ("billing.refund", "Refund Bills", "Billing"),
+    ("billing.add", "Add Financial Period", "Billing"),
+    ("billing.edit", "Edit Financial Period", "Billing"),
+    ("billing.delete", "Delete Financial Period", "Billing"),
 
 
     # ==========================================================
@@ -114,6 +123,7 @@ PERMISSIONS = [
 
     ("backup.view", "Backup Database", "System"),
     ("restore.view", "Restore Database", "System"),
+    ("audit.view", "View Audit Trail", "System"),
 ]
 
 
@@ -132,6 +142,32 @@ class Command(BaseCommand):
                     "category": category,
                 },
             )
+
+        # Grant all permissions to OWNER users
+        owner_users = User.objects.filter(role="OWNER")
+        all_permissions = Permission.objects.all()
+
+        for owner in owner_users:
+            for perm in all_permissions:
+                UserPermission.objects.get_or_create(
+                    user=owner,
+                    permission=perm,
+                )
+
+        # If no OWNER exists, grant all permissions to the first admin user
+        if not owner_users.exists():
+            fallback = User.objects.filter(is_superuser=True).first() or User.objects.first()
+            if fallback:
+                for perm in all_permissions:
+                    UserPermission.objects.get_or_create(
+                        user=fallback,
+                        permission=perm,
+                    )
+                self.stdout.write(
+                    self.style.WARNING(
+                        f"No OWNER user found — granted all permissions to '{fallback.username}' instead."
+                    )
+                )
 
         self.stdout.write(
             self.style.SUCCESS("Permissions seeded successfully.")

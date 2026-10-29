@@ -51,14 +51,67 @@ path(
     views.kot_print,
     name="kot-print",
 ),
-path(
-        "live-orders/",
-        views.orders_dashboard,
-        name="orders-dashboard",
+    path(
+         "live-orders/",
+         views.orders_dashboard,
+         name="orders-dashboard",
+    ),
+
+    # ---------------- Kitchen ----------------
+    path(
+        "kitchen/",
+        views.kitchen_view,
+        name="kitchen-view",
     ),
     path(
-    "session/<int:session_id>/back/",
-    views.back_to_floor,
-    name="back-to-floor",
-),
+        "kitchen/refresh/",
+        views.kitchen_refresh,
+        name="kitchen-refresh",
+    ),
+    path(
+        "kitchen/item/<int:item_id>/update/",
+        views.update_kitchen_item,
+        name="kitchen-update-item",
+    ),
+    path(
+        "kitchen/item/<int:item_id>/cancel/",
+        views.cancel_kitchen_item,
+        name="kitchen-cancel-item",
+    ),
+    path(
+        "kitchen/bill/<int:bill_id>/start/",
+        views.start_bill,
+        name="kitchen-start-bill",
+    ),
+
+    # ---------------- Notifications ----------------
+    path(
+        "notifications/",
+        views.notifications_list,
+        name="notifications-list",
+    ),
+    path(
+        "notifications/<int:notification_id>/read/",
+        views.notification_read,
+        name="notification-read",
+    ),
+    path(
+        "notifications/mark-all-read/",
+        views.notifications_mark_all_read,
+        name="notifications-mark-all-read",
+    ),
+
+    # ---------------- Takeaway ----------------
+
+    path(
+        "takeaway/",
+        views.takeaway_list,
+        name="takeaway-list",
+    ),
+
+    path(
+        "takeaway/new/",
+        views.takeaway_create,
+        name="takeaway-create",
+    ),
 ]

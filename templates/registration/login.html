@@ -12,7 +12,6 @@
         <div class="login-logo">
             <i class="bi bi-shop-window"></i>
         </div>
-
         <h2>Restaurant RMS</h2>
 
         <p>Enter your credentials to access the system</p>
@@ -50,7 +49,6 @@
         <label class="form-label">
 
             <i class="bi bi-key me-1 text-primary"></i>
-
             Password
 
         </label>
@@ -61,6 +59,15 @@
             class="form-control"
             autocomplete="new-password">
 
+    </div>
+
+    <div class="mb-4">
+        <label class="form-label">
+            <i class="bi bi-calendar-range me-1 text-primary"></i>
+            Financial Period
+        </label>
+        {{ form.period }}
+        <small class="text-muted d-block mt-1">Default is the last created period.</small>
     </div>
 
     <button

@@ -1,7 +1,25 @@
 from decimal import Decimal
+from apps.restaurant.models import Restaurant
 
 
 LINE_WIDTH = 42
+
+
+def get_currency_symbol():
+    """Return the configured currency symbol from restaurant settings."""
+    try:
+        restaurant = Restaurant.objects.first()
+        return restaurant.currency_symbol if restaurant else "₹"
+    except Exception:
+        return "₹"
+
+
+def get_restaurant():
+    """Return the Restaurant singleton (first row)."""
+    try:
+        return Restaurant.objects.first()
+    except Exception:
+        return None
 
 
 def separator():
@@ -17,19 +35,24 @@ def money(value):
     if value is None:
         value = Decimal("0.00")
 
-    return f"₹ {value:.2f}"
+    return f"{get_currency_symbol()} {value:.2f}"
 
 
 def build_receipt(bill):
 
     lines = []
 
+    restaurant = get_restaurant()
+
     # ======================================
     # HEADER
     # ======================================
 
-    lines.append(center("YOUR RESTAURANT"))
-    lines.append(center("Restaurant Management System"))
+    lines.append(center(restaurant.name.upper() if restaurant and restaurant.name else "YOUR RESTAURANT"))
+
+    if restaurant and restaurant.gst_number:
+        lines.append(center(f"GSTIN: {restaurant.gst_number}"))
+
     lines.append(separator())
 
     lines.append(f"Bill No : {bill.bill_number}")
@@ -37,13 +60,26 @@ def build_receipt(bill):
         f"Date    : {bill.created_at.strftime('%d-%m-%Y %I:%M %p')}"
     )
 
-    lines.append(
-        f"Table   : {bill.session.table.display_name}"
-    )
+    guest_order = bill.guest_order
 
-    lines.append(
-        f"Guest   : {bill.guest_order.guest_number}"
-    )
+    if guest_order.is_takeaway:
+
+        lines.append(f"Type    : Takeaway ({guest_order.order_number})")
+
+        if guest_order.guest_name:
+            lines.append(
+                f"Guest   : {guest_order.guest_name}"
+            )
+
+    else:
+
+        lines.append(
+            f"Table   : {bill.session.table.display_name}"
+        )
+
+        lines.append(
+            f"Guest   : {bill.guest_order.guest_number}"
+        )
 
     lines.append(
         f"Cashier : {bill.created_by.get_username()}"

@@ -34,7 +34,17 @@
             </div>
             <div>
                 <h5>Today's Revenue</h5>
-                <h2>{{ currency_symbol }}0.00</h2>
+                <h2>{{ currency_symbol }}{{ today_revenue|floatformat:2 }}</h2>
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="card-icon blue">
+                <i class="bi bi-wallet2"></i>
+            </div>
+            <div>
+                <h5>Total Revenue</h5>
+                <h2>{{ currency_symbol }}{{ total_revenue|floatformat:2 }}</h2>
             </div>
         </div>
 
@@ -146,7 +156,7 @@
                         </td>
                         <td>
                             <i class="bi bi-geo-alt me-1 text-muted"></i>
-                            {{ order.session.table.display_name }}
+                            {{ order.label }}
                         </td>
                         <td>
                             <i class="bi bi-person me-1 text-muted"></i>

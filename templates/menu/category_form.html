@@ -62,6 +62,21 @@ Add Category
 
             </div>
 
+            <div class="mb-3">
+
+                <label class="form-label" for="{{ form.kitchen_station.id_for_label }}">
+                    Kitchen Station
+                </label>
+
+                {{ form.kitchen_station }}
+
+                <small class="text-muted">
+                    Leave blank if this category is not served from a specific
+                    kitchen station. Used by the Kitchen display to group items.
+                </small>
+
+            </div>
+
             <div class="form-check mb-4">
 
                 {{ form.is_active }}

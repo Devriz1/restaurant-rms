@@ -1,2 +1,3 @@
-2026/08/23-15:00:07.664 1dec Creating DB F:\restaurant-rms\.pwa_profile\Default\Local Storage\leveldb since it was missing.
-2026/08/23-15:00:07.696 1dec Reusing MANIFEST F:\restaurant-rms\.pwa_profile\Default\Local Storage\leveldb/MANIFEST-000001
+2026/10/23-21:30:03.246 1ee8 Reusing MANIFEST F:\restaurant-rms\.pwa_profile\Default\Local Storage\leveldb/MANIFEST-000001
+2026/10/23-21:30:03.247 1ee8 Recovering log #3
+2026/10/23-21:30:03.250 1ee8 Reusing old log F:\restaurant-rms\.pwa_profile\Default\Local Storage\leveldb/000003.log 

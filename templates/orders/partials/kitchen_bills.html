@@ -1,0 +1,80 @@
+{% load kitchen_filters %}
+
+{% if bills %}
+<div class="kitchen-bills">
+
+    {% for bill_key, bill_data in bills.items %}
+    <div class="kitchen-bill" data-bill="{{ bill_key }}">
+
+        <div class="kitchen-bill-header">
+            <div class="kitchen-bill-info">
+                <h2 class="bill-ref">
+                    {% if bill_data.bill %}
+                    <i class="bi bi-receipt me-1"></i>{{ bill_data.bill.bill_number }}
+                    {% else %}
+                    <i class="bi bi-clock me-1"></i>Order {{ bill_data.order.order_number }}
+                    {% endif %}
+                </h2>
+                <div class="kitchen-bill-meta">
+                    {% if bill_data.order.session and bill_data.order.session.table %}
+                    <span class="text-muted small">
+                        <i class="bi bi-geo-alt me-1"></i>
+                        {{ bill_data.order.session.table.display_name }}
+                    </span>
+                    {% endif %}
+                    {% if bill_data.order.is_takeaway %}
+                    <span class="badge bg-info-subtle text-info fs-8">Takeaway</span>
+                    {% else %}
+                    <span class="badge bg-primary-subtle text-primary fs-8">Dine-In</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <span class="badge bg-primary-subtle text-primary rounded-pill fs-7" id="bill-item-count-{{ bill_key }}">
+                    {{ bill_data.items|length }} Item{{ bill_data.items|length|pluralize }}
+                </span>
+                {% with pending_count=bill_data.items|filter_status:"pending" %}
+                {% if pending_count > 0 %}
+                <button type="button"
+                        class="btn btn-success btn-sm rounded-pill kitchen-bill-action-btn"
+                        data-bill="{{ bill_key }}"
+                        data-action="preparing"
+                        title="Start preparing all pending items">
+                    <i class="bi bi-play-circle me-1"></i>Preparing
+                </button>
+                {% endif %}
+                {% endwith %}
+                {% with not_ready_count=bill_data.items|filter_not_ready %}
+                {% if not_ready_count == 0 and bill_data.items|length > 0 %}
+                <button type="button"
+                        class="btn btn-success btn-sm rounded-pill kitchen-bill-action-btn"
+                        data-bill="{{ bill_key }}"
+                        data-action="serve"
+                        title="Serve all items on this bill">
+                    <i class="bi bi-truck me-1"></i>Serve Bill
+                </button>
+                {% endif %}
+                {% endwith %}
+            </div>
+        </div>
+
+        <div class="kitchen-bill-body">
+            {% for item in bill_data.items %}{% include "orders/partials/kitchen_item_row.html" with item=item %}{% endfor %}
+        </div>
+
+    </div>
+    {% endfor %}
+
+</div>
+{% else %}
+
+<!-- Empty Kitchen -->
+<div class="text-center py-5">
+    <div class="bg-light rounded-circle d-inline-flex p-4 mb-3">
+        <i class="bi bi-fire fs-1 text-muted"></i>
+    </div>
+    <h3 class="fw-bold">Kitchen is Clear</h3>
+    <p class="text-muted mb-0">No orders are currently in the kitchen.</p>
+</div>
+
+{% endif %}

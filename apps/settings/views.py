@@ -59,37 +59,61 @@ def printer_settings(request):
 @login_required
 def test_printer(request):
 
+    from apps.settings.printer import PrinterManager
+
     settings = PrinterSetting.objects.first()
 
     if settings is None:
 
         return HttpResponse(
-            "Printer settings are not configured."
+            "Printer settings are not configured.",
+            content_type="text/plain",
         )
 
-    output = f"""
-=========================================
+    test_output = """=========================================
       RMS PRINTER TEST
 =========================================
 
+This is a test print from Restaurant RMS.
+
 Billing Printer
 ---------------
-{settings.billing_printer or "Not Configured"}
+{ billing_printer }
 
 Kitchen Printer
 ---------------
-{settings.kitchen_printer or "Not Configured"}
+{ kitchen_printer }
 
 Report Printer
 --------------
-{settings.report_printer or "Not Configured"}
+{ report_printer }
 
 =========================================
-Printer communication successful.
+Printer communication test complete.
 =========================================
-"""
+""".format(
+        billing_printer=settings.billing_printer or "Not Configured",
+        kitchen_printer=settings.kitchen_printer or "Not Configured",
+        report_printer=settings.report_printer or "Not Configured",
+    )
+
+    # Attempt to print test page
+    result = None
+
+    if settings.billing_printer:
+        result = PrinterManager.print_text(settings.billing_printer, test_output)
+        if result:
+            return HttpResponse(
+                f"Test page sent to billing printer '{settings.billing_printer}'.",
+                content_type="text/plain",
+            )
+        else:
+            return HttpResponse(
+                f"Failed to print to '{settings.billing_printer}'. Check printer connection.",
+                content_type="text/plain",
+            )
 
     return HttpResponse(
-        output,
+        test_output,
         content_type="text/plain",
     )

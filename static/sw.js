@@ -72,6 +72,28 @@
             return;
         }
 
+        // Never cache HTML navigation requests — always go to the network
+        // so authenticated pages (guest lists, user lists, etc.) show fresh
+        // data after an add/edit/delete without requiring a hard refresh.
+        const isHtmlNavigation = request.mode === 'navigate'
+            || (request.headers.get('accept') || '').includes('text/html');
+
+        // Never cache auth pages — the login form embeds a CSRF token that
+        // must always match the CSRF cookie, otherwise POSTing the form
+        // fails with "CSRF verification failed".
+        const isAuthPage = url.pathname.startsWith('/accounts/login')
+            || url.pathname.startsWith('/accounts/logout')
+            || url.pathname.startsWith('/admin/login');
+
+        if (isHtmlNavigation || isAuthPage) {
+            event.respondWith(
+                fetch(request).catch(function () {
+                    return caches.match('/offline/');
+                })
+            );
+            return;
+        }
+
         event.respondWith(
             caches.match(request).then(function (cached) {
                 const fetchPromise = fetch(request).then(function (networkResponse) {

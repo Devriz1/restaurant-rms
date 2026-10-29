@@ -27,11 +27,23 @@
     <!-- Bill Cards Grid -->
     <div class="bill-grid">
         {% for guest in guests %}
-        <div class="bill-card" data-search="{{ guest.session.table.display_name|lower }} guest {{ guest.guest_number }}">
+        <div class="bill-card" data-search="{{ guest.label|lower }} guest {{ guest.guest_number }}">
             <div class="bill-card-header">
                 <div>
-                    <h3><i class="bi bi-table me-2 text-primary"></i> {{ guest.session.table.display_name }}</h3>
-                    <small class="text-muted">{{ guest.session.table.area.name }}</small>
+                    <h3>
+                        {% if guest.is_takeaway %}
+                        <i class="bi bi-bag-check me-2 text-info"></i> {{ guest.guest_name|default:"Takeaway" }}
+                        {% else %}
+                        <i class="bi bi-table me-2 text-primary"></i> {{ guest.session.table.display_name }}
+                        {% endif %}
+                    </h3>
+                    <small class="text-muted">
+                        {% if guest.is_takeaway %}
+                        {{ guest.order_number }}
+                        {% else %}
+                        {{ guest.session.table.area.name }}
+                        {% endif %}
+                    </small>
                 </div>
                 <div class="bill-status">
                     <i class="bi bi-clock me-1"></i> {{ guest.status|default:"Pending Bill" }}
@@ -41,7 +53,9 @@
             <div class="bill-info">
                 <div>
                     <small>Area / Zone</small>
-                    <strong>{{ guest.session.table.area.name }}</strong>
+                    <strong>
+                        {% if guest.is_takeaway %}Takeaway{% else %}{{ guest.session.table.area.name }}{% endif %}
+                    </strong>
                 </div>
                 <div>
                     <small>Guest ID</small>

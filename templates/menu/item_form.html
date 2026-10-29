@@ -139,6 +139,29 @@
     gap: 16px;
 }
 
+/* Field Row — for 3 fields side by side (the three prices) */
+.field-row.field-row-3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+@media (max-width: 992px) {
+    .field-row.field-row-3 {
+        grid-template-columns: 1fr;
+    }
+}
+
+.price-hint {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+.price-hint.active {
+    color: var(--success);
+    font-weight: 600;
+}
+
 /* Field group */
 .field-group {
     display: flex;
@@ -510,6 +533,20 @@
                     </div>
                     <div class="form-panel-body">
 
+                        <!-- Item Code -->
+                        <div class="field-group">
+                            <label class="field-label" for="{{ form.item_code.id_for_label }}">
+                                <i class="bi bi-hash"></i>
+                                Item Code
+                            </label>
+                            {{ form.item_code }}
+                            {% if form.item_code.errors %}
+                            <ul class="field-errors">
+                                {% for e in form.item_code.errors %}<li>{{ e }}</li>{% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
+
                         <!-- Category -->
                         <div class="field-group">
                             <label class="field-label" for="{{ form.category.id_for_label }}">
@@ -521,6 +558,20 @@
                             {% if form.category.errors %}
                             <ul class="field-errors">
                                 {% for e in form.category.errors %}<li>{{ e }}</li>{% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
+
+                        <!-- Sub Category -->
+                        <div class="field-group">
+                            <label class="field-label" for="{{ form.sub_category.id_for_label }}">
+                                <i class="bi bi-folder"></i>
+                                Sub Category
+                            </label>
+                            {{ form.sub_category }}
+                            {% if form.sub_category.errors %}
+                            <ul class="field-errors">
+                                {% for e in form.sub_category.errors %}<li>{{ e }}</li>{% endfor %}
                             </ul>
                             {% endif %}
                         </div>
@@ -563,29 +614,72 @@
                         <div class="panel-icon emerald"><i class="bi bi-currency-dollar"></i></div>
                         <div>
                             <h6>Pricing &amp; Timing</h6>
-                            <p>Set the price and prep time</p>
+                            <p>Set the normal, special and takeaway prices plus prep time</p>
                         </div>
                     </div>
                     <div class="form-panel-body">
-                        <div class="field-row">
+                        <div class="field-row field-row-3">
 
-                            <!-- Price -->
+                            <!-- Normal Price -->
                             <div class="field-group">
                                 <label class="field-label" for="{{ form.price.id_for_label }}">
                                     <i class="bi bi-cash-stack"></i>
-                                    Price
+                                    Normal Price
                                     <span class="required-star">*</span>
                                 </label>
                                 <div class="input-icon-wrap">
                                     <span class="field-prefix">{{ currency_symbol }}</span>
                                     {{ form.price }}
                                 </div>
+                                <span class="field-help">Standard dine-in / listed price</span>
                                 {% if form.price.errors %}
                                 <ul class="field-errors">
                                     {% for e in form.price.errors %}<li>{{ e }}</li>{% endfor %}
                                 </ul>
                                 {% endif %}
                             </div>
+
+                            <!-- Special Price -->
+                            <div class="field-group">
+                                <label class="field-label" for="{{ form.special_price.id_for_label }}">
+                                    <i class="bi bi-stars"></i>
+                                    Special Price
+                                </label>
+                                <div class="input-icon-wrap">
+                                    <span class="field-prefix">{{ currency_symbol }}</span>
+                                    {{ form.special_price }}
+                                </div>
+                                <span class="field-help">Offer price — blank uses the normal price</span>
+                                <span class="price-hint" id="specialPriceHint"></span>
+                                {% if form.special_price.errors %}
+                                <ul class="field-errors">
+                                    {% for e in form.special_price.errors %}<li>{{ e }}</li>{% endfor %}
+                                </ul>
+                                {% endif %}
+                            </div>
+
+                            <!-- Takeaway Price -->
+                            <div class="field-group">
+                                <label class="field-label" for="{{ form.takeaway_price.id_for_label }}">
+                                    <i class="bi bi-bag-check"></i>
+                                    Takeaway Price
+                                </label>
+                                <div class="input-icon-wrap">
+                                    <span class="field-prefix">{{ currency_symbol }}</span>
+                                    {{ form.takeaway_price }}
+                                </div>
+                                <span class="field-help">Packed price — blank uses the normal price</span>
+                                <span class="price-hint" id="takeawayPriceHint"></span>
+                                {% if form.takeaway_price.errors %}
+                                <ul class="field-errors">
+                                    {% for e in form.takeaway_price.errors %}<li>{{ e }}</li>{% endfor %}
+                                </ul>
+                                {% endif %}
+                            </div>
+
+                        </div>
+
+                        <div class="field-row">
 
                             <!-- Prep Time -->
                             <div class="field-group">
@@ -829,6 +923,58 @@
             submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Saving…';
             submitBtn.disabled = true;
         });
+    }
+
+    /* ---- Price hints ---- */
+    const normalInput  = document.getElementById("id_price");
+    const specialInput = document.getElementById("id_special_price");
+    const takeawayInput = document.getElementById("id_takeaway_price");
+    const specialHint  = document.getElementById("specialPriceHint");
+    const takeawayHint = document.getElementById("takeawayPriceHint");
+
+    function num(value) {
+        const parsed = parseFloat(value);
+        return isNaN(parsed) ? null : parsed;
+    }
+
+    function renderHint(input, hintEl, label) {
+        if (!input || !hintEl) return;
+
+        const normal = num(normalInput ? normalInput.value : null);
+        const typed  = num(input.value);
+
+        hintEl.classList.remove("active");
+
+        if (typed === null) {
+            hintEl.textContent = "";
+            return;
+        }
+
+        if (normal === null || normal <= 0) {
+            hintEl.textContent = "Set the normal price to see the difference";
+            return;
+        }
+
+        const diff = typed - normal;
+        const pct = Math.round(Math.abs(diff) / normal * 100);
+        const sign = diff < 0 ? "less" : "more";
+
+        hintEl.textContent = (diff === 0)
+            ? label + " same as normal price"
+            : label + " is " + pct + "% " + sign + " than normal";
+        hintEl.classList.add("active");
+    }
+
+    if (normalInput && specialInput && takeawayInput) {
+        [normalInput, specialInput, takeawayInput].forEach((el) => {
+            el.addEventListener("input", refreshPriceHints);
+        });
+        refreshPriceHints();
+    }
+
+    function refreshPriceHints() {
+        renderHint(specialInput, specialHint, "Special price");
+        renderHint(takeawayInput, takeawayHint, "Takeaway price");
     }
 
     /* ---- Toggle card click area ---- */

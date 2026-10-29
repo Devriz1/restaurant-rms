@@ -45,11 +45,44 @@
 
         </div>
 
-        <button class="icon-btn" title="Notifications">
+        <div class="dropdown" id="notification-dropdown">
 
-            <i class="bi bi-bell"></i>
+            <button
+                class="icon-btn position-relative"
+                title="Notifications"
+                id="notificationBell"
+                data-bs-toggle="dropdown"
+                aria-expanded="false">
 
-        </button>
+                <i class="bi bi-bell"></i>
+                {% if unread_notifications > 0 %}
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    {{ unread_notifications }}
+                    <span class="visually-hidden">unread notifications</span>
+                </span>
+                {% endif %}
+
+            </button>
+
+            <div class="dropdown-menu dropdown-menu-end notification-dropdown" id="notifications-menu">
+                <div class="p-3 border-bottom">
+                    <h6 class="mb-0 fw-bold">Notifications</h6>
+                </div>
+                <div id="notifications-content">
+                    {% if unread_notifications > 0 %}
+                    <div class="text-center py-3">
+                        <span class="spinner-border spinner-border-sm text-primary"></span>
+                    </div>
+                    {% else %}
+                    <div class="p-4 text-center text-muted">
+                        <i class="bi bi-bell-slash fs-4 d-block mb-1"></i>
+                        No new notifications
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+        </div>
 
         <div class="dropdown">
 
@@ -144,23 +177,205 @@ function updateClock() {
 updateClock();
 
 setInterval(updateClock, 1000);
-
 const menuToggle = document.getElementById("menuToggle");
 
-if (menuToggle) {
+    if (menuToggle) {
 
-    menuToggle.onclick = function () {
+        menuToggle.onclick = function () {
 
-        const sidebarWrapper = document.querySelector(".sidebar-wrapper");
+            const sidebarWrapper = document.querySelector(".sidebar-wrapper");
+            const appLayout = document.querySelector(".app-layout");
+            const isMobile = window.innerWidth < 768;
 
-        if (sidebarWrapper) {
+            if (sidebarWrapper && appLayout) {
+                sidebarWrapper.classList.toggle("active");
 
-            sidebarWrapper.classList.toggle("active");
+                if (isMobile) {
+                    appLayout.classList.toggle("mobile-sidebar-open");
+                } else {
+                    appLayout.classList.toggle("sidebar-collapsed");
+                }
+            }
 
+        };
+
+    }
+
+    // Close mobile sidebar when clicking outside
+    document.addEventListener("click", function(event) {
+        var sidebarWrapper = document.querySelector(".sidebar-wrapper");
+        var menuToggleBtn = document.getElementById("menuToggle");
+        if (sidebarWrapper && menuToggleBtn) {
+            if (window.innerWidth < 768 && sidebarWrapper.classList.contains("active")) {
+                if (!sidebarWrapper.contains(event.target) && event.target !== menuToggleBtn) {
+                    sidebarWrapper.classList.remove("active");
+                    var appLayout = document.querySelector(".app-layout");
+                    if (appLayout) {
+                        appLayout.classList.remove("mobile-sidebar-open");
+                    }
+                }
+            }
+        }
+    });
+// ==========================================================
+// NOTIFICATIONS
+// ==========================================================
+
+async function loadNotifications() {
+    const content = document.getElementById("notifications-content");
+    if (!content) return;
+
+    try {
+        const response = await fetch("/orders/notifications/", {
+            method: "GET",
+            headers: {
+                "X-Requested-With": "XMLHttpRequest",
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
         }
 
-    };
-
+        const data = await response.json();
+            if (data.html) {
+            content.innerHTML = data.html;
+            updateNotificationBadgeFromAPI();
+            setupNotificationEvents();
+        }
+    } catch (error) {
+        console.error("Failed to load notifications:", error);
+    }
 }
 
+function getCSRFToken() {
+    const cookie = document.cookie
+        .split("; ")
+        .find(row => row.startsWith("rms_csrftoken="));
+    return cookie ? decodeURIComponent(cookie.split("=")[1]) : "";
+}
+
+async function markNotificationRead(notificationId) {
+    try {
+        const response = await fetch(`/orders/notifications/${notificationId}/read/`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCSRFToken(),
+                "X-Requested-With": "XMLHttpRequest",
+            },
+            body: JSON.stringify({}),
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        if (data.success) {
+            const btn = document.querySelector(`.mark-notification-read[data-notification="${notificationId}"]`);
+            if (btn) {
+                btn.closest("li").remove();
+            }
+            const badge = document.querySelector("#notificationBell .badge");
+            if (data.unread_count === 0) {
+                if (badge) badge.remove();
+            } else if (badge) {
+                badge.innerHTML = `${data.unread_count} <span class="visually-hidden">unread notifications</span>`;
+            }
+        }
+    } catch (error) {
+        console.error("Failed to mark notification read:", error);
+    }
+}
+
+async function markAllNotificationsRead() {
+    try {
+        const response = await fetch("/orders/notifications/mark-all-read/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCSRFToken(),
+                "X-Requested-With": "XMLHttpRequest",
+            },
+            body: JSON.stringify({}),
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        if (data.success) {
+            loadNotifications();
+            updateNotificationBadgeFromAPI();
+        }
+    } catch (error) {
+        console.error("Failed to mark all notifications read:", error);
+    }
+}
+
+function setupNotificationEvents() {
+    const markAllBtn = document.getElementById("mark-all-read-btn");
+    if (markAllBtn) {
+        markAllBtn.onclick = function (e) {
+            e.preventDefault();
+            markAllNotificationsRead();
+        };
+    }
+
+    document.querySelectorAll(".mark-notification-read").forEach(function (btn) {
+        btn.onclick = function (e) {
+            e.preventDefault();
+            const id = this.getAttribute("data-notification");
+            if (id) {
+                markNotificationRead(parseInt(id));
+            }
+        };
+    });
+}
+
+const notificationBell = document.getElementById("notificationBell");
+if (notificationBell) {
+    notificationBell.addEventListener("click", function () {
+        setTimeout(loadNotifications, 100);
+    });
+}
+
+async function updateNotificationBadgeFromAPI() {
+    try {
+        const response = await fetch("/orders/notifications/", {
+            method: "GET",
+            headers: {
+                "X-Requested-With": "XMLHttpRequest",
+            },
+        });
+
+        if (!response.ok) return;
+
+        const data = await response.json();
+        if (data.count !== undefined) {
+            const bell = document.getElementById("notificationBell");
+            if (bell) {
+                let badge = bell.querySelector(".badge");
+                if (data.count > 0) {
+                    if (!badge) {
+                        badge = document.createElement("span");
+                        badge.className = "position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger";
+                        bell.appendChild(badge);
+                    }
+                    badge.innerHTML = `${data.count} <span class="visually-hidden">unread notifications</span>`;
+                } else if (badge) {
+                    badge.remove();
+                }
+            }
+        }
+    } catch (error) {
+        // Silent fail - don't show errors for background polling
+    }
+}
+
+// Poll for new notifications every 30 seconds
+setInterval(updateNotificationBadgeFromAPI, 30000);
+updateNotificationBadgeFromAPI();
 </script>

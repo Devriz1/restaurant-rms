@@ -1,20 +1,69 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Guest {{ guest.guest_number }} - Table {{ table.table_number }}{% endblock %}
+{% block title %}{% if guest.is_takeaway %}Takeaway {{ guest.order_number }}{% else %}Guest {{ guest.guest_number }} - Table {{ table.table_number }}{% endif %}{% endblock %}
+
+{% block breadcrumb %}Operations{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Sticky order panel: the header, the Send To Kitchen button and the
+       totals stay put while the item list scrolls inside the card. */
+    .order-panel {
+        position: sticky;
+        top: 1rem;
+        display: flex;
+        flex-direction: column;
+        max-height: calc(100vh - 2rem);
+        overflow: hidden;
+    }
+
+    /* The body hands its leftover height to the item list, which scrolls
+       internally. The totals block below it therefore stays in view. */
+    .order-panel .card-body {
+        flex: 1 1 auto;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    /* Short viewports: the inner list gives up height first */
+    @media (max-height: 700px) {
+        .order-panel {
+            max-height: calc(100vh - 1rem);
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
 <div class="container-fluid py-3">
 
+    <!-- Notification Container -->
+    <div id="pos-notification-container" style="position: relative; z-index: 1060;"></div>
+
     <!-- Header -->
     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-4">
         <div>
+            {% if guest.is_takeaway %}
+            <h2 class="mb-0 fw-bold">
+                <span class="me-2">🛍️</span>Takeaway Order
+                <span class="badge bg-info-subtle text-info align-middle ms-2 fs-7">
+                    {{ guest.order_number }}
+                </span>
+            </h2>
+            <small class="text-muted fs-6">
+                {{ guest.guest_name|default:"Walk-in Customer" }} &middot; Priced at takeaway rates
+            </small>
+            {% else %}
             <h2 class="mb-0 fw-bold">
                 <span class="me-2">🍽️</span>Table {{ table.table_number }}
             </h2>
             <small class="text-muted fs-6">
                 Guest #{{ guest.guest_number }}
             </small>
+            {% endif %}
         </div>
 
         <!-- Search Bar -->
@@ -27,7 +76,7 @@
                     type="text"
                     id="menu-search"
                     class="form-control border-start-0 ps-0"
-                    placeholder="Search menu items..."
+                    placeholder="Search by name or item code..."
                     autocomplete="off"
                     aria-label="Search menu">
             </div>
@@ -79,6 +128,7 @@
                         {% for item in menu_items %}
                         <div class="col-sm-6 menu-card" 
                              data-name="{{ item.name|lower }}" 
+                             data-item-code="{{ item.item_code|default:''|lower }}"
                              data-category="{{ item.category.id }}">
                             <div class="card h-100 border-0 shadow-sm hover-shadow transition">
                                 <div class="card-body d-flex flex-column justify-content-between">
@@ -99,6 +149,11 @@
                                                 <h5 class="card-title h6 mb-0 fw-bold text-dark">
                                                     {{ item.name }}
                                                 </h5>
+                                                {% if item.item_code %}
+                                                <small class="text-muted d-block">
+                                                    {{ item.item_code }}
+                                                </small>
+                                                {% endif %}
                                             </div>
                                         </div>
                                         <small class="text-muted d-block mb-3">
@@ -107,7 +162,7 @@
                                     </div>
                                     <div class="d-flex justify-content-between align-items-center mt-2">
                                         <span class="fs-5 fw-bold text-success">
-                                            {{ currency_symbol }}{{ item.price }}
+                                            {{ currency_symbol }}{{ item.display_price }}
                                         </span>
                                         <button
                                             class="btn btn-outline-success btn-sm px-3 rounded-pill add-item"
@@ -138,7 +193,7 @@
 
         <!-- Right Column: Sticky Current Order -->
         <div class="col-lg-4">
-            <div class="card border-0 shadow-sm position-sticky" style="top: 1rem;">
+            <div class="card border-0 shadow-sm order-panel">
                 <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
                     <h6 class="mb-0 fw-bold text-uppercase text-muted fs-7">
                         Current Order
@@ -146,17 +201,22 @@
                     <span class="badge bg-primary-subtle text-primary">Active</span>
                 </div>
 
-                <div class="card-body p-0" id="current-order">
-                    {% include "orders/partials/current_order.html" %}
-                </div>
-
-                <div class="card-footer bg-white border-top-0 p-3">
+                <!-- Send To Kitchen sits directly under the Current Order
+                     heading, so it stays with the panel and never needs
+                     scrolling to reach. -->
+                <div class="px-3 pt-3 pb-2 bg-white">
                     <button
+                        type="button"
                         class="btn btn-success btn-lg w-100 py-2 fs-6 shadow-sm"
                         id="send-kitchen"
                         data-guest="{{ guest.id }}">
                         <i class="bi bi-printer me-2"></i>Send To Kitchen
+                        <span class="badge bg-white text-success ms-2">0</span>
                     </button>
+                </div>
+
+                <div class="card-body p-0" id="current-order">
+                    {% include "orders/partials/current_order.html" %}
                 </div>
             </div>
         </div>
@@ -181,9 +241,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         menuCards.forEach(card => {
             const name = card.dataset.name;
+            const itemCode = card.dataset.itemCode;
             const category = card.dataset.category;
 
-            const matchesSearch = name.includes(query);
+            const matchesSearch = name.includes(query) || itemCode.includes(query);
             const matchesCategory = (activeCategory === "all" || category === activeCategory);
 
             if (matchesSearch && matchesCategory) {

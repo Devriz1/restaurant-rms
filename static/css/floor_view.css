@@ -1,0 +1,69 @@
+/* ==========================================================
+   FLOOR VIEW - TAB-BASED FLOOR SELECTION
+========================================================== */
+
+.floor-view-container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.floor-tabs {
+    background: var(--bg-card, #fff);
+    border: 1px solid var(--border-color, #e2e8f0);
+    border-radius: var(--border-radius-lg, 14px);
+    padding: 8px 12px;
+    box-shadow: var(--shadow-sm, 0 1px 2px rgba(0,0,0,.05));
+}
+
+.floor-tabs .nav-pills .nav-link {
+    border-radius: var(--border-radius, 8px);
+    padding: 6px 16px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    border: 1px solid transparent;
+    transition: all var(--transition-fast, 0.15s ease);
+    color: var(--text-secondary, #64748b);
+    background: transparent;
+    margin-bottom: 4px;
+}
+
+.floor-tabs .nav-pills .nav-link:hover {
+    background: var(--bg-subtle, #f1f5f9);
+    color: var(--text-primary, #0f172a);
+}
+
+.floor-tabs .nav-pills .nav-link.active {
+    background: var(--primary, #2563eb);
+    color: #fff;
+    border-color: var(--primary, #2563eb);
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+}
+
+.floor-tabs .nav-pills .nav-link.active .badge {
+    background: rgba(255, 255, 255, 0.25) !important;
+    color: #fff;
+}
+
+.floor-tabs .nav-pills .nav-link:not(.active) .badge {
+    background: var(--bg-subtle, #f1f5f9);
+    color: var(--text-secondary, #64748b);
+}
+
+.floor-panel {
+    display: none;
+    animation: fadeIn 0.2s ease-out forwards;
+}
+
+.floor-panel.show {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.floor-panel:not(#floor-all) .card-header {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+}

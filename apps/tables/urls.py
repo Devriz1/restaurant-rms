@@ -7,6 +7,8 @@ from .views import (
     DiningAreaDeleteView,
     RestaurantTableListView,
     RestaurantTableCreateView,
+    RestaurantTableUpdateView,
+    RestaurantTableDeleteView,
 )
 
 app_name = "tables"
@@ -25,5 +27,15 @@ path(
     "restaurant-tables/add/",
     RestaurantTableCreateView.as_view(),
     name="table-add",
+),
+path(
+    "restaurant-tables/<int:pk>/edit/",
+    RestaurantTableUpdateView.as_view(),
+    name="table-edit",
+),
+path(
+    "restaurant-tables/<int:pk>/delete/",
+    RestaurantTableDeleteView.as_view(),
+    name="table-delete",
 ),
 ]

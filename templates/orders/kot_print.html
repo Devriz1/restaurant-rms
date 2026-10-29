@@ -81,9 +81,14 @@
 
 <b>KOT :</b> {{ kot.ticket_number }}<br>
 
+{% if guest.is_takeaway %}
+<b>Type  :</b> TAKEAWAY<br>
+<b>Name  :</b> {{ guest.guest_name|default:"Walk-in" }}<br>
+{% else %}
 <b>Table :</b> {{ table.table_number }}<br>
 
 <b>Guest :</b> {{ guest.guest_number }}<br>
+{% endif %}
 
 <b>Waiter :</b> {{ kot.created_by.get_full_name|default:kot.created_by.username }}<br>
 

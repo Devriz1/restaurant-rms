@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load kitchen_filters %}
 
 {% block title %}Live Orders | Restaurant RMS{% endblock %}
 {% block breadcrumb %}Operations{% endblock %}
@@ -86,10 +87,20 @@
 
             <div class="order-card-body">
                 {% for guest in session.guest_orders.all %}
-                    <div class="guest-block">
+                    <div class="guest-block" data-guest="{{ guest.id }}">
                         <h5>
                             <span><i class="bi bi-person me-1 text-primary"></i> Guest {{ guest.guest_number }}</span>
                             <span class="badge bg-light text-dark border">{{ guest.items.count }} items</span>
+                            {% with bill=guest|get_bill %}
+                            {% if bill and guest.items|filter_status:"pending" > 0 %}
+                            <button type="button"
+                                    class="btn btn-success btn-sm rounded-pill kitchen-bill-action-btn ms-2"
+                                    data-bill="{{ bill.id }}"
+                                    data-action="preparing">
+                                <i class="bi bi-play-circle me-1"></i>Preparing
+                            </button>
+                            {% endif %}
+                            {% endwith %}
                         </h5>
                         <ul>
                             {% for item in guest.items.all %}
@@ -129,6 +140,7 @@
 {% endblock %}
 
 {% block extra_js %}
+<script src="{% static 'js/kitchen.js' %}"></script>
 <script>
 const search = document.getElementById("orderSearch");
 search?.addEventListener("keyup", function(){

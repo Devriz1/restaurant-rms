@@ -135,6 +135,22 @@
             </a>
             {% endif %}
 
+            {% if request.user|has_permission:"session.view" %}
+            <a href="{% url 'orders:takeaway-list' %}"
+               class="sidebar-link {% if request.resolver_match.url_name == 'takeaway-list' %}active{% endif %}">
+                <i class="bi bi-bag-check"></i>
+                <span>Takeaway</span>
+            </a>
+            {% endif %}
+
+            {% if request.user|has_permission:"kitchen.view" %}
+            <a href="{% url 'orders:kitchen-view' %}"
+               class="sidebar-link {% if request.resolver_match.url_name == 'kitchen-view' %}active{% endif %}">
+                <i class="bi bi-fire"></i>
+                <span>Kitchen</span>
+            </a>
+            {% endif %}
+
         </div>
         {% endif %}
 
@@ -164,7 +180,7 @@
         <!-- SETTINGS -->
         <!-- ====================================================== -->
 
-        {% if request.user|has_any_permission:"printer.view,users.view,backup.view,restore.view" %}
+        {% if request.user|has_any_permission:"printer.view,users.view,backup.view,restore.view,reports.view,billing.view,inventory.view,audit.view" %}
         <div class="sidebar-section">
 
             <div class="sidebar-title">
@@ -189,7 +205,7 @@
 
             {% if request.user|has_permission:"backup.view" %}
             <a href="{% url 'backup:dashboard' %}"
-               class="sidebar-link {% if request.resolver_match.namespace == 'backup' %}active{% endif %}">
+                class="sidebar-link {% if request.resolver_match.namespace == 'backup' %}active{% endif %}">
                 <i class="bi bi-database-fill-gear"></i>
                 <span>Backup & Restore</span>
             </a>
@@ -207,8 +223,29 @@
     <i class="bi bi-journal-bookmark-fill"></i>
     <span>Customer Ledger</span>
 </a>
-        </div>
-        {% endif %}
+            {% if request.user|has_permission:"audit.view" %}
+            <a href="{% url 'audit:audit-log-list' %}"
+               class="sidebar-link {% if request.resolver_match.namespace == 'audit' %}active{% endif %}">
+                <i class="bi bi-clipboard-data"></i>
+                <span>Audit Trail</span>
+            </a>
+            {% endif %}
+            {% if request.user|has_permission:"reports.view" %}
+            <a href="{% url 'reports:daily-closing' %}"
+               class="sidebar-link {% if request.resolver_match.url_name == 'daily-closing' or request.resolver_match.url_name == 'close-day' %}active{% endif %}">
+                <i class="bi bi-door-closed-fill"></i>
+                <span>Daily Closing</span>
+            </a>
+            {% endif %}
+            {% if request.user|has_permission:"billing.view" %}
+            <a href="{% url 'billing:period-list' %}"
+               class="sidebar-link {% if request.resolver_match.namespace == 'billing' and 'period' in request.resolver_match.url_name %}active{% endif %}">
+                <i class="bi bi-calendar-range"></i>
+                <span>Period</span>
+            </a>
+            {% endif %}
+    </div>
+    {% endif %}
 
     </div>
 

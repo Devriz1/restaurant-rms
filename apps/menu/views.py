@@ -8,6 +8,8 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
+from django.views.decorators.cache import never_cache
+from django.utils.decorators import method_decorator
 from django.views.generic import (
     ListView,
     CreateView,
@@ -28,10 +30,28 @@ from .models import (
 )
 
 
+def optional_price(value):
+    """Normalize an optional price coming from an import row to None."""
+    if value is None:
+        return None
+
+    if isinstance(value, str):
+        value = value.strip()
+        if not value:
+            return None
+
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
 # ==========================================================
 # MENU CATEGORY
 # ==========================================================
 
+@method_decorator(never_cache, name="dispatch")
+@method_decorator(never_cache, name="dispatch")
 class MenuCategoryListView(ListView):
 
     model = MenuCategory
@@ -41,6 +61,8 @@ class MenuCategoryListView(ListView):
     context_object_name = "categories"
 
 
+@method_decorator(never_cache, name="dispatch")
+@method_decorator(never_cache, name="dispatch")
 class MenuCategoryCreateView(CreateView):
 
     model = MenuCategory
@@ -61,6 +83,8 @@ class MenuCategoryCreateView(CreateView):
         return super().form_valid(form)
 
 
+@method_decorator(never_cache, name="dispatch")
+@method_decorator(never_cache, name="dispatch")
 class MenuCategoryUpdateView(UpdateView):
 
     model = MenuCategory
@@ -81,6 +105,8 @@ class MenuCategoryUpdateView(UpdateView):
         return super().form_valid(form)
 
 
+@method_decorator(never_cache, name="dispatch")
+@method_decorator(never_cache, name="dispatch")
 class MenuCategoryDeleteView(DeleteView):
 
     model = MenuCategory
@@ -103,6 +129,8 @@ class MenuCategoryDeleteView(DeleteView):
 # MENU ITEMS
 # ==========================================================
 
+@method_decorator(never_cache, name="dispatch")
+@method_decorator(never_cache, name="dispatch")
 class MenuItemListView(ListView):
 
     model = MenuItem
@@ -111,7 +139,8 @@ class MenuItemListView(ListView):
 
     context_object_name = "items"
 
-    paginate_by = 20
+    # All items are shown on one page so newly created items are
+    # always visible immediately.
 
 
     def get_queryset(self):
@@ -187,6 +216,8 @@ class MenuItemListView(ListView):
 
         return context
     
+@method_decorator(never_cache, name="dispatch")
+@method_decorator(never_cache, name="dispatch")
 class MenuItemCreateView(CreateView):
 
     model = MenuItem
@@ -207,6 +238,8 @@ class MenuItemCreateView(CreateView):
         return super().form_valid(form)
 
 
+@method_decorator(never_cache, name="dispatch")
+@method_decorator(never_cache, name="dispatch")
 class MenuItemUpdateView(UpdateView):
 
     model = MenuItem
@@ -227,6 +260,8 @@ class MenuItemUpdateView(UpdateView):
         return super().form_valid(form)
 
 
+@method_decorator(never_cache, name="dispatch")
+@method_decorator(never_cache, name="dispatch")
 class MenuItemDeleteView(DeleteView):
 
     model = MenuItem
@@ -286,6 +321,12 @@ def import_menu_items(request):
                         category=category,
                         name=row["Name"],
                         price=float(row["Price"]),
+                        special_price=optional_price(
+                            row.get("Special Price")
+                        ),
+                        takeaway_price=optional_price(
+                            row.get("Takeaway Price")
+                        ),
                         preparation_time=int(
                             row["Preparation Time"]
                         ),
@@ -314,6 +355,8 @@ def import_menu_items(request):
                         name=row[0],
                         category=category,
                         price=row[2],
+                        special_price=optional_price(row[5]),
+                        takeaway_price=optional_price(row[6]),
                         preparation_time=row[3],
                         is_veg=str(row[4]).lower() == "yes",
                         is_available=True,
@@ -389,6 +432,8 @@ def export_menu_items(request):
             "Price",
             "Preparation Time",
             "Veg",
+            "Special Price",
+            "Takeaway Price",
         ])
 
         for item in items:
@@ -399,6 +444,8 @@ def export_menu_items(request):
                 item.price,
                 item.preparation_time,
                 "Yes" if item.is_veg else "No",
+                item.special_price if item.special_price is not None else "",
+                item.takeaway_price if item.takeaway_price is not None else "",
             ])
 
         return response
@@ -419,6 +466,8 @@ def export_menu_items(request):
         "Price",
         "Preparation Time",
         "Veg",
+        "Special Price",
+        "Takeaway Price",
     ])
 
     for item in items:
@@ -429,6 +478,8 @@ def export_menu_items(request):
             item.price,
             item.preparation_time,
             "Yes" if item.is_veg else "No",
+            item.special_price if item.special_price is not None else "",
+            item.takeaway_price if item.takeaway_price is not None else "",
         ])
 
     response = HttpResponse(

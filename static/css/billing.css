@@ -130,3 +130,8 @@
 @media (max-width: 1200px) {
     .pos-layout { grid-template-columns: 1fr; }
 }
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}

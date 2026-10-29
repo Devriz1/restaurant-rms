@@ -2,6 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.conf import settings
 
+
 class User(AbstractUser):
 
     class Roles(models.TextChoices):
@@ -18,11 +19,21 @@ class User(AbstractUser):
         default=Roles.WAITER,
     )
 
+    current_period = models.ForeignKey(
+        "billing.Period",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="+",
+        help_text="Last selected financial period — used as default on login.",
+    )
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.username
+
 
 class Permission(models.Model):
 

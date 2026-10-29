@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Takeaway Orders | Restaurant RMS{% endblock %}
+{% block breadcrumb %}Operations{% endblock %}
+{% block page_title %}Takeaway{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/orders.css' %}">
+<style>
+    .takeaway-new-card {
+        background: var(--bg-card, #fff);
+        border: 1px solid var(--border-color, #e2e8f0);
+        border-radius: var(--border-radius-lg, 12px);
+        box-shadow: var(--shadow-md, 0 1px 3px rgba(0,0,0,.06));
+    }
+    .takeaway-card {
+        background: var(--bg-card, #fff);
+        border: 1px solid var(--border-color, #e2e8f0);
+        border-left: 4px solid #0d9488;
+        border-radius: var(--border-radius, 10px);
+        box-shadow: var(--shadow-sm, 0 1px 2px rgba(0,0,0,.05));
+        transition: transform .15s ease, box-shadow .15s ease;
+    }
+    .takeaway-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md, 0 4px 12px rgba(0,0,0,.08));
+    }
+    .takeaway-order-no {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: .78rem;
+        letter-spacing: .04em;
+        color: var(--text-muted, #64748b);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="orders-page">
+
+    <!-- Takeaway Header -->
+    <div class="orders-header">
+        <div>
+            <h1><i class="bi bi-bag-check me-2"></i> Takeaway Orders</h1>
+            <p>Packaged orders billed at each item's takeaway price.</p>
+        </div>
+        <div>
+            <a href="{% url 'orders:floor-view' %}" class="btn btn-light rounded-pill px-4 fw-bold">
+                <i class="bi bi-grid-3x3-gap-fill me-1 text-primary"></i> Floor View
+            </a>
+        </div>
+    </div>
+
+    <!-- New Takeaway Order -->
+    <div class="takeaway-new-card p-4 mb-4">
+        <form method="post" action="{% url 'orders:takeaway-create' %}" class="row g-3 align-items-end">
+            {% csrf_token %}
+
+            <div class="col-md-5">
+                <label class="form-label fw-semibold small text-muted" for="customer_name">
+                    Customer Name
+                </label>
+                <input type="text"
+                       name="customer_name"
+                       id="customer_name"
+                       class="form-control"
+                       placeholder="e.g. Rahul — phone last 4 digits"
+                       maxlength="100">
+            </div>
+
+            <div class="col-md-2">
+                <label class="form-label fw-semibold small text-muted" for="guest_count">
+                    Items For
+                </label>
+                <input type="number"
+                       name="guest_count"
+                       id="guest_count"
+                       class="form-control"
+                       value="1"
+                       min="1"
+                       max="50">
+            </div>
+
+            <div class="col-md-5">
+                <button type="submit" class="btn btn-success w-100 fw-bold py-2">
+                    <i class="bi bi-plus-circle me-2"></i>New Takeaway Order
+                </button>
+            </div>
+
+        </form>
+    </div>
+
+    <!-- Active Takeaway Orders -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
+        <h6 class="mb-0 fw-bold text-uppercase text-muted fs-7">
+            Active Orders
+        </h6>
+        <span class="badge bg-light text-dark border">
+            {{ takeaway_orders|length }} active
+        </span>
+    </div>
+
+    <div class="orders-grid">
+
+        {% for order in takeaway_orders %}
+
+        <a href="{% url 'orders:guest-order' order.id %}"
+           class="takeaway-card text-decoration-none d-block p-3">
+
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <div>
+                    <span class="takeaway-order-no">{{ order.order_number }}</span>
+                    <h6 class="mb-0 fw-bold text-dark mt-1">
+                        {{ order.guest_name|default:"Walk-in Customer" }}
+                    </h6>
+                </div>
+                <span class="badge bg-{{ order.status|default:'secondary' }}-subtle text-{{ order.status|default:'secondary' }}">
+                    {{ order.get_status_display }}
+                </span>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center small text-muted">
+                <span>
+                    <i class="bi bi-bag me-1"></i>{{ order.total_items }} item{{ order.total_items|pluralize }}
+                </span>
+                <strong class="fs-6 text-success">
+                    {{ currency_symbol }}{{ order.subtotal }}
+                </strong>
+            </div>
+
+        </a>
+
+        {% empty %}
+
+        <div class="col-12">
+            <div class="text-center text-muted py-5">
+                <i class="bi bi-bag-x fs-1 d-block mb-2"></i>
+                <p class="mb-0">No active takeaway orders.</p>
+            </div>
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+{% endblock %}

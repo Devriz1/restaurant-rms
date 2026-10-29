@@ -256,4 +256,35 @@
 @media (max-width: 768px) {
     .dashboard-cards { grid-template-columns: 1fr; }
     .actions { grid-template-columns: 1fr; }
+    .dashboard-header { flex-direction: column; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+    .content-wrapper { padding: 20px 16px; }
+    .dashboard-card { padding: 16px; gap: 12px; }
+    .dashboard-card h2 { font-size: 1.35rem; }
+    .dashboard-card h5 { font-size: 0.725rem; }
+    .card-icon { width: 44px; height: 44px; font-size: 1.25rem; }
+    .panel-header { padding: 14px 18px; }
+    .panel-body { padding: 16px; }
+    .dashboard-table th, .dashboard-table td { padding: 10px 12px; font-size: 0.8rem; }
+}
+
+@media (max-width: 575px) {
+    .dashboard-page { gap: 16px; }
+    .content-wrapper { padding: 16px; }
+    .dashboard-header h1 { font-size: 1.3rem; }
+    .dashboard-header p { font-size: 0.78rem; }
+    .dashboard-cards { gap: 12px; }
+    .dashboard-card { padding: 14px; }
+    .dashboard-card h2 { font-size: 1.15rem; }
+    .dashboard-card h5 { font-size: 0.65rem; }
+    .card-icon { width: 40px; height: 40px; font-size: 1.15rem; }
+    .status-item { padding: 8px 0; font-size: 0.75rem; }
+    .status-item strong { font-size: 0.9rem; }
+    .status-item span { font-size: 0.75rem; }
+    .action-btn { padding: 14px 10px; }
+    .action-btn i { font-size: 1.4rem; }
+    .action-btn span { font-size: 0.75rem; }
+    .panel-header { padding: 12px 16px; font-size: 0.8rem; }
+    .panel-body { padding: 12px; }
+    .dashboard-table th { padding: 8px 6px; font-size: 0.6rem; }
+    .dashboard-table td { padding: 10px 6px; font-size: 0.7rem; }
 }

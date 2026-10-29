@@ -1,224 +1,147 @@
 {% extends "base.html" %}
-{% load static %}
 
 {% block title %}Daily Closing | Restaurant RMS{% endblock %}
-{% block breadcrumb %}Reports{% endblock %}
-{% block page_title %}Daily Closing & EOD{% endblock %}
+{% block breadcrumb %}Settings{% endblock %}
+{% block page_title %}Daily Closing{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/reports.css' %}">
-<link rel="stylesheet" href="{% static 'css/report_customizer.css' %}">
 <style>
-    .sortable-header {
-        cursor: pointer;
-        user-select: none;
-        white-space: nowrap;
+    .eod-card {
+        max-width: 640px;
+        margin: 4rem auto;
     }
-    .sortable-header:hover {
-        background-color: rgba(0, 0, 0, 0.03);
+    .eod-card .card-body { padding: 2.5rem; }
+    .eod-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px dashed #e5e7eb;
     }
-    .status-badge {
-        font-size: 0.75rem;
-        padding: 0.35em 0.65em;
-        font-weight: 600;
+    .eod-row:last-child { border-bottom: none; }
+    .eod-label { color: #6b7280; font-size: 0.95rem; }
+    .eod-value { font-weight: 600; font-size: 0.95rem; }
+    .eod-summary {
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 1.25rem;
+        margin-top: 1rem;
+    }
+    .eod-confirm-box {
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        border-radius: 12px;
+        padding: 1.25rem;
+        margin-top: 1rem;
+        text-align: left;
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="container-fluid py-3 reports-page">
+<div class="eod-card">
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body text-center">
 
-    <!-- Page Header -->
-    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-4">
-        <div>
-            <h2 class="fw-bold mb-1 d-flex align-items-center gap-2">
-                <i class="bi bi-calendar-check-fill text-primary"></i>
-                Daily Closing & EOD
-            </h2>
-            <p class="text-muted mb-0">Register closing, cash drawer reconciliation and shift summary.</p>
-        </div>
-        <div>
-            <button type="button" id="openCustomizer" class="btn btn-outline-primary shadow-sm">
-                <i class="bi bi-layout-three-columns me-1"></i> Customize Columns
-            </button>
-        </div>
-    </div>
+            <div class="mb-3">
+                <i class="bi bi-door-closed-fill display-1 text-danger"></i>
+            </div>
 
-    <!-- Filter Panel -->
-    <div class="card border-0 shadow-sm mb-4">
-        <div class="card-body p-3">
-            {% include "components/report_filters.html" %}
-        </div>
-    </div>
+            <h3 class="fw-bold mb-1">End of Day Closing</h3>
+            <p class="text-muted mb-4">
+                Close today's trading day to lock the books and roll forward to the next day.
+            </p>
 
-    <!-- Summary Cards -->
-    <div class="mb-4">
-        {% include "components/report_summary_cards.html" %}
-    </div>
-
-    <!-- Column Customizer -->
-    {% include "components/report_customizer.html" %}
-
-    <!-- Report Data Card -->
-    <div class="card border-0 shadow-sm mb-4">
-        <!-- Toolbar -->
-        <div class="card-header bg-white py-3 border-0 d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3">
-            <div class="w-100" style="max-width: 360px;">
-                <div class="input-group input-group-sm">
-                    <span class="input-group-text bg-light border-end-0 text-muted">
-                        <i class="bi bi-search"></i>
-                    </span>
-                    <input
-                        type="text"
-                        id="reportSearch"
-                        class="form-control bg-light border-start-0 ps-0"
-                        placeholder="Search bill, table or guest..."
-                        aria-label="Search daily closing records">
+            <div class="text-start mb-4">
+                <div class="eod-row">
+                    <span class="eod-label">Today's Date</span>
+                    <span class="eod-value">{{ today|date:"d M Y" }}</span>
+                </div>
+                <div class="eod-row">
+                    <span class="eod-label">Opening Balance</span>
+                    <span class="eod-value">{{ currency_symbol }} {{ opening_balance }}</span>
+                </div>
+                <div class="eod-row">
+                    <span class="eod-label">Today's Sales</span>
+                    <span class="eod-value">{{ currency_symbol }} {{ total_sales }}</span>
+                </div>
+                <div class="eod-row">
+                    <span class="eod-label">Total Bills</span>
+                    <span class="eod-value">{{ total_bills }}</span>
+                </div>
+                <div class="eod-row">
+                    <span class="eod-label">Transactions</span>
+                    <span class="eod-value">{{ total_transactions }}</span>
+                </div>
+                <div class="eod-row">
+                    <span class="eod-label">Expected Closing Balance</span>
+                    <span class="eod-value text-success">{{ currency_symbol }} {{ closing_balance }}</span>
                 </div>
             </div>
 
-            <div class="text-muted fs-7 fw-medium">
-                <span id="recordCount" class="badge bg-light text-dark border me-1">{{ bills|length }}</span>
-                Record{{ bills|length|pluralize }} Found
-            </div>
-        </div>
+            {% if day_closed %}
+                <div class="alert alert-success mb-0">
+                    <i class="bi bi-check-circle-fill me-1"></i>
+                    Today's day has already been closed.
+                </div>
+            {% else %}
+                <div id="closeDaySection">
+                    <button type="button" class="btn btn-danger btn-lg px-5" id="closeDayBtn">
+                        <i class="bi bi-lock-fill me-1"></i> Close Day
+                    </button>
+                </div>
 
-        <!-- Table Container -->
-        <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0 report-table" id="dailyClosingTable">
-                <thead class="table-light text-muted text-uppercase fs-8 border-bottom">
-                    <tr>
-                        <th class="sortable-header" data-column="bill" data-sort="bill">
-                            Bill No <i class="bi bi-arrow-down-up ms-1 text-muted fs-8"></i>
-                        </th>
-                        <th class="sortable-header" data-column="date" data-sort="date">
-                            Date & Time <i class="bi bi-arrow-down-up ms-1 text-muted fs-8"></i>
-                        </th>
-                        <th class="sortable-header" data-column="table" data-sort="table">
-                            Table <i class="bi bi-arrow-down-up ms-1 text-muted fs-8"></i>
-                        </th>
-                        <th class="sortable-header" data-column="guest" data-sort="guest">
-                            Guest <i class="bi bi-arrow-down-up ms-1 text-muted fs-8"></i>
-                        </th>
-                        <th class="sortable-header" data-column="cashier" data-sort="cashier">
-                            Cashier <i class="bi bi-arrow-down-up ms-1 text-muted fs-8"></i>
-                        </th>
-                        <th class="sortable-header text-end" data-column="total" data-sort="total">
-                            Total <i class="bi bi-arrow-down-up ms-1 text-muted fs-8"></i>
-                        </th>
-                        <th class="sortable-header text-center" data-column="status" data-sort="status">
-                            Status <i class="bi bi-arrow-down-up ms-1 text-muted fs-8"></i>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody class="fs-7">
-                {% for bill in bills %}
-                    <tr>
-                        <td data-column="bill" class="fw-bold text-dark font-monospace">
-                            #{{ bill.bill_number }}
-                        </td>
-                        <td data-column="date">
-                            <div class="d-flex flex-column">
-                                <span class="fw-medium text-dark">{{ bill.created_at|date:"d M Y" }}</span>
-                                <small class="text-muted fs-8">{{ bill.created_at|date:"h:i A" }}</small>
-                            </div>
-                        </td>
-                        <td data-column="table">
-                            <span class="badge bg-light text-dark border fw-medium">
-                                {{ bill.session.table.display_name }}
-                            </span>
-                        </td>
-                        <td data-column="guest" class="text-secondary">
-                            Guest #{{ bill.guest_order.guest_number|default:"1" }}
-                        </td>
-                        <td data-column="cashier" class="text-secondary">
-                            <i class="bi bi-person me-1"></i>{{ bill.created_by|default:"System" }}
-                        </td>
-                        <td data-column="total" class="text-end fw-bold text-dark font-monospace">
-                                {{ currency_symbol }}{{ bill.grand_total }}
-                        </td>
-                        <td data-column="status" class="text-center">
-                            {% if bill.status == "paid" %}
-                                <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill status-badge">
-                                    <i class="bi bi-check-circle-fill me-1"></i>Paid
-                                </span>
-                            {% elif bill.status == "unpaid" %}
-                                <span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill status-badge">
-                                    <i class="bi bi-x-circle-fill me-1"></i>Unpaid
-                                </span>
-                            {% else %}
-                                <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle rounded-pill status-badge">
-                                    {{ bill.status|title }}
-                                </span>
-                            {% endif %}
-                        </td>
-                    </tr>
-                {% empty %}
-                    <tr>
-                        <td colspan="7" class="text-center py-5">
-                            <div class="text-muted py-3">
-                                <i class="bi bi-receipt display-4 d-block mb-3 opacity-50"></i>
-                                <h5 class="fw-bold text-dark mb-1">No Closing Records Found</h5>
-                                <p class="fs-7 mb-0">There are no bills matching your search or date filter selection.</p>
-                            </div>
-                        </td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+                <div id="confirmSection" style="display:none;">
+                    <div class="eod-confirm-box">
+                        <h6 class="fw-bold text-danger mb-2">
+                            <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                            Confirm Day Closing
+                        </h6>
+                        <p class="mb-3 text-secondary" style="font-size:0.9rem;">
+                            You are about to close <strong>{{ today|date:"d M Y" }}</strong>.
+                            This will lock the day's books and roll forward to the next trading day.
+                            This action cannot be undone.
+                        </p>
+                        <div class="d-flex gap-2 justify-content-center">
+                            <button type="button" class="btn btn-secondary" id="cancelCloseBtn">
+                                <i class="bi bi-x-circle me-1"></i> Cancel
+                            </button>
+                            <form method="post" action="{% url 'reports:close-day' %}" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="bi bi-check-circle-fill me-1"></i> Yes, Close Day
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
         </div>
     </div>
-
-    <!-- Payment Settlement -->
-    <div class="card shadow-sm border-0 mt-4">
-        <div class="card-header bg-white">
-            <h5 class="mb-0">
-                <i class="bi bi-cash-stack text-success me-2"></i>
-                Payment Settlement
-            </h5>
-        </div>
-        <div class="card-body p-0">
-            <table class="table table-hover table-bordered mb-0">
-                <tbody>
-                    <tr>
-                        <td class="fw-semibold">Cash</td>
-                        <td class="text-end text-success fw-bold">{{ currency_symbol }} {{ cash }}</td>
-                    </tr>
-                    <tr>
-                        <td class="fw-semibold">UPI</td>
-                        <td class="text-end text-success fw-bold">{{ currency_symbol }} {{ upi }}</td>
-                    </tr>
-                    <tr>
-                        <td class="fw-semibold">Card</td>
-                        <td class="text-end text-success fw-bold">{{ currency_symbol }} {{ card }}</td>
-                    </tr>
-                    <tr class="table-light">
-                        <td class="fw-bold">Total Collection</td>
-                        <td class="text-end fw-bold text-primary">{{ currency_symbol }} {{ total_sales }}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- Export Action Buttons -->
-    <div class="d-flex justify-content-end mb-4 mt-4">
-        {% include "components/report_export_buttons.html" %}
-    </div>
-
 </div>
 {% endblock %}
 
 {% block extra_js %}
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
-<script src="{% static 'js/report_customizer.js' %}"></script>
-<script src="{% static 'js/report_sort.js' %}"></script>
-<script src="{% static 'js/report_search.js' %}"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        ReportCustomizer.init('dailyClosingTable');
-        ReportSort.init('dailyClosingTable');
-        ReportSearch.init();
+    document.addEventListener("DOMContentLoaded", function () {
+        var closeBtn = document.getElementById("closeDayBtn");
+        var confirmSec = document.getElementById("confirmSection");
+        var closeSec = document.getElementById("closeDaySection");
+        var cancelBtn = document.getElementById("cancelCloseBtn");
+
+        if (closeBtn) {
+            closeBtn.addEventListener("click", function () {
+                closeSec.style.display = "none";
+                confirmSec.style.display = "block";
+            });
+        }
+        if (cancelBtn) {
+            cancelBtn.addEventListener("click", function () {
+                confirmSec.style.display = "none";
+                closeSec.style.display = "block";
+            });
+        }
     });
 </script>
 {% endblock %}

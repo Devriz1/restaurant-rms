@@ -2,9 +2,10 @@ from datetime import date
 
 from decimal import Decimal
 
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Avg, Count, Prefetch, Sum
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from apps.billing.models import DailyClosing
 from apps.billing.models import Bill, Payment
 from apps.orders.models import KitchenOrderTicket, OrderItem, TableSession, GuestOrder
@@ -637,9 +638,13 @@ def daily_closing_report(request):
         "cash": cash,
         "upi": upi,
         "card": card,
+"opening_balance": opening_balance,
 
-        "opening_balance": opening_balance,
         "closing_balance": closing_balance,
+
+        "day_closed": daily_closing is not None,
+
+        "today": today,
 
         "total_sales": total_sales,
         "total_bills": total_bills,
@@ -1295,4 +1300,75 @@ def export_daily_closing(request, export_format):
 @permission_required("reports.view")
 def export_tables(request, export_format):
     return _export_report(request, "tables", export_format)
+
+
+# ==========================================================
+# DAILY CLOSING — EOD / CLOSE DAY
+# ==========================================================
+
+@login_required
+@permission_required("reports.view")
+def close_day(request):
+    """Close the current trading day.
+
+    Computes today's sales, creates (or updates) a DailyClosing record,
+    and rolls the active day forward so billing on the next calendar day
+    starts a fresh open session.
+    """
+
+    today = date.today()
+
+    existing = DailyClosing.objects.filter(date=today).first()
+
+    if existing is not None:
+        messages.info(request, f"Day {today} is already closed.")
+        return redirect("reports:daily-closing")
+
+    bills = Bill.objects.filter(
+        created_at__date=today,
+        status="paid",
+    )
+
+    payments = Payment.objects.filter(bill__in=bills)
+
+    cash = payments.filter(payment_method="cash").aggregate(
+        total=Sum("amount")
+    )["total"] or Decimal("0.00")
+
+    upi = payments.filter(payment_method="upi").aggregate(
+        total=Sum("amount")
+    )["total"] or Decimal("0.00")
+
+    card = payments.filter(payment_method="card").aggregate(
+        total=Sum("amount")
+    )["total"] or Decimal("0.00")
+
+    total_sales = bills.aggregate(total=Sum("grand_total"))["total"] or Decimal("0.00")
+
+    previous = DailyClosing.objects.order_by("-date").first()
+    opening_balance = previous.closing_balance if previous else Decimal("0.00")
+
+    closing_balance = opening_balance + cash + upi + card
+
+    closing = DailyClosing.objects.create(
+        date=today,
+        opening_balance=opening_balance,
+        cash_sales=cash,
+        upi_sales=upi,
+        card_sales=card,
+        credit_sales=Decimal("0.00"),
+        total_sales=total_sales,
+        closing_balance=closing_balance,
+        total_bills=bills.count(),
+        total_transactions=payments.count(),
+        closed_by=request.user,
+        notes="End-of-day closing",
+    )
+
+    messages.success(
+        request,
+        f"Day {today} closed. Closing balance: {closing_balance}",
+    )
+
+    return redirect("reports:daily-closing")
 
