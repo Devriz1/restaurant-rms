@@ -1,3 +1,6 @@
-2026/10/23-21:30:03.340 244c Reusing MANIFEST F:\restaurant-rms\.pwa_profile\Default\shared_proto_db/MANIFEST-000001
-2026/10/23-21:30:03.341 244c Recovering log #7
-2026/10/23-21:30:03.343 244c Reusing old log F:\restaurant-rms\.pwa_profile\Default\shared_proto_db/000007.log 
+2026/10/29-22:33:40.246 4ea8 Reusing MANIFEST F:\restaurant-rms\.pwa_profile\Default\shared_proto_db/MANIFEST-000001
+2026/10/29-22:33:40.248 4ea8 Recovering log #7
+2026/10/29-22:33:40.255 4ea8 Reusing old log F:\restaurant-rms\.pwa_profile\Default\shared_proto_db/000007.log 
+2026/10/29-22:33:40.282 cc38 Level-0 table #11: started
+2026/10/29-22:33:40.289 cc38 Level-0 table #11: 125453 bytes OK
+2026/10/29-22:33:40.293 cc38 Delete type=0 #7

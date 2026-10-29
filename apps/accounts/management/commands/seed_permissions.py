@@ -124,6 +124,15 @@ PERMISSIONS = [
     ("backup.view", "Backup Database", "System"),
     ("restore.view", "Restore Database", "System"),
     ("audit.view", "View Audit Trail", "System"),
+
+    # ==========================================================
+    # REGISTRATION / LICENSE
+    # ==========================================================
+
+    ("registration.view", "View Registration", "System"),
+    ("registration.add", "Add License Key", "System"),
+    ("registration.edit", "Edit License Key", "System"),
+    ("registration.delete", "Delete License Key", "System"),
 ]
 
 

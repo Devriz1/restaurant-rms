@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Activate License | Restaurant RMS{% endblock %}
+{% block breadcrumb %}Settings{% endblock %}
+{% block page_title %}Activate License Key{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-body p-4">
+                <div class="text-center mb-4">
+                    <i class="bi bi-key display-1 text-primary"></i>
+                    <h4 class="mt-3 fw-bold">Activate License Key</h4>
+                    <p class="text-muted">Enter a valid license key to unlock all software features.</p>
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+                    {% endif %}
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold" for="{{ form.key.id_for_label }}">License Key</label>
+                        {{ form.key }}
+                        {% if form.key.errors %}<div class="text-danger small">{{ form.key.errors }}</div>{% endif %}
+                    </div>
+
+                    <div class="d-flex gap-2 justify-content-end mt-4">
+                        <a href="{% url 'registration:status' %}" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-key-fill me-1"></i> Activate
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

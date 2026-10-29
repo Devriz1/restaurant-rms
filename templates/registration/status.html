@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Registration | Restaurant RMS{% endblock %}
+{% block breadcrumb %}Settings{% endblock %}
+{% block page_title %}Registration{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-body p-4 text-center">
+
+                <div class="mb-3">
+                    <i class="bi bi-{% if is_registered %}key-fill{% else %}lock-fill{% endif %} display-1 text-{% if is_registered %}success{% else %}danger{% endif %}"></i>
+                </div>
+
+                <h3 class="fw-bold mb-2">
+                    {% if is_registered %}Software Unlocked{% else %}Software Locked{% endif %}
+                </h3>
+
+                <p class="text-muted mb-4">
+                    {% if is_registered %}
+                        Active license: <strong>{{ active_key.key }}</strong>
+                        <span class="badge bg-{% if active_key.is_expired %}danger{% else %}light text-dark{% endif %} border ms-2">{{ active_key.time_remaining }}</span>
+                    {% else %}
+                        Activate a license key to unlock all software features.
+                    {% endif %}
+                </p>
+
+                <div class="d-flex gap-2 justify-content-center flex-wrap">
+                    {% if not is_registered %}
+                    <a href="{% url 'registration:activate' %}" class="btn btn-primary btn-lg rounded-pill px-5">
+                        <i class="bi bi-key me-1"></i> Activate License Key
+                    </a>
+                    {% else %}
+                    <a href="{% url 'registration:activate' %}" class="btn btn-outline-secondary rounded-pill px-5">
+                        <i class="bi bi-arrow-repeat me-1"></i> Change Key
+                    </a>
+                    {% endif %}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

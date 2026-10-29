@@ -177,10 +177,56 @@
 
 
         <!-- ====================================================== -->
+        <!-- ACCOUNT -->
+        <!-- ====================================================== -->
+
+        {% if request.user|has_any_permission:"billing.view,reports.view,audit.view" %}
+        <div class="sidebar-section">
+
+            <div class="sidebar-title">
+                Account
+            </div>
+
+            {% if request.user|has_permission:"billing.view" %}
+            <a href="{% url 'billing:customer_list' %}"
+               class="sidebar-link {% if request.resolver_match.url_name in 'customer_list customer_detail receive_customer_payment' %}active{% endif %}">
+                <i class="bi bi-journal-bookmark-fill"></i>
+                <span>Customer Ledger</span>
+            </a>
+            {% endif %}
+
+            {% if request.user|has_permission:"audit.view" %}
+            <a href="{% url 'audit:audit-log-list' %}"
+               class="sidebar-link {% if request.resolver_match.namespace == 'audit' %}active{% endif %}">
+                <i class="bi bi-clipboard-data"></i>
+                <span>Audit Trail</span>
+            </a>
+            {% endif %}
+
+            {% if request.user|has_permission:"reports.view" %}
+            <a href="{% url 'reports:daily-closing' %}"
+               class="sidebar-link {% if request.resolver_match.url_name == 'daily-closing' or request.resolver_match.url_name == 'close-day' %}active{% endif %}">
+                <i class="bi bi-door-closed-fill"></i>
+                <span>Daily Closing</span>
+            </a>
+            {% endif %}
+
+            {% if request.user|has_permission:"billing.view" %}
+            <a href="{% url 'billing:period-list' %}"
+               class="sidebar-link {% if request.resolver_match.namespace == 'billing' and 'period' in request.resolver_match.url_name %}active{% endif %}">
+                <i class="bi bi-calendar-range"></i>
+                <span>Period</span>
+            </a>
+            {% endif %}
+
+        </div>
+        {% endif %}
+
+        <!-- ====================================================== -->
         <!-- SETTINGS -->
         <!-- ====================================================== -->
 
-        {% if request.user|has_any_permission:"printer.view,users.view,backup.view,restore.view,reports.view,billing.view,inventory.view,audit.view" %}
+        {% if request.user|has_any_permission:"printer.view,users.view,backup.view,restore.view,reports.view,billing.view,inventory.view,audit.view,registration.view" %}
         <div class="sidebar-section">
 
             <div class="sidebar-title">
@@ -218,30 +264,11 @@
     <span>Inventory</span>
 
 </a>
-<a href="{% url 'billing:customer_list' %}"
-   class="sidebar-link {% if request.resolver_match.url_name in 'customer_list customer_detail receive_customer_payment' %}active{% endif %}">
-    <i class="bi bi-journal-bookmark-fill"></i>
-    <span>Customer Ledger</span>
-</a>
-            {% if request.user|has_permission:"audit.view" %}
-            <a href="{% url 'audit:audit-log-list' %}"
-               class="sidebar-link {% if request.resolver_match.namespace == 'audit' %}active{% endif %}">
-                <i class="bi bi-clipboard-data"></i>
-                <span>Audit Trail</span>
-            </a>
-            {% endif %}
-            {% if request.user|has_permission:"reports.view" %}
-            <a href="{% url 'reports:daily-closing' %}"
-               class="sidebar-link {% if request.resolver_match.url_name == 'daily-closing' or request.resolver_match.url_name == 'close-day' %}active{% endif %}">
-                <i class="bi bi-door-closed-fill"></i>
-                <span>Daily Closing</span>
-            </a>
-            {% endif %}
-            {% if request.user|has_permission:"billing.view" %}
-            <a href="{% url 'billing:period-list' %}"
-               class="sidebar-link {% if request.resolver_match.namespace == 'billing' and 'period' in request.resolver_match.url_name %}active{% endif %}">
-                <i class="bi bi-calendar-range"></i>
-                <span>Period</span>
+            {% if request.user|has_permission:"registration.view" %}
+            <a href="{% url 'registration:status' %}"
+               class="sidebar-link {% if request.resolver_match.namespace == 'registration' %}active{% endif %}">
+                <i class="bi bi-key-fill"></i>
+                <span>Registration</span>
             </a>
             {% endif %}
     </div>

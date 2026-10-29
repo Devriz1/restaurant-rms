@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     "pwa",
     "corsheaders",
     "apps.audit",
+    'apps.registration',
 ]
 
 # config/settings/development.py
@@ -105,6 +106,8 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     
     "whitenoise.middleware.WhiteNoiseMiddleware",
+
+    "apps.registration.middleware.RegistrationLockMiddleware",
 ]
 
 ROOT_URLCONF = 'config.urls'

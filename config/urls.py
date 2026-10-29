@@ -22,6 +22,7 @@ urlpatterns = [
     path("stock/",include("apps.stock.urls"),),
     path("recipes/",include("apps.recipes.urls"),),
     path("audit/",include("apps.audit.urls", namespace="audit"),),
+    path("registration/", include("apps.registration.urls")),
 ]
 
 if settings.DEBUG:
